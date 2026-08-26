@@ -193,7 +193,7 @@
                 <a href="#methodology" class="hover:text-purple-600 transition-colors">Methodology</a>
                 <a href="#faq" class="hover:text-purple-600 transition-colors">FAQ</a>
             </nav>
-            <a href="#quotes" class="btn-age-purple px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl cursor-pointer">
+            <a onclick="openQuoteModal()" class="btn-age-purple px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl cursor-pointer">
                 Get 3 Free Quotes
             </a>
         </div>
@@ -778,6 +778,151 @@
         </div>
     </footer>
 
+    
+    <!-- Modal 1: Quote Matchmaker Modal -->
+    <div id="quoteModal" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+        <div class="bg-[#0e1626] border border-slate-700 text-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl relative" id="quoteModalCard">
+            <button type="button" id="closeQuoteModal" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center font-bold transition-colors cursor-pointer">✕</button>
+            <div class="space-y-1">
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                    <span>⚡ 100% Free &amp; No Obligation</span>
+                </div>
+                <h3 class="text-xl font-bold text-white">Compare Top Vetted Solar Installers</h3>
+                <p class="text-xs text-slate-300">
+                    Get customized bids based on your calibrated <span id="modalSystemSize" class="text-purple-400 font-bold">5.6 kW</span> array and local utility tariff.
+                </p>
+            </div>
+            <!-- Live Quote Summary Box -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-2 text-xs font-mono">
+                <div class="flex justify-between text-slate-300">
+                    <span>Estimated Net System Cost:</span>
+                    <span id="modalNetCost" class="text-emerald-400 font-bold">$11,113</span>
+                </div>
+                <div class="flex justify-between text-slate-300">
+                    <span>30% Federal ITC Tax Credit:</span>
+                    <span id="modalTaxCredit" class="text-purple-400 font-bold">-$4,763</span>
+                </div>
+                <div class="flex justify-between text-slate-300 border-t border-slate-800 pt-2">
+                    <span>Projected 25-Yr Net Savings:</span>
+                    <span id="modal25YrSavings" class="text-emerald-400 font-bold">$90,869</span>
+                </div>
+            </div>
+            <form id="quoteForm" class="space-y-4 text-xs font-sans">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <label class="font-semibold text-slate-300">ZIP Code</label>
+                        <input type="text" id="quoteZip" required placeholder="e.g. 90210" maxlength="5" pattern="[0-9]{5}" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white font-mono focus:outline-none focus:border-purple-500">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="font-semibold text-slate-300">Homeownership</label>
+                        <select id="quoteOwner" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500">
+                            <option value="owner">Single Family Owner</option>
+                            <option value="townhouse">Townhouse / Condo</option>
+                            <option value="commercial">Commercial Building</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <label class="font-semibold text-slate-300">Full Name</label>
+                    <input type="text" id="quoteName" required placeholder="Your Name" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500">
+                </div>
+                <div class="space-y-1">
+                    <label class="font-semibold text-slate-300">Email Address (for quote delivery)</label>
+                    <input type="email" id="quoteEmail" required placeholder="you@example.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-purple-500">
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full btn-age-purple py-3 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-lg shadow-purple-600/30">
+                        Request 3 Verified Installer Bids →
+                    </button>
+                    <p class="text-[10px] text-slate-400 text-center mt-2">
+                        Zero spam. We never sell your personal data. IRC §25D certified estimates.
+                    </p>
+                </div>
+            </form>
+            <div id="quoteSuccess" class="hidden text-center py-6 space-y-3">
+                <div class="w-12 h-12 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 rounded-full flex items-center justify-center text-xl mx-auto">✓</div>
+                <h4 class="text-lg font-bold text-white">Quote Request Received!</h4>
+                <p class="text-xs text-slate-300 max-w-sm mx-auto">
+                    We've matched your configuration with top NABCEP-certified installers in your area. Check your inbox for confirmation.
+                </p>
+                <button type="button" id="closeQuoteSuccess" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Battery Comparison Modal -->
+    <div id="batteryModal" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
+        <div class="bg-[#0e1626] border border-slate-700 text-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto" id="batteryModalCard">
+            <button type="button" id="closeBatteryModal" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center font-bold transition-colors cursor-pointer">✕</button>
+            <div class="space-y-1">
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                    <span>🔋 2026 Residential Storage Guide</span>
+                </div>
+                <h3 class="text-xl font-bold text-white">Top Lithium Home Backup Battery Comparison</h3>
+                <p class="text-xs text-slate-300">Compare capacity, output power, and NEM 3.0 peak rate shaving performance.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                <!-- Tesla Powerwall 3 -->
+                <div class="bg-slate-900/90 border border-purple-500/40 rounded-2xl p-4 space-y-3 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-white text-sm">Tesla Powerwall 3</span>
+                            <span class="text-[9px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full font-mono">Popular</span>
+                        </div>
+                        <div class="text-slate-300 text-[11px] space-y-1 font-mono">
+                            <div>• <strong>13.5 kWh</strong> Usable Cap.</div>
+                            <div>• <strong>11.5 kW</strong> Continuous</div>
+                            <div>• Built-in Solar Inverter</div>
+                            <div>• 10-Yr 70% Warranty</div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 space-y-2">
+                        <div class="text-purple-400 font-bold font-mono text-sm">~$9,500 - $11,500</div>
+                        <button type="button" onclick="selectBatteryOption(10000)" class="w-full py-2 btn-age-purple text-white font-bold rounded-lg text-xs cursor-pointer">Select in Sizer</button>
+                    </div>
+                </div>
+                <!-- EcoFlow DELTA Pro Ultra -->
+                <div class="bg-slate-900/90 border border-emerald-500/40 rounded-2xl p-4 space-y-3 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-white text-sm">EcoFlow DELTA Pro</span>
+                            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-mono">Expandable</span>
+                        </div>
+                        <div class="text-slate-300 text-[11px] space-y-1 font-mono">
+                            <div>• <strong>6 – 30 kWh</strong> Stackable</div>
+                            <div>• <strong>7.2 kW</strong> 120V/240V Split</div>
+                            <div>• EV & Generator Ready</div>
+                            <div>• LiFePO4 3500+ Cycles</div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 space-y-2">
+                        <div class="text-emerald-400 font-bold font-mono text-sm">~$7,000 - $14,000</div>
+                        <button type="button" onclick="selectBatteryOption(8000)" class="w-full py-2 btn-age-emerald text-white font-bold rounded-lg text-xs cursor-pointer">Select in Sizer</button>
+                    </div>
+                </div>
+                <!-- Anker SOLIX X1 -->
+                <div class="bg-slate-900/90 border border-indigo-500/40 rounded-2xl p-4 space-y-3 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-white text-sm">Anker SOLIX X1</span>
+                            <span class="text-[9px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-mono">Modular</span>
+                        </div>
+                        <div class="text-slate-300 text-[11px] space-y-1 font-mono">
+                            <div>• <strong>5 – 30 kWh</strong> Modular</div>
+                            <div>• <strong>6.0 kW</strong> Backup Power</div>
+                            <div>• Microgrid Isolation</div>
+                            <div>• 10-Yr Full Warranty</div>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-800 space-y-2">
+                        <div class="text-indigo-400 font-bold font-mono text-sm">~$6,500 - $13,000</div>
+                        <button type="button" onclick="selectBatteryOption(9000)" class="w-full py-2 btn-age-indigo text-white font-bold rounded-lg text-xs cursor-pointer">Select in Sizer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- INLINE D3 SOLAR HEATMAP & CALCULATOR SCRIPTS (100% Client-Side Self-Contained) -->
     <script>
       // 1. DATASETS
@@ -1142,6 +1287,58 @@
         renderMonetization(bill, hasBattery);
       }
 
+      
+      // Modal Open/Close Controls
+      function openQuoteModal() {
+        const modal = document.getElementById('quoteModal');
+        const card = document.getElementById('quoteModalCard');
+        if (!modal) return;
+        document.getElementById('modalSystemSize').textContent = document.getElementById('systemSize')?.textContent || '5.6 kW';
+        document.getElementById('modalNetCost').textContent = document.getElementById('netCost')?.textContent || '$11,113';
+        document.getElementById('modalTaxCredit').textContent = document.getElementById('taxCreditSavings')?.textContent || '-$4,763';
+        document.getElementById('modal25YrSavings').textContent = document.getElementById('twentyFiveYearSavings')?.textContent || '$90,869';
+        document.getElementById('quoteForm')?.classList.remove('hidden');
+        document.getElementById('quoteSuccess')?.classList.add('hidden');
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      }
+      function closeQuoteModal() {
+        const modal = document.getElementById('quoteModal');
+        if (!modal) return;
+        modal.classList.add('opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+      }
+      function openBatteryModal() {
+        const modal = document.getElementById('batteryModal');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+      }
+      function closeBatteryModal() {
+        const modal = document.getElementById('batteryModal');
+        if (!modal) return;
+        modal.classList.add('opacity-0');
+        setTimeout(() => modal.classList.add('hidden'), 200);
+      }
+      function selectBatteryOption(cost) {
+        if (batteryToggle) {
+          batteryToggle.checked = true;
+          calculate();
+        }
+        closeBatteryModal();
+        document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      document.getElementById('closeQuoteModal')?.addEventListener('click', closeQuoteModal);
+      document.getElementById('closeQuoteSuccess')?.addEventListener('click', closeQuoteModal);
+      document.getElementById('closeBatteryModal')?.addEventListener('click', closeBatteryModal);
+      document.getElementById('quoteForm')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        document.getElementById('quoteForm').classList.add('hidden');
+        document.getElementById('quoteSuccess').classList.remove('hidden');
+      });
+
+      // Update renderMonetization to call modals instead of alerts
       function renderMonetization(bill, hasBattery) {
         if (!monetizationContainer) return;
         if (bill > 150 && !hasBattery) {
@@ -1154,7 +1351,7 @@
                   With a power bill of <strong>$${bill}/mo</strong>, your home qualifies for 30% federal tax credits and $0-down solar financing programs.
                 </p>
               </div>
-              <button onclick="alert('Connecting with certified local installer network...')" class="btn-age-purple px-6 py-3 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-md whitespace-nowrap">
+              <button onclick="openQuoteModal()" class="btn-age-purple px-6 py-3.5 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-md whitespace-nowrap">
                 Get 3 Free Custom Quotes →
               </button>
             </div>
@@ -1169,7 +1366,7 @@
                   Protect your home against grid blackouts and peak evening time-of-use rates with expandable lithium storage.
                 </p>
               </div>
-              <button onclick="alert('Opening top home battery comparison guide...')" class="btn-age-emerald px-6 py-3 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-md whitespace-nowrap">
+              <button onclick="openBatteryModal()" class="btn-age-emerald px-6 py-3.5 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-md whitespace-nowrap">
                 Compare EcoFlow & Anker Units →
               </button>
             </div>
@@ -1186,7 +1383,7 @@
               </div>
               <div class="flex gap-2">
                 <input type="text" placeholder="Enter ZIP Code" class="bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-800 w-32 focus:outline-none focus:border-purple-500">
-                <button onclick="alert('Downloading 2026 Solar Incentive Guide PDF...')" class="btn-age-purple px-4 py-2 text-white font-bold text-xs rounded-xl cursor-pointer">
+                <button onclick="openQuoteModal()" class="btn-age-purple px-4 py-2 text-white font-bold text-xs rounded-xl cursor-pointer">
                   Get PDF
                 </button>
               </div>
