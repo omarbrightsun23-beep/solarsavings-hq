@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function() {
+            try {
+                var nativeFetch = window.fetch;
+                if (typeof nativeFetch === 'function') {
+                    var targets = [Window.prototype, window];
+                    for (var i = 0; i < targets.length; i++) {
+                        try {
+                            var t = targets[i];
+                            if (!t) continue;
+                            var d = Object.getOwnPropertyDescriptor(t, 'fetch');
+                            if (d && d.configurable !== false) {
+                                Object.defineProperty(t, 'fetch', {
+                                    get: function() { return nativeFetch; },
+                                    set: function(v) { nativeFetch = v; },
+                                    configurable: true,
+                                    enumerable: true
+                                });
+                            }
+                        } catch (err) {}
+                    }
+                }
+            } catch (e) {}
+            window.addEventListener('error', function(event) {
+                if (event && event.message && event.message.indexOf('Cannot set property fetch') !== -1) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                }
+            }, true);
+        })();
+    </script>
+    <title>Privacy Policy | SolarSavingsHQ</title>
+    <meta name="description" content="Privacy Policy for SolarSavingsHQ. We prioritize user data protection with 100% client-side calculation architecture compliant with GDPR and CCPA.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+    <link rel="canonical" href="https://solarsavingshq.com/privacy-policy.html">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <!-- Open Graph Meta -->
+    <meta property="og:title" content="Privacy Policy | SolarSavingsHQ">
+    <meta property="og:description" content="Zero-Log client-side clean energy calculation and user data protection framework.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://solarsavingshq.com/privacy-policy.html">
+    <meta property="og:site_name" content="SolarSavingsHQ">
+
+    <!-- Google Fonts: Poppins & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/src/index.css">
+
+    <!-- Structured Data Breadcrumbs -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://solarsavingshq.com/privacy-policy.html",
+          "url": "https://solarsavingshq.com/privacy-policy.html",
+          "name": "Privacy Policy | SolarSavingsHQ",
+          "description": "Zero-Log client-side computing policy and GDPR/CCPA compliance."
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://solarsavingshq.com/" },
+            { "@type": "ListItem", "position": 2, "name": "Privacy Policy", "item": "https://solarsavingshq.com/privacy-policy.html" }
+          ]
+        }
+      ]
+    }
+    </script>
+</head>
+<body class="bg-age-canvas text-slate-800 min-h-screen font-sans antialiased selection:bg-purple-600 selection:text-white flex flex-col justify-between">
+    
+    <!-- Dark Navigation Header -->
+    <header class="border-b border-slate-800 bg-[#090d16]/95 backdrop-blur-md text-white sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-[#0e1424] border border-slate-700/80 p-1 flex items-center justify-center shadow-lg shadow-purple-500/10 group-hover:scale-105 group-hover:border-purple-500/50 transition-all shrink-0">
+                    <svg viewBox="0 0 200 200" fill="none" class="w-full h-full">
+                        <circle cx="100" cy="100" r="82" stroke="#475569" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.8" />
+                        <path d="M 58 92 C 58 46, 142 46, 142 92" stroke="#8b5cf6" stroke-width="15" stroke-linecap="round" />
+                        <path d="M 58 108 C 58 154, 142 154, 142 108" stroke="#10b981" stroke-width="15" stroke-linecap="round" />
+                        <path d="M 96 68 L 118 102 L 95 115 L 112 144" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="font-bold text-lg text-white tracking-tight group-hover:text-purple-400 transition-colors">SolarSavings<span class="text-purple-400 font-extrabold">HQ</span></span>
+                    </div>
+                    <span class="hidden sm:inline-block text-[10px] text-purple-300 font-mono tracking-wider uppercase font-semibold">Power &amp; ROI Estimator</span>
+                </div>
+            </a>
+            <nav class="flex items-center gap-6 text-sm text-slate-300 font-medium">
+                <a href="/" class="hover:text-purple-400 hover:translate-y-[-1px] transition-all">Home</a>
+                <a href="/sitemap.html" class="hover:text-purple-400 hover:translate-y-[-1px] transition-all">Sitemap</a>
+                <a href="/contact-us.html" class="hover:text-purple-400 hover:translate-y-[-1px] transition-all">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Header Hero -->
+    <section class="relative overflow-hidden bg-gradient-to-b from-[#090d16] via-[#111827] to-[#1e1b4b] text-white border-b border-slate-700/80 py-12 px-4 sm:px-6 lg:px-8 text-center shadow-lg">
+        <div class="max-w-3xl mx-auto space-y-3 relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-sm">
+                <span>🔒 Zero-Log Privacy Framework</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">Privacy Policy</h1>
+            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                Last updated: August 25, 2026. Compliant with GDPR, CCPA/CPRA, and client-side compute principles.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-6 flex-1 w-full text-slate-700 text-sm leading-relaxed">
+        <article class="age-card rounded-3xl p-6 sm:p-8 space-y-6">
+            <section class="space-y-2">
+                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                    1. Overview &amp; 100% Client-Side Physics Architecture
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-600">
+                    At SolarSavingsHQ, we strongly prioritize user privacy. Unlike traditional lead generation platforms that harvest utility bill data, our core mathematical calculation algorithms execute <strong>100% client-side in your local browser</strong>. We do not store, log, or transmit your electricity bills, kilowatt-hour consumption figures, or roof configuration inputs to remote servers.
+                </p>
+            </section>
+
+            <section class="space-y-2">
+                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                    2. Voluntary Information &amp; Third-Party Quote Requests
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-600">
+                    If you voluntarily opt to submit a quote request or contact inquiry, any contact details provided (such as name, email, phone number, or ZIP code) are used solely to fulfill that specific service request or connect you with licensed solar installers upon your explicit instruction.
+                </p>
+            </section>
+
+            <section class="space-y-2">
+                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+                    3. Analytics &amp; Cookies
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-600">
+                    We may collect anonymous aggregate technical data (browser type, operating system, pages visited) to ensure cross-device rendering performance. No personally identifiable financial data is tracked or sold.
+                </p>
+            </section>
+
+            <section class="space-y-2">
+                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                    4. Contact Our Data Protection Officer
+                </h2>
+                <p class="text-xs sm:text-sm text-slate-600">
+                    For privacy inquiries or CCPA data deletion requests, contact: <a href="mailto:privacy@solarsavingshq.com" class="text-purple-600 font-mono font-semibold hover:underline">privacy@solarsavingshq.com</a>.
+                </p>
+            </section>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-[#060a12] text-slate-400 pt-12 pb-8 text-xs mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="space-y-3 md:col-span-2">
+                    <a href="/" class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-xl bg-[#090d16] border border-slate-700 p-1 flex items-center justify-center shrink-0">
+                            <svg viewBox="0 0 200 200" fill="none" class="w-full h-full">
+                                <circle cx="100" cy="100" r="82" stroke="#475569" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.8" />
+                                <path d="M 58 92 C 58 46, 142 46, 142 92" stroke="#8b5cf6" stroke-width="15" stroke-linecap="round" />
+                                <path d="M 58 108 C 58 154, 142 154, 142 108" stroke="#10b981" stroke-width="15" stroke-linecap="round" />
+                                <path d="M 96 68 L 118 102 L 95 115 L 112 144" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        <span class="font-bold text-base text-white">SolarSavings<span class="text-purple-400">HQ</span></span>
+                    </a>
+                    <p class="text-slate-400 text-xs max-w-sm">
+                        Institutional clean energy financial modeling. Compliant with NREL PVWatts v8 and IRC Section 25D standards.
+                    </p>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-bold text-purple-400 uppercase text-[11px] tracking-wider">Quick Navigation</h4>
+                    <ul class="space-y-1.5">
+                        <li><a href="/" class="hover:text-white hover:underline">ROI Calculator</a></li>
+                        <li><a href="/sitemap.html" class="hover:text-white hover:underline">Sitemap</a></li>
+                        <li><a href="/contact-us.html" class="hover:text-white hover:underline">Contact Advisory</a></li>
+                    </ul>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-300 uppercase text-[11px] tracking-wider">Legal</h4>
+                    <ul class="space-y-1.5">
+                        <li><a href="/privacy-policy.html" class="hover:text-white hover:underline text-purple-400">Privacy Policy</a></li>
+                        <li><a href="/terms-of-service.html" class="hover:text-white hover:underline">Terms of Service</a></li>
+                        <li><a href="/disclaimer.html" class="hover:text-white hover:underline">Financial Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-6 text-center text-slate-500 text-[11px]">
+                © 2026 SolarSavingsHQ.com. All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
