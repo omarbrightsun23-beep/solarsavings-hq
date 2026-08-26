@@ -3,43 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-        // Compatibility guard for sandboxed/iframe environments where window.fetch has only a getter
-        (function() {
-            try {
-                var nativeFetch = window.fetch;
-                if (typeof nativeFetch === 'function') {
-                    var targets = [Window.prototype, window];
-                    for (var i = 0; i < targets.length; i++) {
-                        try {
-                            var t = targets[i];
-                            if (!t) continue;
-                            var d = Object.getOwnPropertyDescriptor(t, 'fetch');
-                            if (d && d.configurable !== false) {
-                                Object.defineProperty(t, 'fetch', {
-                                    get: function() { return nativeFetch; },
-                                    set: function(v) { nativeFetch = v; },
-                                    configurable: true,
-                                    enumerable: true
-                                });
-                            }
-                        } catch (err) {}
-                    }
-                }
-            } catch (e) {}
-            window.addEventListener('error', function(event) {
-                if (event && event.message && event.message.indexOf('Cannot set property fetch') !== -1) {
-                    event.preventDefault();
-                    event.stopImmediatePropagation();
-                }
-            }, true);
-        })();
-    </script>
     <title>SolarSavingsHQ — 2026 Residential Solar, Battery & ROI Estimator</title>
     <meta name="description" content="Calculate your solar panel system size, 30% Federal Tax Credit (IRC Section 25D), California NEM 3.0 battery ROI, and 25-year compounding utility savings under NREL PVWatts v8 standards.">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="https://solarsavingshq.com/">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     
     <!-- Open Graph & Social Graph Meta -->
     <meta property="og:title" content="SolarSavingsHQ — Residential Solar, Battery & Payback Estimator">
@@ -47,21 +14,13 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://solarsavingshq.com/">
     <meta property="og:site_name" content="SolarSavingsHQ">
-    <meta property="og:locale" content="en_US">
-    <meta property="og:image" content="https://solarsavingshq.com/favicon.svg">
 
-    <!-- Twitter Card Meta -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="SolarSavingsHQ — 2026 Residential Solar & Battery Estimator">
-    <meta name="twitter:description" content="NREL PVWatts v8 residential solar array sizing, Section 25D tax deductions, and battery storage ROI modeling.">
-    <meta name="twitter:image" content="https://solarsavingshq.com/favicon.svg">
-
-    <!-- Google Fonts: Poppins & JetBrains Mono for AgeCalculator theme -->
+    <!-- Google Fonts: Poppins & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS CDN & Fallback for instant live deployment -->
+    
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -70,140 +29,28 @@
             fontFamily: {
               sans: ['Poppins', 'sans-serif'],
               mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              brand: {
+                purple: '#7c3aed',
+                purpleHover: '#6d28d9',
+                emerald: '#10b981',
+                indigo: '#4f46e5',
+                coral: '#f43f5e',
+                amber: '#f59e0b'
+              }
             }
           }
         }
       }
     </script>
+    
+    <!-- D3.js, Chart.js & jsPDF CDNs -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="/src/index.css">
-
-    <style>
-      body {
-        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      }
-      .bg-age-canvas {
-        background: 
-          radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.06) 0%, transparent 40%),
-          radial-gradient(circle at 88% 22%, rgba(79, 70, 229, 0.05) 0%, transparent 42%),
-          radial-gradient(circle at 50% 60%, rgba(244, 63, 94, 0.03) 0%, transparent 50%),
-          linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
-        background-attachment: fixed;
-      }
-      .age-card {
-        position: relative;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 1.5rem;
-        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .age-card:hover {
-        transform: translateY(-2px);
-        border-color: #cbd5e1;
-        box-shadow: 0 20px 30px -10px rgba(124, 58, 237, 0.08), 0 10px 15px -5px rgba(15, 23, 42, 0.04);
-      }
-      .card-accent-purple {
-        background: linear-gradient(145deg, #ffffff 0%, #faf5ff 100%);
-        border: 1.5px solid rgba(124, 58, 237, 0.25);
-        box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.1);
-      }
-      .card-accent-purple:hover {
-        border-color: rgba(124, 58, 237, 0.5);
-        box-shadow: 0 16px 32px -6px rgba(124, 58, 237, 0.18);
-      }
-      .card-accent-indigo {
-        background: linear-gradient(145deg, #ffffff 0%, #eef2ff 100%);
-        border: 1.5px solid rgba(79, 70, 229, 0.25);
-        box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.1);
-      }
-      .card-accent-indigo:hover {
-        border-color: rgba(79, 70, 229, 0.5);
-        box-shadow: 0 16px 32px -6px rgba(79, 70, 229, 0.18);
-      }
-      .card-accent-emerald {
-        background: linear-gradient(145deg, #ffffff 0%, #ecfdf5 100%);
-        border: 1.5px solid rgba(16, 185, 129, 0.25);
-        box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.1);
-      }
-      .card-accent-emerald:hover {
-        border-color: rgba(16, 185, 129, 0.5);
-        box-shadow: 0 16px 32px -6px rgba(16, 185, 129, 0.18);
-      }
-      .card-accent-coral {
-        background: linear-gradient(145deg, #ffffff 0%, #fff1f2 100%);
-        border: 1.5px solid rgba(244, 63, 94, 0.25);
-        box-shadow: 0 10px 25px -5px rgba(244, 63, 94, 0.1);
-      }
-      .card-accent-coral:hover {
-        border-color: rgba(244, 63, 94, 0.5);
-        box-shadow: 0 16px 32px -6px rgba(244, 63, 94, 0.18);
-      }
-      .btn-age-purple {
-        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-        color: #ffffff;
-        box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .btn-age-purple:hover {
-        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-        box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
-        transform: translateY(-1px);
-      }
-      .btn-age-emerald {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: #ffffff;
-        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .btn-age-emerald:hover {
-        background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
-        transform: translateY(-1px);
-      }
-      .btn-age-indigo {
-        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
-        color: #ffffff;
-        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .btn-age-indigo:hover {
-        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
-        transform: translateY(-1px);
-      }
-      .btn-age-coral {
-        background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
-        color: #ffffff;
-        box-shadow: 0 4px 14px rgba(244, 63, 94, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .btn-age-coral:hover {
-        background: linear-gradient(135deg, #fb7185 0%, #f43f5e 100%);
-        box-shadow: 0 6px 20px rgba(244, 63, 94, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
-        transform: translateY(-1px);
-      }
-      input[type="range"] {
-        accent-color: #7c3aed;
-      }
-      .input-purple-focus:focus {
-        border-color: #7c3aed;
-        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
-      }
-      .display-num-italic {
-        font-style: italic;
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        line-height: 1.15;
-        display: inline-block;
-      }
-    </style>
-
-    <!-- Google AdSense Auto Ads & Verification Tag (Replace ca-pub-XXXXXXXXXXXXXXXX with your publisher ID) -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9876543210987654" crossorigin="anonymous"></script>
-
-    <!-- Schema.org Unified JSON-LD Graph for WebApplication, Article, and 10 FAQ entities -->
+    <!-- Schema.org Unified JSON-LD Graph -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -228,12 +75,7 @@
             "jobTitle": "NABCEP Certified PV Technical Sales Specialist"
           },
           "datePublished": "2026-01-10",
-          "dateModified": "2026-08-25",
-          "publisher": {
-            "@type": "Organization",
-            "name": "SolarSavingsHQ",
-            "url": "https://solarsavingshq.com/"
-          }
+          "dateModified": "2026-08-25"
         },
         {
           "@type": "FAQPage",
@@ -241,82 +83,10 @@
           "mainEntity": [
             {
               "@type": "Question",
-              "name": "How does the 30% Federal Solar Tax Credit work, and what if I lack tax liability?",
+              "name": "How does the 30% Federal Solar Tax Credit work under Section 25D?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Under Section 25D of the U.S. Internal Revenue Code (Residential Clean Energy Credit), homeowners claim a direct 30% dollar-for-dollar reduction against their federal income tax liability. It covers panels, inverters, racking, labor, permitting, and standalone battery storage (3kWh+). If your tax credit exceeds your federal tax owed in Year 1, the remaining balance rolls over indefinitely to future tax years via IRS Form 5695."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Why is battery storage crucial under California NEM 3.0 to achieve fast payback?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Under CPUC NEM 3.0 (PG&E, SCE, SDG&E), daytime solar grid export compensation was slashed by ~75% to ~$0.05–$0.08/kWh, while evening grid power costs $0.45–$0.65/kWh between 4 PM and 9 PM. Adding home lithium storage lets you bank midday surplus power for evening self-consumption, capturing peak arbitrage and slashing payback periods from 11+ years down to 5.2–6.8 years."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "What is the exact mathematical formula to size a solar array from monthly kWh?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Array size in DC Kilowatts is calculated using NREL PVWatts engineering parameters: kW = Monthly kWh ÷ (Daily Peak Sun Hrs × 30 Days × 0.80 Derate). The 0.80 derate factor accounts for DC-to-AC inverter conversion losses (~4%), module thermal coefficients at 25°C+ (~8%), wire resistance (~2%), and light soiling (~6%)."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Cash Purchase vs. Solar Loan vs. Lease/PPA: Which yields the highest 25-yr ROI?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Direct Cash Purchase delivers the highest lifetime ROI (breakeven in 5–8 yrs; zero interest overhead). Solar Loans provide instant bill savings with zero cash down, though dealer origination fees (15%–30%) can lengthen payback. Third-party Leases/PPAs forfeit the 30% tax credit to the leasing corporation and often include 2.9% annual cost escalators with UCC-1 liens that complicate home resale."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Will my solar panels keep powering my home during a blackout without a battery?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "No. Standard grid-tied inverters automatically shut down within 100 milliseconds during a utility outage under mandatory IEEE 1547 / UL 1741 anti-islanding regulations to prevent dangerous electrical feedback that could electrocute utility line workers. To maintain uninterruptible power during blackouts, you must pair panels with an islanding-capable hybrid inverter and a battery storage system."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "What happens if my roof needs replacement in 5–10 years? Should I reroof first?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "If your asphalt shingle roof is over 15 years old, replace it prior to solar installation. Removing and reinstalling a solar array for a future roof replacement (Detach & Reset) costs $2,500 to $5,000. When reroofing concurrently with solar, the structural roof decking required for mounting solar may sometimes qualify for combined financing options."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "How much do solar panels degrade, and what does a 25-year warranty guarantee?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "Modern Tier-1 N-type TOPCon and monocrystalline PERC solar panels experience a linear degradation rate of only 0.35% to 0.50% per year. Premium linear output warranties legally guarantee that your panels will still generate 85% to 92% of their original rated wattage at Year 25. Microinverters carry 25-year warranties, while central string inverters typically require one replacement around Year 12–15."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Will solar increase my property taxes and my home resale appraisal value?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "According to research by the Lawrence Berkeley National Laboratory (LBNL) and Fannie Mae, owned solar panels increase home resale value by approximately $4.00 per installed Watt (an average equity boost of $18,000–$25,000). Crucially, 38+ U.S. states have statutory 100% property tax exemptions for residential renewable energy systems, ensuring your local assessed property tax does not increase."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "Can my Homeowners Association (HOA) legally block my solar installation?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "In more than 28 states (including California, Texas, Florida, Arizona, Colorado, North Carolina, and New Jersey), state Solar Rights Acts legally prohibit HOAs from banning solar panels or imposing architectural rules that decrease system generation efficiency by more than 10% or increase installation cost by more than $1,000–$2,000."
-              }
-            },
-            {
-              "@type": "Question",
-              "name": "What are SRECs and how can homeowners earn passive annual cash from solar?",
-              "acceptedAnswer": {
-                "@type": "Answer",
-                "text": "In states with Renewable Portfolio Standards (RPS)—such as NJ (SuSI), MA (SMART), PA, MD, and Washington D.C.—homeowners earn one Solar Renewable Energy Certificate (SREC) for every 1,000 kWh (1 MWh) generated. Utilities purchase these certificates to comply with state clean energy quotas, generating $600 to $2,400+ per year in direct passive cash for homeowners on top of electric utility bill savings."
+                "text": "Under Section 25D of the U.S. Internal Revenue Code (Residential Clean Energy Credit), homeowners claim a direct 30% reduction against their federal income tax liability covering panels, inverters, racking, labor, and battery storage (3kWh+)."
               }
             }
           ]
@@ -324,15 +94,83 @@
       ]
     }
     </script>
+
+    <style>
+      body { font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+      .bg-age-canvas {
+        background: 
+          radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.05) 0%, transparent 40%),
+          radial-gradient(circle at 88% 22%, rgba(79, 70, 229, 0.04) 0%, transparent 42%),
+          linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+        background-attachment: fixed;
+      }
+      .age-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.02);
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .age-card:hover {
+        border-color: #cbd5e1;
+        box-shadow: 0 20px 30px -10px rgba(124, 58, 237, 0.08);
+      }
+      .card-accent-purple {
+        background: linear-gradient(145deg, #ffffff 0%, #faf5ff 100%);
+        border: 1.5px solid rgba(124, 58, 237, 0.25);
+      }
+      .card-accent-indigo {
+        background: linear-gradient(145deg, #ffffff 0%, #eef2ff 100%);
+        border: 1.5px solid rgba(79, 70, 229, 0.25);
+      }
+      .card-accent-emerald {
+        background: linear-gradient(145deg, #ffffff 0%, #ecfdf5 100%);
+        border: 1.5px solid rgba(16, 185, 129, 0.25);
+      }
+      .card-accent-coral {
+        background: linear-gradient(145deg, #ffffff 0%, #fff1f2 100%);
+        border: 1.5px solid rgba(244, 63, 94, 0.25);
+      }
+      .btn-age-purple {
+        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+        transition: all 0.2s ease;
+      }
+      .btn-age-purple:hover {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        transform: translateY(-1px);
+      }
+      .btn-age-emerald {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+      }
+      .btn-age-indigo {
+        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+      }
+      .btn-age-coral {
+        background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+        color: #ffffff;
+        box-shadow: 0 4px 14px rgba(244, 63, 94, 0.35);
+      }
+      .display-num-italic {
+        font-style: italic;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+      }
+      input[type="range"] { accent-color: #7c3aed; }
+    </style>
 </head>
 <body class="bg-age-canvas text-slate-800 min-h-screen font-sans antialiased selection:bg-purple-600 selection:text-white flex flex-col justify-between">
 
-    <!-- Clean Navigation Header with Purple Accent Highlights -->
+    <!-- Top Navigation Header -->
     <header class="border-b border-slate-200 bg-white text-slate-900 sticky top-0 z-50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <a href="/" class="flex items-center gap-3 group">
-                <!-- Bold Lines S-Monogram Logo -->
-                <div class="w-10 h-10 rounded-xl bg-purple-50 border border-purple-200 p-1 flex items-center justify-center shadow-sm group-hover:scale-105 group-hover:border-purple-400 transition-all shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-purple-50 border border-purple-200 p-1 flex items-center justify-center shadow-sm shrink-0">
                     <svg viewBox="0 0 200 200" fill="none" class="w-full h-full">
                         <circle cx="100" cy="100" r="82" stroke="#94a3b8" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.8" />
                         <path d="M 58 92 C 58 46, 142 46, 142 92" stroke="#7c3aed" stroke-width="15" stroke-linecap="round" />
@@ -342,43 +180,28 @@
                 </div>
                 <div>
                     <div class="flex items-center gap-1.5">
-                        <span class="font-bold text-lg text-slate-900 tracking-tight group-hover:text-purple-600 transition-colors">SolarSavings<span class="text-purple-600 font-extrabold">HQ</span></span>
+                        <span class="font-bold text-lg text-slate-900 tracking-tight">SolarSavings<span class="text-purple-600 font-extrabold">HQ</span></span>
                     </div>
                     <span class="hidden sm:inline-block text-[10px] text-slate-500 font-mono tracking-wider uppercase font-semibold">Power &amp; ROI Estimator</span>
                 </div>
             </a>
             
             <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600">
-                <a href="#calculator" class="text-purple-600 font-semibold hover:text-purple-700 transition-colors relative py-1 after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-purple-600">
-                    Calculator
-                </a>
-                <a href="#sizing" class="hover:text-purple-600 hover:translate-y-[-1px] transition-all py-1">
-                    Home Sizing
-                </a>
-                <a href="#benchmarks" class="hover:text-purple-600 hover:translate-y-[-1px] transition-all py-1">
-                    State Benchmarks
-                </a>
-                <a href="#methodology" class="hover:text-purple-600 hover:translate-y-[-1px] transition-all py-1">
-                    Methodology
-                </a>
-                <a href="#faq" class="hover:text-purple-600 hover:translate-y-[-1px] transition-all py-1">
-                    FAQ
-                </a>
+                <a href="#calculator" class="text-purple-600 font-semibold border-b-2 border-purple-600 pb-1">Calculator</a>
+                <a href="#sizing" class="hover:text-purple-600 transition-colors">Home Sizing</a>
+                <a href="#benchmarks" class="hover:text-purple-600 transition-colors">State Heatmap</a>
+                <a href="#methodology" class="hover:text-purple-600 transition-colors">Methodology</a>
+                <a href="#faq" class="hover:text-purple-600 transition-colors">FAQ</a>
             </nav>
-
-            <div class="flex items-center gap-3">
-                <a href="#quotes" class="btn-age-purple px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl cursor-pointer">
-                    Get 3 Free Quotes
-                </a>
-            </div>
+            <a href="#quotes" class="btn-age-purple px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl cursor-pointer">
+                Get 3 Free Quotes
+            </a>
         </div>
     </header>
 
-    <!-- Compact Hero Bar: Direct Fast-Path into Calculator (Clean Solid Light Design) -->
+    <!-- Compact Hero Bar -->
     <section class="bg-slate-50 text-slate-900 border-b border-slate-200 py-5 sm:py-6 px-4 sm:px-6 lg:px-8">
-
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
-            <!-- Left: High-Impact Compact Title & Audit Badges -->
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div class="space-y-1.5">
                 <div class="flex flex-wrap items-center gap-2">
                     <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900">
@@ -395,34 +218,25 @@
                     Configure your monthly electric bill and location below to compute array kW sizing, tax offsets, battery backup, and 25-year compounding bill savings in real time.
                 </p>
             </div>
-
-            <!-- Right: Interactive Model Selection Quick Tabs -->
             <div class="shrink-0 w-full md:w-auto">
-                <div class="inline-flex flex-wrap p-1.5 bg-white border border-slate-200 rounded-2xl gap-1.5 text-xs shadow-xs">
-                    <button id="tabStandard" class="px-3.5 py-1.5 rounded-xl text-xs font-bold btn-age-purple text-white shadow-xs transition-all duration-150 cursor-pointer">
-                        ☀️ Standard Solar
-                    </button>
-                    <button id="tabNEM" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all duration-150 cursor-pointer">
-                        🔋 NEM 3.0 + Battery
-                    </button>
-                    <button id="tabOffGrid" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all duration-150 cursor-pointer">
-                        🏕️ Off-Grid Storage
-                    </button>
+                <div class="inline-flex flex-wrap p-1.5 bg-white border border-slate-200 rounded-2xl gap-1.5 text-xs shadow-sm">
+                    <button id="tabStandard" class="px-3.5 py-1.5 rounded-xl text-xs font-bold btn-age-purple text-white cursor-pointer">☀️ Standard Solar</button>
+                    <button id="tabNEM" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">🔋 NEM 3.0 + Battery</button>
+                    <button id="tabOffGrid" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">🏡 Off-Grid Storage</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Main Workspace with Clean AgeCalculator Cards & Vibrant Accents -->
+    <!-- Main Workspace -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-12 flex-1 w-full" id="calculator">
-
+        
         <!-- Two-Column Interactive Dashboard -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            <!-- Left Pane: Home Parameter Inputs (7 cols) - Age Card Style -->
+            <!-- Left Pane: Home Parameter Inputs (7 cols) -->
             <div class="lg:col-span-7 age-card p-6 sm:p-8 space-y-6 relative">
-                
-                <div class="flex items-center justify-between border-b border-slate-200/80 pb-4">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-4">
                     <div class="space-y-0.5">
                         <div class="flex items-center gap-2">
                             <span class="w-3 h-3 rounded-full bg-purple-600 shadow-sm shadow-purple-500/50"></span>
@@ -430,8 +244,8 @@
                         </div>
                         <p class="text-xs text-slate-500">Calibrate for your utility bill, solar insolation, and equipment setup</p>
                     </div>
-                    <button id="resetBtn" class="text-xs text-slate-500 hover:text-purple-600 hover:underline transition-colors font-medium px-3 py-1.5 rounded-xl hover:bg-purple-50 border border-slate-200/60 cursor-pointer">
-                        Reset Defaults ↺
+                    <button id="resetBtn" class="text-xs text-slate-500 hover:text-purple-600 font-medium px-3 py-1.5 rounded-xl hover:bg-purple-50 border border-slate-200 cursor-pointer">
+                        Reset Defaults ⟲
                     </button>
                 </div>
 
@@ -439,9 +253,9 @@
                 <div class="space-y-2">
                     <label for="stateSelect" class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center justify-between">
                         <span>Select Location / Utility Grid Preset:</span>
-                        <span class="text-[11px] text-purple-600 font-semibold lowercase">auto-configures sun &amp; tariffs</span>
+                        <span class="text-[11px] text-purple-600 font-semibold lowercase font-mono">auto-configures sun &amp; tariffs</span>
                     </label>
-                    <select id="stateSelect" class="w-full bg-white border border-slate-300 hover:border-purple-300 focus:border-purple-500 focus:bg-white rounded-xl px-4 py-3 text-sm text-slate-800 font-medium focus:outline-none transition-all duration-150 cursor-pointer shadow-xs">
+                    <select id="stateSelect" class="w-full bg-white border border-slate-300 hover:border-purple-300 focus:border-purple-500 rounded-xl px-4 py-3 text-sm text-slate-800 font-semibold focus:outline-none cursor-pointer shadow-sm">
                         <option value="az">Arizona (APS • $0.14/kWh • 6.2 Peak Sun Hrs)</option>
                         <option value="nv">Nevada (NV Energy • $0.16/kWh • 5.9 Peak Sun Hrs)</option>
                         <option value="ca" selected>California (NEM 3.0 • $0.34/kWh • 5.5 Peak Sun Hrs)</option>
@@ -453,348 +267,243 @@
                         <option value="ny">New York (ConEd • $0.24/kWh • 4.2 Peak Sun Hrs)</option>
                         <option value="ma">Massachusetts (SMART • $0.29/kWh • 4.1 Peak Sun Hrs)</option>
                         <option value="wa">Washington (PSE • $0.11/kWh • 3.8 Peak Sun Hrs)</option>
-                        <option value="custom">Custom Configuration (Manual Tuning)</option>
                     </select>
                 </div>
 
-                <!-- Input 1: Monthly Electric Bill (Purple Accent Card) -->
-                <div class="space-y-2 card-accent-purple p-4 rounded-2xl border border-purple-200 hover:border-purple-300 transition-colors shadow-xs">
+                <!-- Input 1: Monthly Electric Bill -->
+                <div class="space-y-2 card-accent-purple p-4 rounded-2xl border border-purple-200">
                     <div class="flex justify-between items-center text-sm">
                         <label for="billInput" class="font-semibold text-slate-800 flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-purple-600"></span>
-                            Average Monthly Electricity Bill
+                            <span class="w-2 h-2 rounded-full bg-purple-600"></span> Average Monthly Electricity Bill
                         </label>
-                        <div class="flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-purple-200 focus-within:border-purple-500 shadow-xs">
+                        <div class="flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-purple-200">
                             <span class="text-slate-500 font-mono text-xs">$</span>
-                            <input type="number" id="billInput" value="250" step="5" min="50" max="1500" 
-                                class="w-20 bg-transparent text-right font-mono text-purple-700 font-bold focus:outline-none text-sm">
+                            <input type="number" id="billInput" value="250" step="5" min="50" max="1500" class="w-20 bg-transparent text-right font-mono text-purple-700 font-bold focus:outline-none text-sm">
                         </div>
                     </div>
-                    <input type="range" id="billSlider" min="50" max="1000" value="250" step="5" 
-                        class="w-full h-2.5 bg-purple-100 rounded-lg appearance-none cursor-pointer accent-purple-600 hover:accent-purple-700 transition-all">
+                    <input type="range" id="billSlider" min="50" max="1000" value="250" step="5" class="w-full h-2.5 bg-purple-100 rounded-lg appearance-none cursor-pointer accent-purple-600">
                     <div class="flex justify-between text-[11px] text-slate-500 font-mono">
                         <span>$50/mo</span>
-                        <span class="text-purple-900 font-bold bg-purple-200/80 px-2 py-0.5 rounded-full">$250 (Typical)</span>
+                        <span class="text-purple-900 font-bold bg-purple-200 px-2 py-0.5 rounded-full">$250 (Typical)</span>
                         <span>$500</span>
                         <span>$1,000+/mo</span>
                     </div>
                 </div>
 
-                <!-- Input 2: Electricity Rate (Indigo Accent Card) -->
-                <div class="space-y-2 card-accent-indigo p-4 rounded-2xl border border-indigo-200 hover:border-indigo-300 transition-colors shadow-xs">
+                <!-- Input 2: Electricity Rate -->
+                <div class="space-y-2 card-accent-indigo p-4 rounded-2xl border border-indigo-200">
                     <div class="flex justify-between items-center text-sm">
                         <label for="rateInput" class="font-semibold text-slate-800 flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-                            Utility Electricity Rate ($ / kWh)
+                            <span class="w-2 h-2 rounded-full bg-indigo-500"></span> Utility Electricity Rate ($ / kWh)
                         </label>
-                        <div class="flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-indigo-200 focus-within:border-indigo-500 shadow-xs">
+                        <div class="flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-indigo-200">
                             <span class="text-slate-500 font-mono text-xs">$</span>
-                            <input type="number" id="rateInput" value="0.34" step="0.01" min="0.08" max="0.55" 
-                                class="w-20 bg-transparent text-right font-mono text-indigo-700 font-bold focus:outline-none text-sm">
+                            <input type="number" id="rateInput" value="0.34" step="0.01" min="0.08" max="0.55" class="w-20 bg-transparent text-right font-mono text-indigo-700 font-bold focus:outline-none text-sm">
                         </div>
                     </div>
-                    <input type="range" id="rateSlider" min="0.08" max="0.50" value="0.34" step="0.01" 
-                        class="w-full h-2.5 bg-indigo-100 rounded-lg appearance-none cursor-pointer accent-indigo-600 hover:accent-indigo-700 transition-all">
+                    <input type="range" id="rateSlider" min="0.08" max="0.50" value="0.34" step="0.01" class="w-full h-2.5 bg-indigo-100 rounded-lg appearance-none cursor-pointer accent-indigo-600">
                     <div class="flex justify-between text-[11px] text-slate-500 font-mono">
                         <span>$0.08 (Low)</span>
-                        <span class="text-slate-700">$0.17 (US Median)</span>
+                        <span>$0.17 (US Median)</span>
                         <span>$0.35+ (High Tariff)</span>
                     </div>
                 </div>
 
-                <!-- Input 3: Daily Peak Sun Hours (Emerald Accent Card) -->
-                <div class="space-y-2 card-accent-emerald p-4 rounded-2xl border border-emerald-200 hover:border-emerald-300 transition-colors shadow-xs">
+                <!-- Input 3: Daily Peak Sun Hours -->
+                <div class="space-y-2 card-accent-emerald p-4 rounded-2xl border border-emerald-200">
                     <div class="flex justify-between items-center text-sm">
                         <label for="sunInput" class="font-semibold text-slate-800 flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                            Daily Peak Sun Hours (Solar Insolation)
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Daily Peak Sun Hours (Solar Insolation)
                         </label>
-                        <div class="flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-emerald-200 focus-within:border-emerald-500 shadow-xs">
-                            <input type="number" id="sunInput" value="5.5" step="0.1" min="2.0" max="7.0" 
-                                class="w-16 bg-transparent text-right font-mono text-emerald-700 font-bold focus:outline-none text-sm">
+                        <div class="flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-emerald-200">
+                            <input type="number" id="sunInput" value="5.5" step="0.1" min="2.0" max="7.0" class="w-16 bg-transparent text-right font-mono text-emerald-700 font-bold focus:outline-none text-sm">
                             <span class="text-slate-500 font-mono text-xs">hrs</span>
                         </div>
                     </div>
-                    <input type="range" id="sunSlider" min="2.5" max="6.5" value="5.5" step="0.1" 
-                        class="w-full h-2.5 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-500 hover:accent-emerald-600 transition-all">
-                </div>
-
-                <!-- Input 4: Installation Cost per Watt (Coral Accent Card) -->
-                <div class="space-y-2 card-accent-coral p-4 rounded-2xl border border-rose-200 hover:border-rose-300 transition-colors shadow-xs">
-                    <div class="flex justify-between items-center text-sm">
-                        <label for="costPerWattInput" class="font-semibold text-slate-800 flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                            Turnkey Installation Cost ($ / Watt)
-                        </label>
-                        <div class="flex items-center gap-1 bg-white px-3 py-1.5 rounded-xl border border-rose-200 focus-within:border-rose-500 shadow-xs">
-                            <span class="text-slate-500 font-mono text-xs">$</span>
-                            <input type="number" id="costPerWattInput" value="2.85" step="0.05" min="2.00" max="4.50" 
-                                class="w-16 bg-transparent text-right font-mono text-slate-800 font-bold focus:outline-none text-sm">
-                            <span class="text-slate-500 font-mono text-xs">/W</span>
-                        </div>
-                    </div>
-                    <input type="range" id="costPerWattSlider" min="2.20" max="4.20" value="2.85" step="0.05" 
-                        class="w-full h-2.5 bg-rose-100 rounded-lg appearance-none cursor-pointer accent-rose-500 hover:accent-rose-600 transition-all">
+                    <input type="range" id="sunSlider" min="2.5" max="6.5" value="5.5" step="0.1" class="w-full h-2.5 bg-emerald-100 rounded-lg appearance-none cursor-pointer accent-emerald-500">
                 </div>
 
                 <!-- Toggles: 30% Federal ITC & Battery Storage -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-200/80 pt-4">
-                    <label class="flex items-center justify-between p-4 bg-purple-50/70 hover:bg-purple-100/80 rounded-2xl border border-purple-200/80 cursor-pointer hover:border-purple-400 hover:scale-[1.01] transition-all duration-200 shadow-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-200 pt-4">
+                    <label class="flex items-center justify-between p-4 bg-purple-50 rounded-2xl border border-purple-200 cursor-pointer">
                         <div class="space-y-0.5">
-                            <div class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                                <span>30% Federal ITC Credit</span>
-                                <span class="text-[9px] px-2 py-0.5 rounded-full bg-purple-200 text-purple-900 font-mono font-bold">Active</span>
-                            </div>
+                            <div class="text-xs font-bold text-slate-900">30% Federal ITC Credit</div>
                             <div class="text-[11px] text-slate-600">IRC §25D direct tax deduction</div>
                         </div>
                         <input type="checkbox" id="itcToggle" checked class="w-5 h-5 accent-purple-600 rounded-md cursor-pointer">
                     </label>
-
-                    <label class="flex items-center justify-between p-4 bg-emerald-50/70 hover:bg-emerald-100/80 rounded-2xl border border-emerald-200/80 cursor-pointer hover:border-emerald-400 hover:scale-[1.01] transition-all duration-200 shadow-xs">
+                    <label class="flex items-center justify-between p-4 bg-emerald-50 rounded-2xl border border-emerald-200 cursor-pointer">
                         <div class="space-y-0.5">
-                            <div class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                                <span>Add 10kWh Battery</span>
-                                <span class="text-[9px] px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 font-mono font-bold">Storage</span>
-                            </div>
+                            <div class="text-xs font-bold text-slate-900">Add 10kWh Battery</div>
                             <div class="text-[11px] text-slate-600">+$10,000 backup storage</div>
                         </div>
                         <input type="checkbox" id="batteryToggle" class="w-5 h-5 accent-emerald-500 rounded-md cursor-pointer">
                     </label>
                 </div>
 
-                <!-- Live Mathematical Formula Substitution Box -->
-                <div class="bg-slate-100 text-slate-800 rounded-2xl p-4 space-y-2 text-xs font-mono border border-slate-200 shadow-xs">
-                    <div class="flex items-center justify-between">
-                        <span class="text-[10px] font-bold text-purple-700 uppercase tracking-wider flex items-center gap-1.5">
-                            <span>⚙️ Live Engineering Sizing Formula</span>
-                        </span>
-                        <span class="text-[10px] text-slate-500">NREL PVWatts v8 Compliant</span>
-                    </div>
+                <!-- Live Formula Box -->
+                <div class="bg-slate-100 text-slate-800 rounded-2xl p-4 space-y-2 text-xs font-mono border border-slate-200">
+                    <div class="text-[10px] font-bold text-purple-700 uppercase">⚡ Live Engineering Sizing Formula (NREL PVWatts v8):</div>
                     <div class="text-slate-700 leading-relaxed">
                         System Size = <span id="formulaKwh" class="text-slate-900 font-bold">735</span> kWh ÷ (<span id="formulaSun" class="text-emerald-700 font-bold">5.5</span> hrs × 30 days × 0.80 derate) = 
-                        <span class="text-purple-900 font-bold text-sm bg-purple-100 px-2 py-0.5 rounded-lg border border-purple-300 inline-block mt-1 sm:mt-0" id="formulaKw">5.57 kW</span>
+                        <span class="text-purple-900 font-bold text-sm bg-purple-100 px-2 py-0.5 rounded-lg border border-purple-300" id="formulaKw">5.57 kW</span>
                     </div>
                 </div>
-
             </div>
 
-            <!-- Right Pane: Real-Time Results & Chart (5 cols) - Age Card Style -->
+            <!-- Right Pane: Real-Time Results Scorecard (5 cols) -->
             <div class="lg:col-span-5 space-y-6">
-                
-                <!-- Main Payback Summary Card -->
-                <div class="age-card card-accent-purple p-6 sm:p-8 space-y-6 relative border-2 border-purple-400/80">
-                    
-                    <div class="flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5">
+                <div class="age-card card-accent-purple p-6 sm:p-8 space-y-6 relative border-2 border-purple-400">
+                    <div class="flex items-center justify-between">
                         <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Estimated Payback Period</span>
-                        <span id="badgeVerdict" class="px-3.5 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-xs whitespace-nowrap shrink-0">
+                        <span id="badgeVerdict" class="px-3.5 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
                             Fast Payback (&lt; 6 Yrs)
                         </span>
                     </div>
-
-                    <div class="space-y-2 py-1">
+                    <div class="space-y-1">
                         <div class="flex items-baseline gap-2.5 leading-none">
-                            <span id="paybackYears" class="display-num-italic text-5xl sm:text-6xl font-extrabold text-purple-700 pb-1">5.3</span>
-                            <span class="text-2xl sm:text-3xl text-slate-500 font-semibold tracking-tight">Years</span>
+                            <span id="paybackYears" class="display-num-italic text-5xl sm:text-6xl font-extrabold text-purple-700">3.7</span>
+                            <span class="text-2xl sm:text-3xl text-slate-500 font-semibold">Years</span>
                         </div>
-                        <p class="text-xs sm:text-sm text-slate-600 font-medium" id="subVerdict">
-                            Capital breakeven fully realized by <span class="text-emerald-700 font-bold" id="paybackYearDate">2031</span>
+                        <p class="text-xs text-slate-600 font-medium" id="subVerdict">
+                            Capital breakeven fully realized by <span class="text-emerald-700 font-bold" id="paybackYearDate">2030</span>
                         </p>
                     </div>
 
-                    <!-- Key Sizing Metrics Grid (Accent Cards) -->
-                    <div class="grid grid-cols-2 gap-4 border-t border-slate-200/80 pt-4 text-xs font-mono">
-                        <div class="bg-purple-50/90 p-4 rounded-2xl border border-purple-200 hover:border-purple-400 transition-all">
+                    <div class="grid grid-cols-2 gap-4 border-t border-slate-200 pt-4 text-xs font-mono">
+                        <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200">
                             <span class="text-slate-600 text-[11px]">Recommended Array</span>
                             <div class="text-base font-bold text-purple-800 mt-0.5" id="systemSize">5.6 kW (~14 Panels)</div>
                         </div>
-                        <div class="bg-emerald-50/90 p-4 rounded-2xl border border-emerald-200 hover:border-emerald-400 transition-all">
+                        <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200">
                             <span class="text-slate-600 text-[11px]">Net Out-of-Pocket</span>
-                            <div class="text-base font-bold text-emerald-700 mt-0.5" id="netCost">$11,112</div>
+                            <div class="text-base font-bold text-emerald-700 mt-0.5" id="netCost">$11,113</div>
                         </div>
                     </div>
 
-                    <!-- 25-Year Compound Financial Projection -->
                     <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-2.5 text-xs">
                         <div class="flex justify-between items-center">
                             <span class="text-slate-600">30% Federal ITC Tax Deduction:</span>
-                            <span class="text-purple-700 font-bold font-mono text-sm" id="taxCreditSavings">-$4,763</span>
+                            <span class="text-rose-600 font-bold font-mono text-sm" id="taxCreditSavings">-$4,763</span>
                         </div>
-                        <div class="flex justify-between items-center border-t border-slate-200/80 pt-2">
+                        <div class="flex justify-between items-center border-t border-slate-200 pt-2">
                             <span class="text-slate-800 font-semibold">Projected 25-Year Net Savings:</span>
-                            <span class="text-emerald-600 font-bold font-mono text-base" id="twentyFiveYearSavings">$68,400</span>
+                            <span class="text-emerald-600 font-black font-mono text-base" id="twentyFiveYearSavings">$90,869</span>
                         </div>
                     </div>
 
-                    <!-- Action Buttons with AgeCalculator Style -->
                     <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                        <button type="button" id="exportProposalPdfBtn" class="flex-1 py-3.5 px-4 bg-white hover:bg-purple-50 text-slate-800 hover:text-purple-700 rounded-xl text-xs font-bold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer shadow-xs border border-slate-200 hover:border-purple-300">
-                            <span>📄 Export Proposal PDF</span>
+                        <button onclick="window.print()" class="flex-1 py-3 px-4 bg-white hover:bg-slate-100 text-slate-800 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 border border-slate-200 shadow-sm cursor-pointer">
+                            📄 Export Proposal PDF
                         </button>
-                        <button id="copyShareBtn" class="flex-1 btn-age-purple py-3.5 px-4 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer">
-                            <span>🔗 Share Quote</span>
+                        <button id="copyShareBtn" class="flex-1 btn-age-purple py-3 px-4 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer">
+                            🔗 Share Quote
                         </button>
                     </div>
                 </div>
 
-                <!-- 25-Year Cashflow Trajectory Chart (Age Card Container) -->
                 <div class="age-card p-6 space-y-4">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span>
-                            <span>25-Year Cumulative Financial Trajectory</span>
-                        </h3>
-                        <span class="text-[11px] text-slate-500 font-mono">3% Utility Esc.</span>
-                    </div>
+                    <h3 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span> 25-Year Cumulative Financial Trajectory
+                    </h3>
                     <div class="h-48">
                         <canvas id="solarChart"></canvas>
                     </div>
                 </div>
-
             </div>
-
         </div>
 
-        <!-- Conditional Monetization Lead Generation & Affiliate Card -->
+        <!-- Conditional Monetization Lead Gen & Affiliate Card -->
         <section id="quotes" class="space-y-6 pt-4">
-            <div id="monetizationContainer" class="age-card bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 text-slate-900 shadow-sm transition-all duration-200">
+            <div id="monetizationContainer" class="age-card bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6 text-slate-900 shadow-sm">
                 <!-- Dynamically updated based on bill amount & battery toggle -->
             </div>
         </section>
 
-        <!-- AdSense Placement 2: Mid-Content Horizontal Banner -->
-        <div class="adsense-placement-wrapper my-6">
-            <div class="text-[9px] uppercase font-mono tracking-widest text-slate-400 mb-1 flex items-center justify-center gap-2">
-                <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>Advertisement • Clean Energy Sponsors</span>
-                <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-            </div>
-            <div class="adsense-slot-container max-w-3xl mx-auto">
-                <ins class="adsbygoogle"
-                     style="display:block; width:100%; min-height:60px; max-height:90px;"
-                     data-ad-client="ca-pub-9876543210987654"
-                     data-ad-slot="2002002002"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-            </div>
-        </div>
-
-        <!-- Home Sizing Hub Section (4 Distinct Accent Colors in Age Cards) -->
+        <!-- Home Sizing Hub Section -->
         <section id="sizing" class="space-y-6 pt-8 border-t border-slate-200">
             <div class="space-y-2">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200">
-                    <span>📐 Residential Property Archetypes</span>
+                    <span>⚡ Residential Property Archetypes</span>
                 </div>
                 <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Solar Sizing by Home Square Footage</h2>
                 <p class="text-slate-600 text-sm">Quick sizing benchmarks for average U.S. residential single-family homes with central HVAC.</p>
             </div>
-            
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 text-xs font-mono">
-                <!-- Card 1: Purple Accent Age Card -->
-                <div class="age-card card-accent-purple p-6 rounded-3xl space-y-3 transition-all duration-200 hover:shadow-lg">
+                <div class="age-card card-accent-purple p-6 rounded-3xl space-y-3">
                     <div class="flex items-center justify-between text-purple-900 uppercase font-bold text-[10px]">
                         <span>1,500 Sq Ft Home</span>
-                        <span class="px-2 py-0.5 rounded-full bg-purple-200/80 text-purple-900">Compact</span>
+                        <span class="px-2 py-0.5 rounded-full bg-purple-200 text-purple-900">Compact</span>
                     </div>
                     <div class="text-2xl font-bold text-purple-950 font-sans">4.5 – 6.0 kW</div>
                     <div class="text-slate-700 font-sans text-xs">11 – 15 Panels • Avg Payback: <span class="text-emerald-700 font-bold">6.2 Yrs</span></div>
-                    <button type="button" data-size-bill="160" class="btn-apply-size w-full mt-2 py-2.5 px-3 btn-age-purple font-bold text-xs rounded-xl transition-all cursor-pointer text-center">
+                    <button type="button" data-size-bill="160" class="btn-apply-size w-full mt-2 py-2.5 px-3 btn-age-purple font-bold text-xs rounded-xl cursor-pointer">
                         Apply 1,500 Sq Ft ($160/mo) →
                     </button>
                 </div>
-
-                <!-- Card 2: Emerald Accent Age Card -->
-                <div class="age-card card-accent-emerald p-6 rounded-3xl space-y-3 transition-all duration-200 hover:shadow-lg">
+                <div class="age-card card-accent-emerald p-6 rounded-3xl space-y-3">
                     <div class="flex items-center justify-between text-emerald-900 uppercase font-bold text-[10px]">
                         <span>2,000 Sq Ft Home</span>
-                        <span class="px-2 py-0.5 rounded-full bg-emerald-200/80 text-emerald-900 font-extrabold font-mono">Popular</span>
+                        <span class="px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 font-bold">Popular</span>
                     </div>
                     <div class="text-2xl font-bold text-emerald-800 font-sans">6.5 – 8.5 kW</div>
                     <div class="text-slate-700 font-sans text-xs">16 – 21 Panels • Avg Payback: <span class="text-emerald-700 font-bold">5.8 Yrs</span></div>
-                    <button type="button" data-size-bill="250" class="btn-apply-size w-full mt-2 py-2.5 px-3 btn-age-emerald font-bold text-xs rounded-xl transition-all cursor-pointer text-center">
+                    <button type="button" data-size-bill="250" class="btn-apply-size w-full mt-2 py-2.5 px-3 btn-age-emerald font-bold text-xs rounded-xl cursor-pointer">
                         Apply 2,000 Sq Ft ($250/mo) →
                     </button>
                 </div>
-
-                <!-- Card 3: Indigo Accent Age Card -->
-                <div class="age-card card-accent-indigo p-6 rounded-3xl space-y-3 transition-all duration-200 hover:shadow-lg">
+                <div class="age-card card-accent-indigo p-6 rounded-3xl space-y-3">
                     <div class="flex items-center justify-between text-indigo-900 uppercase font-bold text-[10px]">
                         <span>2,500 Sq Ft Home</span>
-                        <span class="px-2 py-0.5 rounded-full bg-indigo-200/80 text-indigo-900">Mid-Large</span>
+                        <span class="px-2 py-0.5 rounded-full bg-indigo-200 text-indigo-900">Mid-Large</span>
                     </div>
                     <div class="text-2xl font-bold text-indigo-900 font-sans">8.5 – 10.5 kW</div>
                     <div class="text-slate-700 font-sans text-xs">21 – 26 Panels • Avg Payback: <span class="text-emerald-700 font-bold">5.5 Yrs</span></div>
-                    <button type="button" data-size-bill="340" class="btn-apply-size w-full mt-2 py-2.5 px-3 btn-age-indigo font-bold text-xs rounded-xl transition-all cursor-pointer text-center">
+                    <button type="button" data-size-bill="340" class="btn-apply-size w-full mt-2 py-2.5 px-3 btn-age-indigo font-bold text-xs rounded-xl cursor-pointer">
                         Apply 2,500 Sq Ft ($340/mo) →
                     </button>
                 </div>
-
-                <!-- Card 4: Coral Accent Age Card -->
-                <div class="age-card card-accent-coral p-6 rounded-3xl space-y-3 transition-all duration-200 hover:shadow-lg">
+                <div class="age-card card-accent-coral p-6 rounded-3xl space-y-3">
                     <div class="flex items-center justify-between text-rose-900 uppercase font-bold text-[10px]">
                         <span>3,000+ Sq Ft Home</span>
-                        <span class="px-2 py-0.5 rounded-full bg-rose-200/80 text-rose-900">Estate</span>
+                        <span class="px-2 py-0.5 rounded-full bg-rose-200 text-rose-900">Estate</span>
                     </div>
                     <div class="text-2xl font-bold text-rose-900 font-sans">11.0 – 15.0 kW</div>
                     <div class="text-slate-700 font-sans text-xs">28 – 38 Panels • Avg Payback: <span class="text-emerald-700 font-bold">5.1 Yrs</span></div>
-                    <button type="button" data-size-bill="480" class="btn-apply-size w-full mt-2 py-2.5 px-3 btn-age-coral font-bold text-xs rounded-xl transition-all cursor-pointer text-center">
+                    <button type="button" data-size-bill="480" class="btn-apply-size w-full mt-2 py-2.5 px-3 btn-age-coral font-bold text-xs rounded-xl cursor-pointer">
                         Apply 3,000+ Sq Ft ($480/mo) →
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- AdSense Placement 3: In-Feed Responsive Unit (Before Solar Heatmap & Benchmarks) -->
-        <div class="adsense-placement-wrapper my-6">
-            <div class="text-[9px] uppercase font-mono tracking-widest text-slate-400 mb-1 flex items-center justify-center gap-2">
-                <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>Advertisement • Solar Equipment &amp; Storage</span>
-                <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-            </div>
-            <div class="adsense-slot-container max-w-3xl mx-auto">
-                <ins class="adsbygoogle"
-                     style="display:block; width:100%; min-height:60px; max-height:90px;"
-                     data-ad-client="ca-pub-9876543210987654"
-                     data-ad-slot="3003003003"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-            </div>
-        </div>
-
-        <!-- State-by-State 2026 Benchmark Table & D3 Irradiance Heatmap -->
+        <!-- State-by-State 2026 Benchmark Table & D3 Irradiance Heatmap Section -->
         <section id="benchmarks" class="space-y-6 pt-8 border-t border-slate-200">
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div class="space-y-2">
                     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-800 border border-purple-200">
-                        <span class="w-2 h-2 rounded-full bg-purple-600 animate-ping"></span>
-                        <span>⚡ NREL NSRDB • 12-Month Solar Irradiance Matrix</span>
+                        <span>☀️ NREL NSRDB • 12-Month Solar Irradiance Matrix</span>
                     </div>
                     <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">State Solar Insolation Heatmap &amp; 2026 Benchmarks</h2>
                     <p class="text-slate-600 text-sm max-w-2xl">
-                        Interactive D3 solar irradiance intensity heatmap (kWh/m²/day) across all 12 calendar months. Hover over any table row or heatmap tile to inspect seasonal solar variance, optimal tilt angles, and regional payback.
+                        Interactive D3 solar irradiance intensity heatmap (kWh/m²/day) across all 12 calendar months. Hover over any row or heatmap tile to inspect seasonal variance, optimal tilt, and payback.
                     </p>
                 </div>
-                <!-- Heatmap Quick Legend Marker -->
-                <div class="flex items-center gap-2 text-xs font-mono bg-white border border-slate-200 px-3.5 py-2 rounded-2xl shadow-xs">
+                <div class="flex items-center gap-2 text-xs font-mono bg-white border border-slate-200 px-3.5 py-2 rounded-2xl shadow-sm">
                     <span class="text-slate-500">Scale:</span>
                     <span class="inline-block w-3.5 h-3.5 rounded bg-[#f3e8ff]"></span>
                     <span class="text-slate-600">1.5 Low</span>
-                    <span class="inline-block w-3.5 h-3.5 rounded bg-[#d8b4fe]"></span>
                     <span class="inline-block w-3.5 h-3.5 rounded bg-[#a855f7]"></span>
-                    <span class="inline-block w-3.5 h-3.5 rounded bg-[#7e22ce]"></span>
                     <span class="inline-block w-3.5 h-3.5 rounded bg-[#581c87]"></span>
                     <span class="text-slate-900 font-bold">8.0+ Peak</span>
                 </div>
             </div>
 
-            <!-- D3 Interactive Solar Irradiance Heatmap Component Card -->
+            <!-- D3 Interactive Solar Irradiance Heatmap Card -->
             <div class="age-card p-5 sm:p-7 space-y-6 shadow-md border border-slate-200">
-                
-                <!-- Dynamic State Solar Spotlight Card (Updated on row hover) -->
+                <!-- Dynamic Spotlight Card -->
                 <div id="heatmapSpotlightCard" class="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 text-slate-900 space-y-3">
-                    <!-- Populated dynamically by D3 Heatmap controller -->
-                    <div class="flex items-center justify-between text-xs text-slate-500 font-mono">
-                        <span>Loading state irradiance profile...</span>
-                    </div>
+                    <!-- Populated dynamically via JavaScript below -->
                 </div>
 
                 <!-- D3 SVG Container -->
@@ -804,12 +513,12 @@
                         <span class="hidden sm:inline text-slate-500">Hover rows or tiles to inspect • Click tile to load state</span>
                     </div>
                     <div id="irradianceHeatmapContainer" class="w-full overflow-x-auto bg-slate-50 border border-slate-200/80 rounded-2xl p-3 sm:p-4 min-h-[360px] flex items-center justify-center">
-                        <div class="text-xs font-mono text-slate-400">Rendering D3 Solar Heatmap...</div>
+                        <!-- SVG injected cleanly here by inline D3 script -->
                     </div>
                 </div>
             </div>
-            
-            <!-- Full Interactive State Benchmarks Table (Hoverable & Synced to D3 Heatmap) -->
+
+            <!-- State Benchmarks Table -->
             <div class="overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-md">
                 <table class="w-full text-left text-xs sm:text-sm text-slate-700">
                     <thead class="bg-slate-50 text-slate-700 uppercase text-[11px] font-semibold border-b border-slate-200 font-mono">
@@ -823,208 +532,54 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 font-mono" id="stateTableBody">
-                        <!-- AZ -->
-                        <tr data-state="az" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
-                                Arizona (APS / SRP / TEP)
-                            </td>
+                        <tr data-state="az" class="state-benchmark-row hover:bg-purple-50 transition cursor-pointer">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans">Arizona (APS / SRP / TEP)</td>
                             <td class="px-5 py-4 text-slate-700">$0.14/kWh</td>
                             <td class="px-5 py-4 text-purple-700 font-bold">6.2 hrs/day</td>
                             <td class="px-5 py-4 text-emerald-600 font-bold">6.8 - 8.1 Yrs</td>
                             <td class="px-5 py-4 font-sans text-slate-600">Resource Comparison Proxy (RCP)</td>
-                            <td class="px-5 py-4 text-right">
-                                <button type="button" data-apply-state="az" class="btn-load-state px-3 py-1.5 bg-purple-100 hover:bg-purple-600 text-purple-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">
-                                    Load AZ →
-                                </button>
-                            </td>
+                            <td class="px-5 py-4 text-right"><button type="button" data-apply-state="az" class="btn-load-state px-3 py-1.5 bg-purple-100 hover:bg-purple-600 text-purple-900 hover:text-white font-bold text-xs rounded-lg transition cursor-pointer">Load AZ</button></td>
                         </tr>
-                        <!-- NV -->
-                        <tr data-state="nv" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
-                                Nevada (NV Energy)
-                            </td>
-                            <td class="px-5 py-4 text-slate-700">$0.16/kWh</td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">5.9 hrs/day</td>
-                            <td class="px-5 py-4 text-emerald-600 font-bold">6.4 - 7.6 Yrs</td>
-                            <td class="px-5 py-4 font-sans text-slate-600">Tiered Net Metering (75% - 95%)</td>
-                            <td class="px-5 py-4 text-right">
-                                <button type="button" data-apply-state="nv" class="btn-load-state px-3 py-1.5 bg-indigo-100 hover:bg-indigo-600 text-indigo-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">
-                                    Load NV →
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- CA -->
-                        <tr data-state="ca" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group bg-purple-50/40">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span>
-                                California (PG&amp;E / SCE / SDG&amp;E)
-                            </td>
+                        <tr data-state="ca" class="state-benchmark-row hover:bg-purple-50 transition cursor-pointer bg-purple-50/40">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans">California (PG&amp;E / SCE / SDG&amp;E)</td>
                             <td class="px-5 py-4 text-purple-700 font-bold">$0.34/kWh</td>
                             <td class="px-5 py-4 text-purple-700 font-bold">5.5 hrs/day</td>
                             <td class="px-5 py-4 text-emerald-600 font-bold">5.2 - 6.8 Yrs</td>
-                            <td class="px-5 py-4 font-sans text-slate-600">NEM 3.0 (Battery Storage Recommended)</td>
-                            <td class="px-5 py-4 text-right">
-                                <button type="button" data-apply-state="ca" class="btn-load-state px-3 py-1.5 bg-purple-600 text-white font-bold text-xs rounded-lg transition-all cursor-pointer hover:bg-purple-700">
-                                    Load CA →
-                                </button>
-                            </td>
+                            <td class="px-5 py-4 font-sans text-slate-600">NEM 3.0 (Battery Recommended)</td>
+                            <td class="px-5 py-4 text-right"><button type="button" data-apply-state="ca" class="btn-load-state px-3 py-1.5 bg-purple-600 text-white font-bold text-xs rounded-lg transition cursor-pointer hover:bg-purple-700">Load CA</button></td>
                         </tr>
-                        <!-- FL -->
-                        <tr data-state="fl" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                                Florida (FPL / Duke Florida)
-                            </td>
+                        <tr data-state="fl" class="state-benchmark-row hover:bg-purple-50 transition cursor-pointer">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans">Florida (FPL / Duke Florida)</td>
                             <td class="px-5 py-4 text-slate-700">$0.16/kWh</td>
                             <td class="px-5 py-4 text-purple-700 font-bold">5.4 hrs/day</td>
                             <td class="px-5 py-4 text-emerald-600 font-bold">6.5 - 7.9 Yrs</td>
-                            <td class="px-5 py-4 font-sans text-slate-600">1:1 Net Metering Statutorily Protected</td>
-                            <td class="px-5 py-4 text-right">
-                                <button type="button" data-apply-state="fl" class="btn-load-state px-3 py-1.5 bg-emerald-100 hover:bg-emerald-600 text-emerald-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">
-                                    Load FL →
-                                </button>
-                            </td>
+                            <td class="px-5 py-4 font-sans text-slate-600">1:1 Net Metering Protected</td>
+                            <td class="px-5 py-4 text-right"><button type="button" data-apply-state="fl" class="btn-load-state px-3 py-1.5 bg-emerald-100 hover:bg-emerald-600 text-emerald-900 hover:text-white font-bold text-xs rounded-lg transition cursor-pointer">Load FL</button></td>
                         </tr>
-                        <!-- TX -->
-                        <tr data-state="tx" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                                Texas (ERCOT / Oncor / CenterPoint)
-                            </td>
+                        <tr data-state="tx" class="state-benchmark-row hover:bg-purple-50 transition cursor-pointer">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans">Texas (ERCOT / Oncor / CenterPoint)</td>
                             <td class="px-5 py-4 text-slate-700">$0.15/kWh</td>
                             <td class="px-5 py-4 text-purple-700 font-bold">5.2 hrs/day</td>
                             <td class="px-5 py-4 text-emerald-600 font-bold">7.2 - 8.8 Yrs</td>
                             <td class="px-5 py-4 font-sans text-slate-600">Competitive Retail Buyback Plans</td>
-                            <td class="px-5 py-4 text-right">
-                                <button type="button" data-apply-state="tx" class="btn-load-state px-3 py-1.5 bg-emerald-100 hover:bg-emerald-600 text-emerald-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">
-                                    Load TX →
-                                </button>
-                            </td>
+                            <td class="px-5 py-4 text-right"><button type="button" data-apply-state="tx" class="btn-load-state px-3 py-1.5 bg-emerald-100 hover:bg-emerald-600 text-emerald-900 hover:text-white font-bold text-xs rounded-lg transition cursor-pointer">Load TX</button></td>
                         </tr>
-                        <!-- CO -->
-                        <tr data-state="co" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-                                Colorado (Xcel Energy)
-                            </td>
-                            <td class="px-5 py-4 text-slate-700">$0.15/kWh</td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">5.0 hrs/day</td>
-                            <td class="px-5 py-4 text-emerald-600 font-bold">6.9 - 8.3 Yrs</td>
-                            <td class="px-5 py-4 font-sans text-slate-600">1:1 Net Metering + Solar Rewards</td>
-                            <td class="px-5 py-4 text-right">
-                                <button type="button" data-apply-state="co" class="btn-load-state px-3 py-1.5 bg-blue-100 hover:bg-blue-600 text-blue-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">
-                                    Load CO →
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- NC -->
-                        <tr data-state="nc" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
-                                North Carolina (Duke Carolinas)
-                            </td>
-                            <td class="px-5 py-4 text-slate-700">$0.14/kWh</td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">4.8 hrs/day</td>
-                            <td class="px-5 py-4 text-emerald-600 font-bold">7.4 - 8.9 Yrs</td>
-                            <td class="px-5 py-4 font-sans text-slate-600">Bridge Tariff / TOU Net Metering</td>
-                            <td class="px-5 py-4 text-right">
-                                <button type="button" data-apply-state="nc" class="btn-load-state px-3 py-1.5 bg-emerald-100 hover:bg-emerald-600 text-emerald-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">
-                                    Load NC →
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- NJ -->
-                        <tr data-state="nj" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
-                                New Jersey (PSE&amp;G / JCP&amp;L)
-                            </td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">$0.19/kWh</td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">4.4 hrs/day</td>
-                            <td class="px-5 py-4 text-emerald-600 font-bold">5.6 - 7.1 Yrs</td>
-                            <td class="px-5 py-4 font-sans text-slate-600">1:1 Net Metering + SuSI SREC-II</td>
-                            <td class="px-5 py-4 text-right">
-                                <button type="button" data-apply-state="nj" class="btn-load-state px-3 py-1.5 bg-indigo-100 hover:bg-indigo-600 text-indigo-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">
-                                    Load NJ →
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- NY -->
-                        <tr data-state="ny" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-cyan-500"></span>
-                                New York (ConEd / NYSERDA)
-                            </td>
+                        <tr data-state="ny" class="state-benchmark-row hover:bg-purple-50 transition cursor-pointer">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans">New York (ConEd / NYSERDA)</td>
                             <td class="px-5 py-4 text-purple-700 font-bold">$0.24/kWh</td>
                             <td class="px-5 py-4 text-purple-700 font-bold">4.2 hrs/day</td>
                             <td class="px-5 py-4 text-emerald-600 font-bold">5.8 - 7.2 Yrs</td>
                             <td class="px-5 py-4 font-sans text-slate-600">NY-Sun Rebates + 25% State Credit</td>
-                            <td class="px-5 py-4 text-right">
-                                <button type="button" data-apply-state="ny" class="btn-load-state px-3 py-1.5 bg-cyan-100 hover:bg-cyan-600 text-cyan-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">
-                                    Load NY →
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- MA -->
-                        <tr data-state="ma" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
-                                Massachusetts (Eversource / Grid)
-                            </td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">$0.29/kWh</td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">4.1 hrs/day</td>
-                            <td class="px-5 py-4 text-emerald-600 font-bold">4.9 - 6.3 Yrs</td>
-                            <td class="px-5 py-4 font-sans text-slate-600">SMART Solar Incentive + VNM</td>
-                            <td class="px-5 py-4 text-right">
-                                <button type="button" data-apply-state="ma" class="btn-load-state px-3 py-1.5 bg-teal-100 hover:bg-teal-600 text-teal-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">
-                                    Load MA →
-                                </button>
-                            </td>
-                        </tr>
-                        <!-- WA -->
-                        <tr data-state="wa" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
-                                Washington (PSE / Seattle City)
-                            </td>
-                            <td class="px-5 py-4 text-slate-700">$0.11/kWh</td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">3.8 hrs/day</td>
-                            <td class="px-5 py-4 text-emerald-600 font-bold">9.5 - 12.0 Yrs</td>
-                            <td class="px-5 py-4 font-sans text-slate-600">1:1 Net Metering (Low Base Hydro Rates)</td>
-                            <td class="px-5 py-4 text-right">
-                                <button type="button" data-apply-state="wa" class="btn-load-state px-3 py-1.5 bg-slate-100 hover:bg-slate-700 text-slate-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">
-                                    Load WA →
-                                </button>
-                            </td>
+                            <td class="px-5 py-4 text-right"><button type="button" data-apply-state="ny" class="btn-load-state px-3 py-1.5 bg-cyan-100 hover:bg-cyan-600 text-cyan-900 hover:text-white font-bold text-xs rounded-lg transition cursor-pointer">Load NY</button></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- AdSense Placement 4: Pre-Methodology Unit -->
-        <div class="adsense-placement-wrapper my-6">
-            <div class="text-[9px] uppercase font-mono tracking-widest text-slate-400 mb-1 flex items-center justify-center gap-2">
-                <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>Advertisement • Clean Energy Solutions</span>
-                <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-            </div>
-            <div class="adsense-slot-container max-w-3xl mx-auto">
-                <ins class="adsbygoogle"
-                     style="display:block; width:100%; min-height:60px; max-height:90px;"
-                     data-ad-client="ca-pub-9876543210987654"
-                     data-ad-slot="4004004004"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-            </div>
-        </div>
-
-        <!-- E-E-A-T Author & Engineering Review Block (Age Card Style) -->
+        <!-- E-E-A-T Author & Engineering Review Block -->
         <section id="methodology" class="space-y-6 pt-8 border-t border-slate-200">
             <div class="age-card p-6 sm:p-8 flex flex-col md:flex-row items-start gap-6">
-                <!-- S-Monogram Badge with Elena Credentials -->
                 <div class="w-16 h-16 rounded-2xl bg-[#090d16] border-2 border-slate-700 p-2 flex items-center justify-center shadow-lg shadow-purple-500/20 shrink-0">
                     <svg viewBox="0 0 200 200" fill="none" class="w-full h-full">
                         <circle cx="100" cy="100" r="82" stroke="#475569" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.8" />
@@ -1051,507 +606,500 @@
             </div>
         </section>
 
-        <!-- Comprehensive Solar Engineering & Financial Economics FAQ (10 Authoritative Problem-Solving FAQs) -->
+        <!-- FAQ Section -->
         <section id="faq" class="space-y-6 pt-8 border-t border-slate-200">
             <div class="space-y-2">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200">
-                    <span>❓ Homeowner Knowledge Base</span>
+                    <span>💡 Homeowner Knowledge Base</span>
                 </div>
                 <h2 class="text-2xl sm:text-3xl font-bold text-slate-900">Residential Solar Engineering &amp; Financial FAQ</h2>
-                <p class="text-slate-600 text-xs sm:text-sm max-w-3xl">
-                    Engineered answers to crucial homeowner questions covering Section 25D tax credits, utility net billing tariffs (NEM 3.0), system sizing mathematics, battery storage arbitrage, and long-term asset warranties.
-                </p>
             </div>
-            
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-sm">
-                
-                <!-- FAQ 1: Federal ITC & IRS Form 5695 -->
-                <div class="age-card card-accent-purple rounded-3xl p-6 space-y-3.5 transition-all duration-200 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-100 text-purple-900 border border-purple-200">Federal Tax Credit (ITC)</span>
-                        <span class="text-slate-600 font-mono text-[11px]">IRC §25D</span>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-base leading-snug">How does the 30% Federal Solar Tax Credit work, and what if I lack tax liability?</h3>
-                    <p class="text-slate-700 text-xs leading-relaxed font-sans">
-                        Under Section 25D of the U.S. Internal Revenue Code (Residential Clean Energy Credit), homeowners claim a direct <strong>30% dollar-for-dollar reduction</strong> against their federal income tax liability. It covers panels, inverters, racking, labor, permitting, and standalone battery storage (3kWh+). If your tax credit exceeds your federal tax owed in Year 1, the remaining balance <strong>rolls over indefinitely to future tax years</strong> via IRS Form 5695.
+                <div class="age-card card-accent-purple rounded-3xl p-6 space-y-3.5">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-100 text-purple-900">Federal Tax Credit</span>
+                    <h3 class="font-bold text-slate-900 text-base">How does the 30% Federal Solar Tax Credit work under Section 25D?</h3>
+                    <p class="text-slate-700 text-xs leading-relaxed">
+                        Under Section 25D of the Internal Revenue Code, homeowners claim a direct 30% dollar-for-dollar deduction against federal income taxes covering panels, inverters, racking, labor, and battery storage (3kWh+).
                     </p>
                 </div>
-
-                <!-- FAQ 2: California NEM 3.0 & Time-of-Use -->
-                <div class="age-card card-accent-emerald rounded-3xl p-6 space-y-3.5 transition-all duration-200 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">California NEM 3.0</span>
-                        <span class="text-slate-600 font-mono text-[11px]">CPUC Net Billing</span>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-base leading-snug">Why is battery storage crucial under California NEM 3.0 to achieve fast payback?</h3>
-                    <p class="text-slate-700 text-xs leading-relaxed font-sans">
-                        Under CPUC NEM 3.0 (PG&amp;E, SCE, SDG&amp;E), daytime solar grid export compensation was slashed by <strong>~75% to ~$0.05–$0.08/kWh</strong> (Avoided Cost Calculator), while evening grid power costs <strong>$0.45–$0.65/kWh</strong> between 4 PM and 9 PM. Adding home lithium storage lets you bank midday surplus power for evening self-consumption, capturing peak arbitrage and slashing payback periods from 11+ years down to <strong>5.2–6.8 years</strong>.
+                <div class="age-card card-accent-emerald rounded-3xl p-6 space-y-3.5">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-100 text-emerald-900">California NEM 3.0</span>
+                    <h3 class="font-bold text-slate-900 text-base">Why is battery storage required for optimal ROI under California NEM 3.0?</h3>
+                    <p class="text-slate-700 text-xs leading-relaxed">
+                        NEM 3.0 slashed daytime export compensation by ~75%. Adding a battery lets homeowners bank midday solar to avoid peak evening utility rates ($0.50+/kWh between 4 PM and 9 PM).
                     </p>
                 </div>
-
-                <!-- FAQ 3: System Sizing Math & Derate Factor -->
-                <div class="age-card card-accent-indigo rounded-3xl p-6 space-y-3.5 transition-all duration-200 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-100 text-indigo-900 border border-indigo-200">Engineering Physics</span>
-                        <span class="text-slate-600 font-mono text-[11px]">NREL PVWatts v8</span>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-base leading-snug">What is the exact mathematical formula to size a solar array from monthly kWh?</h3>
-                    <p class="text-slate-700 text-xs leading-relaxed font-sans">
-                        Array size in DC Kilowatts is calculated using NREL PVWatts engineering parameters: <br>
-                        <code class="block bg-slate-100 text-slate-900 p-2 rounded-xl text-[11px] font-mono my-1 border border-slate-200">kW = Monthly kWh ÷ (Daily Peak Sun Hrs × 30 Days × 0.80 Derate)</code>
-                        The <strong>0.80 derate factor</strong> accounts for DC-to-AC inverter conversion losses (~4%), module thermal coefficients at 25°C+ (~8%), wire resistance (~2%), and light soiling (~6%).
+                <div class="age-card card-accent-indigo rounded-3xl p-6 space-y-3.5">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-100 text-indigo-900">Engineering Physics</span>
+                    <h3 class="font-bold text-slate-900 text-base">What is the exact mathematical formula to size a solar array?</h3>
+                    <p class="text-slate-700 text-xs leading-relaxed">
+                        Array size in kW = Monthly kWh ÷ (Daily Sun Hours × 30 × 0.80 Derate). The 0.80 derate factor captures inverter conversion, temperature, and wire loss.
                     </p>
                 </div>
-
-                <!-- FAQ 4: Cash vs. Loan vs. PPA / Solar Lease -->
-                <div class="age-card card-accent-coral rounded-3xl p-6 space-y-3.5 transition-all duration-200 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-100 text-rose-900 border border-rose-200">Financing Models</span>
-                        <span class="text-slate-600 font-mono text-[11px]">Cash vs Loan vs PPA</span>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-base leading-snug">Cash Purchase vs. Solar Loan vs. Lease/PPA: Which yields the highest 25-yr ROI?</h3>
-                    <p class="text-slate-700 text-xs leading-relaxed font-sans">
-                        <strong>Direct Cash Purchase</strong> delivers the highest lifetime ROI (breakeven in 5–8 yrs; zero interest overhead). <strong>Solar Loans</strong> provide instant bill savings with zero cash down, though dealer origination fees (15%–30%) can lengthen payback. <strong>Third-party Leases/PPAs</strong> forfeit the 30% tax credit to the leasing corporation and often include 2.9% annual cost escalators with UCC-1 liens that complicate home resale.
-                    </p>
-                </div>
-
-                <!-- FAQ 5: Power Outages & Grid Islanding -->
-                <div class="age-card card-accent-purple rounded-3xl p-6 space-y-3.5 transition-all duration-200 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-100 text-purple-900 border border-purple-200">Grid Resilience</span>
-                        <span class="text-slate-600 font-mono text-[11px]">UL 1741 Safety</span>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-base leading-snug">Will my solar panels keep powering my home during a blackout without a battery?</h3>
-                    <p class="text-slate-700 text-xs leading-relaxed font-sans">
-                        <strong>No.</strong> Standard grid-tied inverters automatically shut down within 100 milliseconds during a utility outage under mandatory <strong>IEEE 1547 / UL 1741 anti-islanding regulations</strong> to prevent dangerous electrical feedback that could electrocute utility line workers. To maintain uninterruptible power during blackouts, you must pair panels with an islanding-capable hybrid inverter and a battery storage system (e.g. EcoFlow, Enphase 5P, Tesla Powerwall).
-                    </p>
-                </div>
-
-                <!-- FAQ 6: Roof Age, Replacement & Reset Costs -->
-                <div class="age-card card-accent-emerald rounded-3xl p-6 space-y-3.5 transition-all duration-200 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">Roofing &amp; Structural</span>
-                        <span class="text-slate-600 font-mono text-[11px]">Detach &amp; Reset</span>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-base leading-snug">What happens if my roof needs replacement in 5–10 years? Should I reroof first?</h3>
-                    <p class="text-slate-700 text-xs leading-relaxed font-sans">
-                        If your asphalt shingle roof is <strong>over 15 years old</strong>, replace it prior to solar installation. Removing and reinstalling a solar array for a future roof replacement (Detach &amp; Reset) costs <strong>$2,500 to $5,000</strong>. When reroofing concurrently with solar, the structural roof decking required for mounting solar may sometimes qualify for combined financing options (consult a certified CPA regarding Section 25D boundaries).
-                    </p>
-                </div>
-
-                <!-- FAQ 7: Degradation Rates & 25-Year Warranties -->
-                <div class="age-card card-accent-indigo rounded-3xl p-6 space-y-3.5 transition-all duration-200 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-indigo-100 text-indigo-900 border border-indigo-200">Hardware Lifespan</span>
-                        <span class="text-slate-600 font-mono text-[11px]">Tier-1 Equipment</span>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-base leading-snug">How much do solar panels degrade, and what does a 25-year warranty guarantee?</h3>
-                    <p class="text-slate-700 text-xs leading-relaxed font-sans">
-                        Modern Tier-1 N-type TOPCon and monocrystalline PERC solar panels experience a linear degradation rate of only <strong>0.35% to 0.50% per year</strong>. Premium linear output warranties legally guarantee that your panels will still generate <strong>85% to 92% of their original rated wattage</strong> at Year 25. Microinverters (like Enphase IQ8) carry 25-year warranties, while central string inverters typically require one replacement around Year 12–15 ($1,500–$2,200).
-                    </p>
-                </div>
-
-                <!-- FAQ 8: Property Value & Tax Exemption Laws -->
-                <div class="age-card card-accent-coral rounded-3xl p-6 space-y-3.5 transition-all duration-200 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-100 text-rose-900 border border-rose-200">Home Equity</span>
-                        <span class="text-slate-600 font-mono text-[11px]">LBNL Valuation</span>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-base leading-snug">Will solar increase my property taxes and my home resale appraisal value?</h3>
-                    <p class="text-slate-700 text-xs leading-relaxed font-sans">
-                        According to research by the Lawrence Berkeley National Laboratory (LBNL) and Fannie Mae, owned solar panels increase home resale value by approximately <strong>$4.00 per installed Watt</strong> (an average equity boost of $18,000–$25,000). Crucially, <strong>38+ U.S. states</strong> have statutory 100% property tax exemptions for residential renewable energy systems, ensuring your local assessed property tax does not increase.
-                    </p>
-                </div>
-
-                <!-- FAQ 9: HOA Solar Access Rights -->
-                <div class="age-card card-accent-purple rounded-3xl p-6 space-y-3.5 transition-all duration-200 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-purple-100 text-purple-900 border border-purple-200">Legal Rights</span>
-                        <span class="text-slate-600 font-mono text-[11px]">Solar Access Acts</span>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-base leading-snug">Can my Homeowners Association (HOA) legally block my solar installation?</h3>
-                    <p class="text-slate-700 text-xs leading-relaxed font-sans">
-                        In more than <strong>28 states</strong> (including California, Texas, Florida, Arizona, Colorado, North Carolina, and New Jersey), state <strong>Solar Rights Acts</strong> legally prohibit HOAs from banning solar panels or imposing architectural rules that decrease system generation efficiency by more than 10% or increase installation cost by more than $1,000–$2,000. HOAs may only require reasonable aesthetic modifications that do not impair solar performance.
-                    </p>
-                </div>
-
-                <!-- FAQ 10: SREC Cash Revenue & Net Metering Monetization -->
-                <div class="age-card card-accent-emerald rounded-3xl p-6 space-y-3.5 transition-all duration-200 hover:shadow-lg">
-                    <div class="flex items-center justify-between">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-100 text-emerald-900 border border-emerald-200">Clean Energy Income</span>
-                        <span class="text-slate-600 font-mono text-[11px]">SREC-II &amp; SuSI</span>
-                    </div>
-                    <h3 class="font-bold text-slate-900 text-base leading-snug">What are SRECs and how can homeowners earn passive annual cash from solar?</h3>
-                    <p class="text-slate-700 text-xs leading-relaxed font-sans">
-                        In states with Renewable Portfolio Standards (RPS)—such as NJ (SuSI), MA (SMART), PA, MD, and Washington D.C.—homeowners earn one <strong>Solar Renewable Energy Certificate (SREC)</strong> for every 1,000 kWh (1 MWh) generated. Utilities purchase these certificates to comply with state clean energy quotas, generating <strong>$600 to $2,400+ per year in direct passive cash</strong> for homeowners on top of electric utility bill savings.
-                    </p>
-                </div>
-
             </div>
         </section>
 
-        <!-- AdSense Placement 5: Pre-Footer Display Unit -->
-        <div class="adsense-placement-wrapper my-6">
-            <div class="text-[9px] uppercase font-mono tracking-widest text-slate-400 mb-1 flex items-center justify-center gap-2">
-                <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>Advertisement • Clean Energy Market</span>
-                <span class="w-1 h-1 rounded-full bg-slate-300"></span>
-            </div>
-            <div class="adsense-slot-container max-w-3xl mx-auto">
-                <ins class="adsbygoogle"
-                     style="display:block; width:100%; min-height:60px; max-height:90px;"
-                     data-ad-client="ca-pub-9876543210987654"
-                     data-ad-slot="5005005005"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-            </div>
-        </div>
-
     </main>
 
-    <!-- Comprehensive Dark Footer with Bold-Line Monogram Logo -->
-    <footer class="border-t border-slate-800 bg-[#060a12] text-slate-400 pt-16 pb-12 text-xs mt-16 shadow-2xl">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-            
-            <!-- Top Footer Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-                
-                <!-- Col 1: Brand & Authority (2 cols span) -->
-                <div class="lg:col-span-2 space-y-4">
-                    <a href="/" class="flex items-center gap-3 group">
-                        <div class="w-10 h-10 rounded-xl bg-[#090d16] border border-slate-700 p-1 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform shrink-0">
-                            <svg viewBox="0 0 200 200" fill="none" class="w-full h-full">
-                                <circle cx="100" cy="100" r="82" stroke="#475569" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.8" />
-                                <path d="M 58 92 C 58 46, 142 46, 142 92" stroke="#8b5cf6" stroke-width="15" stroke-linecap="round" />
-                                <path d="M 58 108 C 58 154, 142 154, 142 108" stroke="#10b981" stroke-width="15" stroke-linecap="round" />
-                                <path d="M 96 68 L 118 102 L 95 115 L 112 144" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </div>
-                        <div>
-                            <span class="font-bold text-lg text-white tracking-tight">SolarSavings<span class="text-purple-400">HQ</span></span>
-                            <span class="block text-[10px] text-indigo-300 font-mono tracking-wider uppercase font-semibold">Power &amp; ROI Estimator</span>
-                        </div>
-                    </a>
-                    <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
-                        SolarSavingsHQ delivers institutional clean energy financial modeling. Powered by 100% client-side physics compliant with NREL PVWatts v8 and IRC Section 25D federal clean energy standards.
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-[#060a12] text-slate-400 pt-12 pb-8 text-xs mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="space-y-3 md:col-span-2">
+                    <span class="font-bold text-base text-white">SolarSavings<span class="text-purple-400">HQ</span></span>
+                    <p class="text-slate-400 text-xs max-w-sm">
+                        Institutional clean energy financial modeling. Compliant with NREL PVWatts v8 and IRC Section 25D standards.
                     </p>
-                    <div class="flex flex-wrap gap-2 pt-1 font-mono text-[11px]">
-                        <span class="px-2.5 py-1 rounded-lg bg-[#111927] border border-slate-800 text-slate-300">NABCEP PVA-120491</span>
-                        <span class="px-2.5 py-1 rounded-lg bg-[#111927] border border-slate-800 text-slate-300">PE #84019 Audited</span>
-                        <span class="px-2.5 py-1 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-300">2026 Standards</span>
-                    </div>
                 </div>
-
-                <!-- Col 2: Calculators & Tools -->
-                <div class="space-y-3">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-purple-400">Solar Calculators</h4>
-                    <ul class="space-y-2">
-                        <li><a href="/#calculator" class="hover:text-white hover:underline transition-colors">Residential ROI Engine</a></li>
-                        <li><a href="/#calculator" class="hover:text-white hover:underline transition-colors">California NEM 3.0 Sizer</a></li>
-                        <li><a href="/#calculator" class="hover:text-white hover:underline transition-colors">Battery Storage Runtime</a></li>
-                        <li><a href="/#sizing" class="hover:text-white hover:underline transition-colors">2,000 Sq Ft Home Sizing</a></li>
-                        <li><a href="/#sizing" class="hover:text-white hover:underline transition-colors">1,500 Sq Ft Home Sizing</a></li>
-                        <li><a href="/#sizing" class="hover:text-white hover:underline transition-colors">3,000+ Sq Ft Home Sizing</a></li>
+                <div class="space-y-2">
+                    <h4 class="font-bold text-purple-400 uppercase text-[11px] tracking-wider">Quick Navigation</h4>
+                    <ul class="space-y-1.5">
+                        <li><a href="/#calculator" class="hover:text-white">ROI Calculator</a></li>
+                        <li><a href="/sitemap.html" class="hover:text-white">Sitemap</a></li>
+                        <li><a href="/contact-us.html" class="hover:text-white">Contact Advisory</a></li>
                     </ul>
                 </div>
-
-                <!-- Col 3: State Benchmarks -->
-                <div class="space-y-3">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-400">State Benchmarks</h4>
-                    <ul class="space-y-2">
-                        <li><a href="/#benchmarks" class="hover:text-white hover:underline transition-colors">California (PG&amp;E / SCE)</a></li>
-                        <li><a href="/#benchmarks" class="hover:text-white hover:underline transition-colors">Texas (ERCOT Buybacks)</a></li>
-                        <li><a href="/#benchmarks" class="hover:text-white hover:underline transition-colors">Florida (FPL Net Metering)</a></li>
-                        <li><a href="/#benchmarks" class="hover:text-white hover:underline transition-colors">New York (ConEd / NY-Sun)</a></li>
-                        <li><a href="/#benchmarks" class="hover:text-white hover:underline transition-colors">Arizona (APS / SRP RCP)</a></li>
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-300 uppercase text-[11px] tracking-wider">Legal</h4>
+                    <ul class="space-y-1.5">
+                        <li><a href="/privacy-policy.html" class="hover:text-white">Privacy Policy</a></li>
+                        <li><a href="/terms-of-service.html" class="hover:text-white">Terms of Service</a></li>
+                        <li><a href="/disclaimer.html" class="hover:text-white">Financial Disclaimer</a></li>
                     </ul>
-                </div>
-
-                <!-- Col 4: Compliance & Directory -->
-                <div class="space-y-3">
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Compliance &amp; Legal</h4>
-                    <ul class="space-y-2">
-                        <li><a href="/privacy-policy.html" class="hover:text-white hover:underline transition-colors">Privacy Policy (GDPR / CCPA)</a></li>
-                        <li><a href="/terms-of-service.html" class="hover:text-white hover:underline transition-colors">Terms of Service</a></li>
-                        <li><a href="/disclaimer.html" class="hover:text-white hover:underline transition-colors">Financial Disclaimer</a></li>
-                        <li><a href="/contact-us.html" class="hover:text-white hover:underline transition-colors">Contact Us &amp; Support</a></li>
-                        <li><a href="/sitemap.html" class="hover:text-white hover:underline transition-colors">HTML Sitemap</a></li>
-                        <li><a href="/sitemap.xml" target="_blank" class="hover:text-purple-400 hover:underline transition-colors font-mono">XML Sitemap (Bot)</a></li>
-                    </ul>
-                </div>
-
-            </div>
-
-            <!-- Bottom Legal & Verification Strip -->
-            <div class="border-t border-slate-800/80 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-slate-500 text-[11px]">
-                <div>
-                    © 2026 SolarSavingsHQ.com. All rights reserved. Clean energy unit economics engineered for institutional accuracy.
-                </div>
-                <div class="flex items-center gap-4">
-                    <span class="text-slate-600 font-mono">Build: v2026.8.25-L2</span>
-                    <a href="#calculator" class="text-purple-400 hover:text-purple-300 flex items-center gap-1 hover:underline">
-                        <span>Back to Top ↑</span>
-                    </a>
                 </div>
             </div>
-
+            <div class="border-t border-slate-800 pt-6 text-center text-slate-500 text-[11px]">
+                © 2026 SolarSavingsHQ.com. All rights reserved.
+            </div>
         </div>
     </footer>
 
-    <!-- Interactive Modals for Quotes, Battery Comparison, and PDF Guide -->
+    <!-- INLINE D3 SOLAR HEATMAP & CALCULATOR SCRIPTS (100% Client-Side Self-Contained) -->
+    <script>
+      // 1. DATASETS
+      const STATE_SOLAR_DATA = [
+        { code: 'az', name: 'Arizona', region: 'Southwest (APS / SRP)', annualAvg: 6.2, avgTariff: 0.14, paybackYrs: '6.8 - 8.1', netMetering: 'Resource Comparison Proxy (RCP)', monthly: [4.8, 5.6, 6.5, 7.4, 7.8, 8.1, 7.5, 7.1, 6.8, 6.0, 5.1, 4.5], optimalTilt: 32 },
+        { code: 'nv', name: 'Nevada', region: 'Desert Southwest (NV Energy)', annualAvg: 5.9, avgTariff: 0.16, paybackYrs: '6.4 - 7.6', netMetering: 'Tiered Net Metering (75% - 95%)', monthly: [4.2, 5.1, 6.1, 7.1, 7.6, 8.0, 7.7, 7.2, 6.6, 5.6, 4.6, 3.9], optimalTilt: 34 },
+        { code: 'ca', name: 'California', region: 'Pacific (PG&E / SCE / SDG&E)', annualAvg: 5.5, avgTariff: 0.34, paybackYrs: '5.2 - 6.8', netMetering: 'NEM 3.0 (Solar Billing Plan)', monthly: [3.8, 4.6, 5.6, 6.6, 7.2, 7.6, 7.5, 7.0, 6.3, 5.1, 4.1, 3.5], optimalTilt: 33 },
+        { code: 'fl', name: 'Florida', region: 'Southeast (FPL / Duke FL)', annualAvg: 5.4, avgTariff: 0.16, paybackYrs: '6.5 - 7.9', netMetering: '1:1 Retail Net Metering', monthly: [4.4, 5.1, 5.9, 6.5, 6.6, 6.0, 5.9, 5.7, 5.3, 5.0, 4.6, 4.1], optimalTilt: 28 },
+        { code: 'tx', name: 'Texas', region: 'ERCOT / Oncor / CenterPoint', annualAvg: 5.2, avgTariff: 0.15, paybackYrs: '7.2 - 8.8', netMetering: 'Deregulated Retail Buyback', monthly: [3.8, 4.5, 5.2, 5.8, 6.2, 6.8, 6.7, 6.5, 5.8, 4.9, 4.0, 3.5], optimalTilt: 30 },
+        { code: 'co', name: 'Colorado', region: 'Mountain (Xcel Energy)', annualAvg: 5.0, avgTariff: 0.15, paybackYrs: '6.9 - 8.3', netMetering: '1:1 Net Metering + Rebates', monthly: [3.6, 4.4, 5.2, 5.8, 6.2, 6.9, 6.6, 6.1, 5.6, 4.7, 3.8, 3.3], optimalTilt: 38 },
+        { code: 'nc', name: 'North Carolina', region: 'Mid-Atlantic (Duke Carolinas)', annualAvg: 4.8, avgTariff: 0.14, paybackYrs: '7.4 - 8.9', netMetering: 'Bridge Tariff / TOU', monthly: [3.5, 4.2, 5.0, 5.9, 6.2, 6.3, 6.0, 5.6, 5.0, 4.4, 3.8, 3.2], optimalTilt: 35 },
+        { code: 'nj', name: 'New Jersey', region: 'Northeast (PSE&G / JCP&L)', annualAvg: 4.4, avgTariff: 0.19, paybackYrs: '5.6 - 7.1', netMetering: '1:1 Net Metering + SuSI', monthly: [2.8, 3.6, 4.5, 5.3, 5.8, 6.1, 5.9, 5.4, 4.7, 3.8, 2.9, 2.5], optimalTilt: 37 },
+        { code: 'ny', name: 'New York', region: 'Northeast (ConEd / NYSERDA)', annualAvg: 4.2, avgTariff: 0.24, paybackYrs: '5.8 - 7.2', netMetering: 'NY-Sun + 25% State Tax Credit', monthly: [2.5, 3.4, 4.3, 5.1, 5.6, 5.9, 5.8, 5.3, 4.5, 3.5, 2.6, 2.2], optimalTilt: 39 },
+        { code: 'ma', name: 'Massachusetts', region: 'New England (Eversource / Grid)', annualAvg: 4.1, avgTariff: 0.29, paybackYrs: '4.9 - 6.3', netMetering: 'SMART Program + VNM', monthly: [2.4, 3.3, 4.2, 5.0, 5.5, 5.8, 5.7, 5.2, 4.4, 3.4, 2.5, 2.1], optimalTilt: 40 },
+        { code: 'wa', name: 'Washington', region: 'Pacific Northwest (PSE / Seattle)', annualAvg: 3.8, avgTariff: 0.11, paybackYrs: '9.5 - 12.0', netMetering: '1:1 Net Metering (Low Hydro Rates)', monthly: [1.6, 2.5, 3.7, 4.8, 5.7, 6.1, 6.6, 5.9, 4.5, 2.8, 1.7, 1.3], optimalTilt: 42 }
+      ];
+      const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-    <!-- Modal 1: Quote Matchmaker Modal -->
-    <div id="quoteModal" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
-        <div class="bg-[#0e1626] border border-slate-700 text-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl relative" id="quoteModalCard">
-            <button type="button" id="closeQuoteModal" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center font-bold transition-colors cursor-pointer">
-                ✕
+      // 2. DOM ELEMENTS
+      const stateSelect = document.getElementById('stateSelect');
+      const billInput = document.getElementById('billInput');
+      const billSlider = document.getElementById('billSlider');
+      const rateInput = document.getElementById('rateInput');
+      const rateSlider = document.getElementById('rateSlider');
+      const sunInput = document.getElementById('sunInput');
+      const sunSlider = document.getElementById('sunSlider');
+      const itcToggle = document.getElementById('itcToggle');
+      const batteryToggle = document.getElementById('batteryToggle');
+      const resetBtn = document.getElementById('resetBtn');
+      const copyShareBtn = document.getElementById('copyShareBtn');
+      const tabStandard = document.getElementById('tabStandard');
+      const tabNEM = document.getElementById('tabNEM');
+      const tabOffGrid = document.getElementById('tabOffGrid');
+
+      const paybackYears = document.getElementById('paybackYears');
+      const paybackYearDate = document.getElementById('paybackYearDate');
+      const badgeVerdict = document.getElementById('badgeVerdict');
+      const systemSize = document.getElementById('systemSize');
+      const netCost = document.getElementById('netCost');
+      const taxCreditSavings = document.getElementById('taxCreditSavings');
+      const twentyFiveYearSavings = document.getElementById('twentyFiveYearSavings');
+      const formulaKwh = document.getElementById('formulaKwh');
+      const formulaSun = document.getElementById('formulaSun');
+      const formulaKw = document.getElementById('formulaKw');
+      const monetizationContainer = document.getElementById('monetizationContainer');
+
+      // 3. D3 SOLAR IRRADIANCE HEATMAP INITIALIZATION
+      function initD3Heatmap() {
+        const container = document.getElementById('irradianceHeatmapContainer');
+        if (!container || !window.d3) return;
+        container.innerHTML = '';
+
+        const containerWidth = container.clientWidth || 750;
+        const margin = { top: 30, right: 30, bottom: 20, left: 110 };
+        const width = Math.max(300, containerWidth) - margin.left - margin.right;
+        const rowHeight = 26;
+        const height = STATE_SOLAR_DATA.length * rowHeight;
+
+        const colorScale = d3.scaleSequential()
+          .domain([1.2, 8.2])
+          .interpolator(d3.interpolatePurples);
+
+        const x = d3.scaleBand().domain(MONTHS).range([0, width]).padding(0.06);
+        const y = d3.scaleBand().domain(STATE_SOLAR_DATA.map(d => d.code)).range([0, height]).padding(0.1);
+
+        const svg = d3.select(container)
+          .append('svg')
+          .attr('width', width + margin.left + margin.right)
+          .attr('height', height + margin.top + margin.bottom)
+          .append('g')
+          .attr('transform', `translate(${margin.left},${margin.top})`);
+
+        // Axis
+        svg.append('g')
+          .call(d3.axisTop(x).tickSize(0))
+          .call(g => g.select('.domain').remove())
+          .selectAll('text')
+          .attr('class', 'text-[10px] font-mono font-bold fill-slate-700');
+
+        // Rows
+        STATE_SOLAR_DATA.forEach(state => {
+          const stateY = y(state.code) || 0;
+          const rowG = svg.append('g')
+            .attr('class', 'cursor-pointer')
+            .attr('transform', `translate(0, ${stateY})`)
+            .on('click', () => { applyStatePreset(state.code); });
+
+          // State Label
+          rowG.append('text')
+            .attr('x', -10)
+            .attr('y', y.bandwidth() / 2 + 4)
+            .attr('text-anchor', 'end')
+            .attr('class', 'text-[11px] font-mono font-semibold fill-slate-800')
+            .text(`${state.name} (${state.code.toUpperCase()})`);
+
+          // Cells
+          state.monthly.forEach((val, idx) => {
+            const cellX = x(MONTHS[idx]) || 0;
+            rowG.append('rect')
+              .attr('x', cellX)
+              .attr('y', 0)
+              .attr('width', x.bandwidth())
+              .attr('height', y.bandwidth())
+              .attr('rx', 4)
+              .attr('fill', colorScale(val))
+              .attr('stroke', '#ffffff')
+              .attr('stroke-width', 1)
+              .append('title')
+              .text(`${state.name} (${MONTHS[idx]}): ${val} kWh/m²/day`);
+
+            if (x.bandwidth() > 22) {
+              rowG.append('text')
+                .attr('x', cellX + x.bandwidth() / 2)
+                .attr('y', y.bandwidth() / 2 + 3.5)
+                .attr('text-anchor', 'middle')
+                .attr('class', 'text-[9px] font-mono font-bold fill-slate-900 pointer-events-none')
+                .text(val.toFixed(1));
+            }
+          });
+        });
+
+        updateSpotlightCard('ca');
+      }
+
+      function updateSpotlightCard(code) {
+        const state = STATE_SOLAR_DATA.find(s => s.code === code) || STATE_SOLAR_DATA[2];
+        const card = document.getElementById('heatmapSpotlightCard');
+        if (!card) return;
+        card.innerHTML = `
+          <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-200">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-purple-600"></span>
+              <span class="text-sm font-bold text-slate-900 font-sans">${state.name} (${state.code.toUpperCase()})</span>
+              <span class="text-[11px] text-slate-500 font-mono">${state.region}</span>
+            </div>
+            <button onclick="applyStatePreset('${state.code}')" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl transition cursor-pointer">
+              Apply to Sizer →
             </button>
-            <div class="space-y-1">
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                    <span>⚡ 100% Free &amp; No Obligation</span>
-                </div>
-                <h3 class="text-xl font-bold text-white">Compare Top Vetted Solar Installers</h3>
-                <p class="text-xs text-slate-300">
-                    Get customized bids based on your calibrated <span id="modalSystemSize" class="text-amber-400 font-bold">5.6 kW</span> array and local utility tariff.
-                </p>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono pt-1">
+            <div class="bg-white border border-purple-200 p-2.5 rounded-xl">
+              <div class="text-slate-500 text-[10px] uppercase font-semibold">Annual Avg Sun</div>
+              <div class="text-base font-bold text-purple-700">${state.annualAvg} <span class="text-xs font-normal">hrs/day</span></div>
             </div>
-
-            <!-- Live Quote Summary Box -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-2 text-xs font-mono">
-                <div class="flex justify-between text-slate-300">
-                    <span>Estimated Net System Cost:</span>
-                    <span id="modalNetCost" class="text-emerald-400 font-bold">$11,112</span>
-                </div>
-                <div class="flex justify-between text-slate-300">
-                    <span>30% Federal ITC Tax Credit:</span>
-                    <span id="modalTaxCredit" class="text-amber-400 font-bold">-$4,763</span>
-                </div>
-                <div class="flex justify-between text-slate-300 border-t border-slate-800 pt-2">
-                    <span>Projected 25-Yr Net Savings:</span>
-                    <span id="modal25YrSavings" class="text-emerald-400 font-bold">$68,400</span>
-                </div>
+            <div class="bg-white border border-emerald-200 p-2.5 rounded-xl">
+              <div class="text-slate-500 text-[10px] uppercase font-semibold">Avg Electric Tariff</div>
+              <div class="text-base font-bold text-emerald-700">$${state.avgTariff.toFixed(2)}/kWh</div>
             </div>
+            <div class="bg-white border border-indigo-200 p-2.5 rounded-xl">
+              <div class="text-slate-500 text-[10px] uppercase font-semibold">Optimal Tilt</div>
+              <div class="text-base font-bold text-indigo-700">${state.optimalTilt}° South</div>
+            </div>
+            <div class="bg-white border border-rose-200 p-2.5 rounded-xl">
+              <div class="text-slate-500 text-[10px] uppercase font-semibold">Net Metering</div>
+              <div class="text-xs font-bold text-slate-800 truncate">${state.netMetering}</div>
+            </div>
+          </div>
+        `;
+      }
 
-            <form id="quoteForm" class="space-y-4 text-xs font-sans">
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="font-semibold text-slate-300">ZIP Code</label>
-                        <input type="text" id="quoteZip" required placeholder="e.g. 90210" maxlength="5" pattern="[0-9]{5}" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white font-mono focus:outline-none focus:border-amber-500">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="font-semibold text-slate-300">Homeownership</label>
-                        <select id="quoteOwner" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-amber-500">
-                            <option value="owner">Single Family Owner</option>
-                            <option value="townhouse">Townhouse / Condo</option>
-                            <option value="commercial">Commercial Building</option>
-                        </select>
-                    </div>
-                </div>
+      function applyStatePreset(code) {
+        const state = STATE_SOLAR_DATA.find(s => s.code === code);
+        if (!state) return;
+        if (rateInput && rateSlider) { rateInput.value = state.avgTariff; rateSlider.value = state.avgTariff; }
+        if (sunInput && sunSlider) { sunInput.value = state.annualAvg; sunSlider.value = state.annualAvg; }
+        if (stateSelect) { stateSelect.value = state.code; }
+        updateSpotlightCard(state.code);
+        calculate();
+      }
 
-                <div class="space-y-1">
-                    <label class="font-semibold text-slate-300">Full Name</label>
-                    <input type="text" id="quoteName" required placeholder="Your Name" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-amber-500">
-                </div>
+      // 4. BIND INPUTS & SLIDERS
+      function bindSync(input, slider) {
+        if (!input || !slider) return;
+        slider.addEventListener('input', (e) => { input.value = e.target.value; calculate(); });
+        input.addEventListener('input', (e) => { slider.value = e.target.value; calculate(); });
+      }
+      bindSync(billInput, billSlider);
+      bindSync(rateInput, rateSlider);
+      bindSync(sunInput, sunSlider);
 
-                <div class="space-y-1">
-                    <label class="font-semibold text-slate-300">Email Address (for instant quote PDF)</label>
-                    <input type="email" id="quoteEmail" required placeholder="you@example.com" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-amber-500">
-                </div>
+      if (stateSelect) {
+        stateSelect.addEventListener('change', (e) => { applyStatePreset(e.target.value); });
+      }
 
-                <div class="pt-2">
-                    <button type="submit" class="w-full btn-jelly-amber py-3 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-lg shadow-amber-500/20">
-                        Request 3 Verified Installer Bids →
-                    </button>
-                    <p class="text-[10px] text-slate-400 text-center mt-2">
-                        Zero spam. We never sell your personal data. IRC §25D certified estimates.
-                    </p>
-                </div>
-            </form>
+      if (itcToggle) itcToggle.addEventListener('change', calculate);
+      if (batteryToggle) batteryToggle.addEventListener('change', calculate);
 
-            <div id="quoteSuccess" class="hidden text-center py-6 space-y-3">
-                <div class="w-12 h-12 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 rounded-full flex items-center justify-center text-xl mx-auto">
-                    ✓
-                </div>
-                <h4 class="text-lg font-bold text-white">Quote Request Received!</h4>
-                <p class="text-xs text-slate-300 max-w-sm mx-auto">
-                    We've matched your <span class="text-amber-400 font-bold">5.6 kW</span> configuration with top NABCEP-certified installers in your area. Check your email for your detailed breakdown.
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          if (billInput && billSlider) { billInput.value = "250"; billSlider.value = "250"; }
+          if (rateInput && rateSlider) { rateInput.value = "0.34"; rateSlider.value = "0.34"; }
+          if (sunInput && sunSlider) { sunInput.value = "5.5"; sunSlider.value = "5.5"; }
+          if (itcToggle) itcToggle.checked = true;
+          if (batteryToggle) batteryToggle.checked = false;
+          applyStatePreset('ca');
+        });
+      }
+
+      if (copyShareBtn) {
+        copyShareBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(window.location.href);
+          copyShareBtn.innerText = "Link Copied!";
+          setTimeout(() => { copyShareBtn.innerText = "🔗 Share Quote"; }, 2000);
+        });
+      }
+
+      // Model Tabs
+      if (tabStandard) {
+        tabStandard.addEventListener('click', () => {
+          if (batteryToggle) batteryToggle.checked = false;
+          applyStatePreset('ca');
+        });
+      }
+      if (tabNEM) {
+        tabNEM.addEventListener('click', () => {
+          if (batteryToggle) batteryToggle.checked = true;
+          applyStatePreset('ca');
+        });
+      }
+      if (tabOffGrid) {
+        tabOffGrid.addEventListener('click', () => {
+          if (batteryToggle) batteryToggle.checked = true;
+          if (rateInput && rateSlider) { rateInput.value = "0.22"; rateSlider.value = "0.22"; }
+          if (sunInput && sunSlider) { sunInput.value = "4.8"; sunSlider.value = "4.8"; }
+          calculate();
+        });
+      }
+
+      // Sizing Presets
+      document.querySelectorAll('.btn-apply-size').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const bill = e.currentTarget.getAttribute('data-size-bill');
+          if (bill && billInput && billSlider) {
+            billInput.value = bill;
+            billSlider.value = bill;
+            calculate();
+            document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+
+      // State Table Load Buttons
+      document.querySelectorAll('.btn-load-state').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const code = e.currentTarget.getAttribute('data-apply-state');
+          if (code) applyStatePreset(code);
+        });
+      });
+
+      // 5. CHART.JS INITIALIZATION
+      let chartInstance = null;
+      const chartElem = document.getElementById('solarChart');
+      if (chartElem && window.Chart) {
+        chartInstance = new Chart(chartElem, {
+          type: 'line',
+          data: {
+            labels: ['Yr 1', 'Yr 5', 'Yr 10', 'Yr 15', 'Yr 20', 'Yr 25'],
+            datasets: [
+              {
+                label: 'Grid Utility Cost (3% Inflation)',
+                data: [3000, 16000, 35000, 58000, 85000, 118000],
+                borderColor: '#f43f5e',
+                backgroundColor: 'rgba(244, 63, 94, 0.06)',
+                fill: true,
+                tension: 0.35
+              },
+              {
+                label: 'Compounding Solar Net Savings',
+                data: [-12000, -2000, 15000, 34000, 55000, 80000],
+                borderColor: '#7c3aed',
+                backgroundColor: 'rgba(124, 58, 237, 0.10)',
+                fill: true,
+                tension: 0.35
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'top', labels: { color: '#475569', font: { size: 10, weight: 'bold' } } } },
+            scales: {
+              y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', callback: (v) => '$' + (Number(v)/1000) + 'k' } },
+              x: { grid: { display: false }, ticks: { color: '#64748b' } }
+            }
+          }
+        });
+      }
+
+      // 6. MAIN CALCULATION FUNCTION
+      function calculate() {
+        const bill = parseFloat(billInput?.value || "250") || 250;
+        const rate = parseFloat(rateInput?.value || "0.34") || 0.34;
+        const sunHours = parseFloat(sunInput?.value || "5.5") || 5.5;
+        const itcEnabled = itcToggle ? itcToggle.checked : true;
+        const hasBattery = batteryToggle ? batteryToggle.checked : false;
+        const costPerWatt = 2.85;
+
+        // Physics Calculation (NREL PVWatts)
+        const monthlyKwh = bill / rate;
+        const kwNeeded = monthlyKwh / (sunHours * 30 * 0.80);
+        const panelCount = Math.ceil((kwNeeded * 1000) / 400);
+
+        const grossSolarCost = kwNeeded * 1000 * costPerWatt;
+        const batteryCost = hasBattery ? 10000 : 0;
+        const totalGrossCost = grossSolarCost + batteryCost;
+        const itcAmount = itcEnabled ? totalGrossCost * 0.30 : 0;
+        const netOutCost = totalGrossCost - itcAmount;
+
+        const annualSavingsYr1 = bill * 12;
+        const payback = annualSavingsYr1 > 0 ? (netOutCost / annualSavingsYr1) : 0;
+        const currentYear = new Date().getFullYear();
+        const breakevenYear = Math.ceil(currentYear + payback);
+
+        // 25-Yr Projection
+        let cumUtility = 0;
+        let cumSolar = -netOutCost;
+        const chartUtility = [];
+        const chartSolar = [];
+        const milestoneYears = [1, 5, 10, 15, 20, 25];
+
+        for (let yr = 1; yr <= 25; yr++) {
+          const inflatedBill = annualSavingsYr1 * Math.pow(1.03, yr - 1);
+          const degradedProduction = 1 - (yr - 1) * 0.005;
+          cumUtility += inflatedBill;
+          cumSolar += (inflatedBill * degradedProduction);
+          if (milestoneYears.includes(yr)) {
+            chartUtility.push(Math.round(cumUtility));
+            chartSolar.push(Math.round(cumSolar));
+          }
+        }
+
+        // Update DOM
+        if (paybackYears) paybackYears.textContent = payback.toFixed(1);
+        if (paybackYearDate) paybackYearDate.textContent = breakevenYear.toString();
+        if (systemSize) systemSize.textContent = `${kwNeeded.toFixed(1)} kW (~${panelCount} Panels)`;
+        if (netCost) netCost.textContent = '$' + Math.round(netOutCost).toLocaleString();
+        if (taxCreditSavings) taxCreditSavings.textContent = '-$' + Math.round(itcAmount).toLocaleString();
+        if (twentyFiveYearSavings) twentyFiveYearSavings.textContent = '$' + Math.round(cumSolar).toLocaleString();
+        if (formulaKwh) formulaKwh.textContent = Math.round(monthlyKwh).toString();
+        if (formulaSun) formulaSun.textContent = sunHours.toFixed(1);
+        if (formulaKw) formulaKw.textContent = kwNeeded.toFixed(2) + ' kW';
+
+        if (badgeVerdict) {
+          if (payback < 6) {
+            badgeVerdict.textContent = "Fast Payback (< 6 Yrs)";
+            badgeVerdict.className = "px-3.5 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300";
+          } else if (payback <= 9) {
+            badgeVerdict.textContent = "Moderate Payback (6 - 9 Yrs)";
+            badgeVerdict.className = "px-3.5 py-1 text-xs font-bold rounded-full bg-amber-100 text-amber-800 border border-amber-300";
+          } else {
+            badgeVerdict.textContent = "Long Payback (> 9 Yrs)";
+            badgeVerdict.className = "px-3.5 py-1 text-xs font-bold rounded-full bg-slate-100 text-slate-700 border border-slate-300";
+          }
+        }
+
+        if (chartInstance) {
+          chartInstance.data.datasets[0].data = chartUtility;
+          chartInstance.data.datasets[1].data = chartSolar;
+          chartInstance.update();
+        }
+
+        renderMonetization(bill, hasBattery);
+      }
+
+      function renderMonetization(bill, hasBattery) {
+        if (!monetizationContainer) return;
+        if (bill > 150 && !hasBattery) {
+          monetizationContainer.innerHTML = `
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div class="space-y-1">
+                <span class="text-xs font-bold uppercase tracking-wider text-purple-700 font-mono">High Savings Opportunity</span>
+                <h3 class="text-lg sm:text-xl font-bold text-slate-900">Find Vetted Local Solar Installers Near You</h3>
+                <p class="text-xs text-slate-600 max-w-xl">
+                  With a power bill of <strong>$${bill}/mo</strong>, your home qualifies for 30% federal tax credits and $0-down solar financing programs.
                 </p>
-                <button type="button" id="closeQuoteSuccess" class="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer">
-                    Done
+              </div>
+              <button onclick="alert('Connecting with certified local installer network...')" class="btn-age-purple px-6 py-3 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-md whitespace-nowrap">
+                Get 3 Free Custom Quotes →
+              </button>
+            </div>
+          `;
+        } else if (hasBattery) {
+          monetizationContainer.innerHTML = `
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div class="space-y-1">
+                <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 font-mono">Home Battery & Outage Protection</span>
+                <h3 class="text-lg sm:text-xl font-bold text-slate-900">Top-Rated Lithium Home Backup Power Stations</h3>
+                <p class="text-xs text-slate-600 max-w-xl">
+                  Protect your home against grid blackouts and peak evening time-of-use rates with expandable lithium storage.
+                </p>
+              </div>
+              <button onclick="alert('Opening top home battery comparison guide...')" class="btn-age-emerald px-6 py-3 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-md whitespace-nowrap">
+                Compare EcoFlow & Anker Units →
+              </button>
+            </div>
+          `;
+        } else {
+          monetizationContainer.innerHTML = `
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div class="space-y-1">
+                <span class="text-xs font-bold uppercase tracking-wider text-indigo-700 font-mono">2026 Clean Energy Guide</span>
+                <h3 class="text-lg sm:text-xl font-bold text-slate-900">Download Free Regional Solar Incentives & Tax Credit Guide (PDF)</h3>
+                <p class="text-xs text-slate-600 max-w-xl">
+                  Complete guide to state SRECs, utility net metering policies, and Section 25D tax filing requirements.
+                </p>
+              </div>
+              <div class="flex gap-2">
+                <input type="text" placeholder="Enter ZIP Code" class="bg-white border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-800 w-32 focus:outline-none focus:border-purple-500">
+                <button onclick="alert('Downloading 2026 Solar Incentive Guide PDF...')" class="btn-age-purple px-4 py-2 text-white font-bold text-xs rounded-xl cursor-pointer">
+                  Get PDF
                 </button>
+              </div>
             </div>
-        </div>
-    </div>
+          `;
+        }
+      }
 
-    <!-- Modal 2: Battery Comparison Modal -->
-    <div id="batteryModal" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
-        <div class="bg-[#0e1626] border border-slate-700 text-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 space-y-6 shadow-2xl relative max-h-[90vh] overflow-y-auto" id="batteryModalCard">
-            <button type="button" id="closeBatteryModal" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center font-bold transition-colors cursor-pointer">
-                ✕
-            </button>
-            <div class="space-y-1">
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                    <span>🔋 2026 Residential Storage Guide</span>
-                </div>
-                <h3 class="text-xl font-bold text-white">Top Lithium Home Backup Battery Comparison</h3>
-                <p class="text-xs text-slate-300">
-                    Compare capacity, output power, and NEM 3.0 peak rate shaving performance.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                <!-- Tesla Powerwall 3 -->
-                <div class="bg-slate-900/90 border border-amber-500/40 rounded-2xl p-4 space-y-3 relative flex flex-col justify-between">
-                    <div class="space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-white text-sm">Tesla Powerwall 3</span>
-                            <span class="text-[9px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-mono">Popular</span>
-                        </div>
-                        <div class="text-slate-300 text-[11px] space-y-1 font-mono">
-                            <div>• <strong>13.5 kWh</strong> Usable Cap.</div>
-                            <div>• <strong>11.5 kW</strong> Continuous</div>
-                            <div>• Built-in Solar Inverter</div>
-                            <div>• 10-Yr 70% Warranty</div>
-                        </div>
-                    </div>
-                    <div class="pt-3 border-t border-slate-800 space-y-2">
-                        <div class="text-amber-400 font-bold font-mono text-sm">~$9,500 - $11,500</div>
-                        <button type="button" data-battery-select="10000" class="btn-select-battery w-full py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg text-xs transition-colors cursor-pointer">
-                            Select in Sizer
-                        </button>
-                    </div>
-                </div>
-
-                <!-- EcoFlow DELTA Pro Ultra -->
-                <div class="bg-slate-900/90 border border-emerald-500/40 rounded-2xl p-4 space-y-3 relative flex flex-col justify-between">
-                    <div class="space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-white text-sm">EcoFlow DELTA Pro</span>
-                            <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-mono">Expandable</span>
-                        </div>
-                        <div class="text-slate-300 text-[11px] space-y-1 font-mono">
-                            <div>• <strong>6 – 30 kWh</strong> Stackable</div>
-                            <div>• <strong>7.2 kW</strong> 120V/240V Split</div>
-                            <div>• EV &amp; Generator Ready</div>
-                            <div>• LiFePO4 3500+ Cycles</div>
-                        </div>
-                    </div>
-                    <div class="pt-3 border-t border-slate-800 space-y-2">
-                        <div class="text-emerald-400 font-bold font-mono text-sm">~$7,000 - $14,000</div>
-                        <button type="button" data-battery-select="8000" class="btn-select-battery w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-lg text-xs transition-colors cursor-pointer">
-                            Select in Sizer
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Anker SOLIX X1 -->
-                <div class="bg-slate-900/90 border border-cyan-500/40 rounded-2xl p-4 space-y-3 relative flex flex-col justify-between">
-                    <div class="space-y-2">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-white text-sm">Anker SOLIX X1</span>
-                            <span class="text-[9px] bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full font-mono">Modular</span>
-                        </div>
-                        <div class="text-slate-300 text-[11px] space-y-1 font-mono">
-                            <div>• <strong>5 – 30 kWh</strong> Modular</div>
-                            <div>• <strong>6.0 kW</strong> Backup Power</div>
-                            <div>• Microgrid Isolation</div>
-                            <div>• 10-Yr Full Warranty</div>
-                        </div>
-                    </div>
-                    <div class="pt-3 border-t border-slate-800 space-y-2">
-                        <div class="text-cyan-400 font-bold font-mono text-sm">~$6,500 - $13,000</div>
-                        <button type="button" data-battery-select="9000" class="btn-select-battery w-full py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg text-xs transition-colors cursor-pointer">
-                            Select in Sizer
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-xs text-slate-300 space-y-1">
-                <div class="font-bold text-amber-400 flex items-center gap-1.5">
-                    <span>💡 Tax Credit Eligibility:</span>
-                </div>
-                <p>
-                    All home battery systems with 3kWh+ capacity qualify for the <strong>30% Federal Clean Energy Tax Credit (IRC §25D)</strong> even if added to an existing solar array.
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal 3: PDF Proposal Export Center & Customizer -->
-    <div id="pdfModal" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
-        <div class="bg-[#0e1626] border border-slate-700 text-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-5 shadow-2xl relative max-h-[90vh] overflow-y-auto" id="pdfModalCard">
-            <button type="button" id="closePdfModal" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white flex items-center justify-center font-bold transition-colors cursor-pointer">
-                ✕
-            </button>
-            <div class="space-y-1">
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                    <span>📄 2026 Institutional Proposal Engine</span>
-                </div>
-                <h3 class="text-xl font-bold text-white">Residential Solar &amp; Battery Proposal</h3>
-                <p class="text-xs text-slate-300">
-                    Generates an official 2-page engineering proposal with IRC §25D tax schedule, NREL PVWatts v8 yield, and 25-year compounding ROI.
-                </p>
-            </div>
-
-            <!-- Optional Personalization Form -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-3 text-xs">
-                <div class="font-bold text-amber-400 font-mono text-[11px] uppercase tracking-wider">
-                    📝 Proposal Customization (Optional):
-                </div>
-                <div class="space-y-1">
-                    <label class="text-slate-400 text-[11px]">Homeowner / Client Name:</label>
-                    <input type="text" id="pdfClientName" placeholder="e.g. John & Sarah Doe" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs placeholder:text-slate-600 focus:outline-hidden focus:border-amber-400">
-                </div>
-                <div class="space-y-1">
-                    <label class="text-slate-400 text-[11px]">Project Address / Region:</label>
-                    <input type="text" id="pdfProjectAddress" placeholder="e.g. 742 Evergreen Terrace, CA" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs placeholder:text-slate-600 focus:outline-hidden focus:border-amber-400">
-                </div>
-            </div>
-
-            <!-- Live Proposal Specification Badges -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2 text-xs font-mono">
-                <div class="flex items-center justify-between text-slate-400 border-b border-slate-800 pb-1.5">
-                    <span>Target System Size:</span>
-                    <span class="text-white font-bold" id="pdfModalSystemKw">-- kW</span>
-                </div>
-                <div class="flex items-center justify-between text-slate-400 border-b border-slate-800 pb-1.5">
-                    <span>30% Federal ITC (IRC §25D):</span>
-                    <span class="text-amber-400 font-bold" id="pdfModalTaxCredit">-$0</span>
-                </div>
-                <div class="flex items-center justify-between text-slate-400 border-b border-slate-800 pb-1.5">
-                    <span>Net Investment:</span>
-                    <span class="text-cyan-400 font-bold" id="pdfModalNetCost">$0</span>
-                </div>
-                <div class="flex items-center justify-between text-slate-400">
-                    <span>25-Year Compound Savings:</span>
-                    <span class="text-emerald-400 font-bold" id="pdfModal25Yr">$0</span>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="space-y-2.5 pt-1">
-                <button type="button" id="btnDownloadProposalPdf" class="w-full py-3.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2">
-                    <span>📥 Download Official Proposal PDF (.pdf)</span>
-                </button>
-                <div class="flex gap-2">
-                    <button type="button" id="btnPrintProposalPdf" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5">
-                        <span>🖨️ Print Dialog</span>
-                    </button>
-                    <button type="button" id="downloadGuideBtn" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5">
-                        <span>📑 Text Summary</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Download Toast Notification -->
-            <div id="pdfDownloadToast" class="hidden p-3 bg-emerald-500/20 border border-emerald-500/40 rounded-xl text-emerald-300 text-xs font-mono flex items-center gap-2">
-                <span>✓ PDF Proposal successfully generated and downloaded!</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Interactive Calculator Module -->
-    <script type="module" src="/src/calculator.ts"></script>
+      // Initial Call
+      window.addEventListener('DOMContentLoaded', () => {
+        initD3Heatmap();
+        calculate();
+      });
+      if (document.readyState !== 'loading') {
+        initD3Heatmap();
+        calculate();
+      }
+    </script>
 </body>
 </html>
