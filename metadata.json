@@ -1,5 +1,5 @@
 {
-  "name": "SolarROI Pro",
+  "name": "SolarSavingsHQ",
   "description": "SolarSavingsHQ - Residential solar, battery & clean energy payback estimator with 30% Federal ITC Section 25D, California NEM 3.0 modeling, D3-based 12-month solar irradiance intensity heatmap, and 25-year compounding utility savings under NREL PVWatts standards.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
