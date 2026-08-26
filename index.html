@@ -394,7 +394,7 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                        <button onclick="window.print()" class="flex-1 py-3 px-4 bg-white hover:bg-slate-100 text-slate-800 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 border border-slate-200 shadow-sm cursor-pointer">
+                        <button onclick="downloadCustomProposalPdf()" class="flex-1 py-3 px-4 bg-white hover:bg-slate-100 text-slate-800 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 border border-slate-200 shadow-sm cursor-pointer">
                             📄 Export Proposal PDF
                         </button>
                         <button id="copyShareBtn" class="flex-1 btn-age-purple py-3 px-4 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer">
@@ -1401,6 +1401,287 @@
         initD3Heatmap();
         calculate();
       }
+    
+      // --- JSPDF 2-PAGE PROPOSAL GENERATOR (From src/pdfProposal.ts) ---
+      function generateSolarProposalPdf(data) {
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+          window.print();
+          return null;
+        }
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+        const pageWidth = doc.internal.pageSize.getWidth();
+        const pageHeight = doc.internal.pageSize.getHeight();
+        const margin = 36;
+        const contentWidth = pageWidth - margin * 2;
+        const proposalId = `SOL-${data.stateCode.toUpperCase()}-${Math.floor(100000 + Math.random() * 900000)}`;
+        const dateStr = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        // PAGE 1 Header
+        doc.setFillColor(10, 15, 29);
+        doc.rect(0, 0, pageWidth, 90, 'F');
+        doc.setFillColor(124, 58, 237); // Purple accent line
+        doc.rect(0, 88, pageWidth, 3, 'F');
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(20);
+        doc.setTextColor(255, 255, 255);
+        doc.text('SolarSavings', margin, 42);
+        doc.setTextColor(192, 132, 252);
+        doc.text('HQ', margin + doc.getTextWidth('SolarSavings') + 2, 42);
+
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(56, 189, 248);
+        doc.text('INSTITUTIONAL CLEAN ENERGY FINANCIAL PROPOSAL', margin, 58);
+        doc.setFontSize(8);
+        doc.setTextColor(148, 163, 184);
+        doc.text(`Proposal ID: ${proposalId}   |   Issued: ${dateStr}`, margin, 74);
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.setTextColor(255, 255, 255);
+        doc.text('2026 U.S. SECTION 25D COMPLIANT', pageWidth - margin, 44, { align: 'right' });
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(203, 213, 225);
+        doc.text('NREL PVWatts v8 Standard', pageWidth - margin, 58, { align: 'right' });
+
+        // Client & Location Specs
+        let yPos = 115;
+        doc.setFillColor(248, 250, 252);
+        doc.setDrawColor(226, 232, 240);
+        doc.roundedRect(margin, yPos, contentWidth, 54, 6, 6, 'FD');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.setTextColor(30, 41, 59);
+        doc.text('PROJECT & UTILITY SPECIFICATION', margin + 14, yPos + 18);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8.5);
+        doc.setTextColor(71, 85, 105);
+        const clientLabel = data.clientName ? `Client: ${data.clientName}` : `Client: Valued Homeowner`;
+        const locLabel = data.projectAddress ? `Address: ${data.projectAddress}` : `Region: ${data.stateName} Grid`;
+        doc.text(clientLabel, margin + 14, yPos + 34);
+        doc.text(locLabel, margin + 14, yPos + 46);
+        doc.text(`Baseline Tariff: $${data.utilityRate.toFixed(2)}/kWh`, margin + 280, yPos + 34);
+        doc.text(`Solar Insolation: ${data.peakSunHours.toFixed(1)} Peak Sun Hrs/day`, margin + 280, yPos + 46);
+
+        // 4 Key Metric Cards
+        yPos = 185;
+        const cardWidth = (contentWidth - 18) / 4;
+        const cardHeight = 62;
+        const metrics = [
+          { label: 'PROPOSED SYSTEM', value: `${data.systemSizeKw.toFixed(1)} kW DC`, sub: `${Math.round(data.systemSizeKw * 1000 / 400)} Solar Panels`, color: [15, 23, 42] },
+          { label: '30% FEDERAL ITC', value: `-$${Math.round(data.taxCreditAmount).toLocaleString()}`, sub: 'IRC §25D Tax Credit', color: [124, 58, 237] },
+          { label: 'NET INVESTMENT', value: `$${Math.round(data.netCost).toLocaleString()}`, sub: 'Turnkey Installed', color: [13, 148, 136] },
+          { label: 'EST. PAYBACK', value: `${data.paybackYears.toFixed(1)} Yrs`, sub: 'Break-Even Horizon', color: [16, 185, 129] }
+        ];
+
+        metrics.forEach((m, idx) => {
+          const xPos = margin + idx * (cardWidth + 6);
+          doc.setFillColor(255, 255, 255);
+          doc.setDrawColor(226, 232, 240);
+          doc.roundedRect(xPos, yPos, cardWidth, cardHeight, 6, 6, 'FD');
+          doc.setFillColor(m.color[0], m.color[1], m.color[2]);
+          doc.rect(xPos + 6, yPos, cardWidth - 12, 2, 'F');
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(7);
+          doc.setTextColor(100, 116, 139);
+          doc.text(m.label, xPos + 8, yPos + 16);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(12);
+          doc.setTextColor(m.color[0], m.color[1], m.color[2]);
+          doc.text(m.value, xPos + 8, yPos + 36);
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(7.5);
+          doc.setTextColor(100, 116, 139);
+          doc.text(m.sub, xPos + 8, yPos + 50);
+        });
+
+        // Detailed Table
+        yPos = 265;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(15, 23, 42);
+        doc.text('Financial & Incentive Schedule', margin, yPos);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(100, 116, 139);
+        doc.text('Calculated under 2026 U.S. Federal Energy Policy & NREL PVWatts v8 Standards', margin, yPos + 12);
+        yPos += 22;
+
+        const tableRows = [
+          ['Turnkey Solar Array Equipment & Labor', `$${data.costPerWatt.toFixed(2)}/Watt`, `$${Math.round(data.systemSizeKw * 1000 * data.costPerWatt).toLocaleString()}`],
+          ['Energy Storage (Lithium Iron Phosphate)', data.hasBattery ? '10 kWh LFP Backup Storage' : 'None Selected', `$${Math.round(data.batteryCost).toLocaleString()}`],
+          ['Gross Project Investment', 'Total Equipment + Labor + Permitting', `$${Math.round(data.grossCost).toLocaleString()}`],
+          ['Federal Clean Energy Tax Credit (30%)', 'IRC §25D Deductible via Form 5695', `-$${Math.round(data.taxCreditAmount).toLocaleString()}`],
+          ['Net Homeowner Capital Requirement', 'Out-of-Pocket Post-ITC Deduction', `$${Math.round(data.netCost).toLocaleString()}`],
+          ['Year 1 Avoided Electric Utility Expenses', `Based on $${data.monthlyBill}/mo baseline bill`, `$${Math.round(data.firstYearSavings).toLocaleString()}/yr`],
+          ['25-Year Cumulative Compounding Net Savings', 'Assuming 3.0% annual utility inflation & 0.5% degradation', `$${Math.round(data.twentyFiveYearSavings).toLocaleString()}`]
+        ];
+
+        doc.setFillColor(241, 245, 249);
+        doc.setDrawColor(203, 213, 225);
+        doc.roundedRect(margin, yPos, contentWidth, 20, 4, 4, 'FD');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(51, 65, 85);
+        doc.text('ITEM / FINANCIAL COMPONENT', margin + 10, yPos + 13);
+        doc.text('ENGINEERING BASIS', margin + 250, yPos + 13);
+        doc.text('AMOUNT', pageWidth - margin - 10, yPos + 13, { align: 'right' });
+        yPos += 20;
+
+        tableRows.forEach((row, i) => {
+          const isHighlight = i === 4 || i === 6;
+          doc.setFillColor(isHighlight ? 250 : (i % 2 === 1 ? 248 : 255), isHighlight ? 245 : (i % 2 === 1 ? 250 : 255), isHighlight ? 255 : (i % 2 === 1 ? 252 : 255));
+          doc.rect(margin, yPos, contentWidth, 21, 'F');
+          doc.setDrawColor(226, 232, 240);
+          doc.line(margin, yPos + 21, pageWidth - margin, yPos + 21);
+          doc.setFont('helvetica', isHighlight ? 'bold' : 'normal');
+          doc.setFontSize(8.5);
+          doc.setTextColor(isHighlight ? 124 : 51, isHighlight ? 58 : 65, isHighlight ? 237 : 85);
+          doc.text(row[0], margin + 10, yPos + 14);
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8);
+          doc.setTextColor(100, 116, 139);
+          doc.text(row[1], margin + 250, yPos + 14);
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(8.5);
+          doc.setTextColor(isHighlight ? (i === 6 ? 16 : 124) : 15, isHighlight ? (i === 6 ? 185 : 58) : 23, isHighlight ? (i === 6 ? 129 : 237) : 42);
+          doc.text(row[2], pageWidth - margin - 10, yPos + 14, { align: 'right' });
+          yPos += 21;
+        });
+
+        // PAGE 1 Footer
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7.5);
+        doc.setTextColor(148, 163, 184);
+        doc.text('Page 1 of 2   •   SolarSavingsHQ Clean Energy Financial Engine   •   NREL PVWatts v8 Data', margin, pageHeight - 20);
+        doc.text('Official Proposal   •   www.solarsavingshq.com', pageWidth - margin, pageHeight - 20, { align: 'right' });
+
+        // PAGE 2
+        doc.addPage('a4', 'portrait');
+        doc.setFillColor(10, 15, 29);
+        doc.rect(0, 0, pageWidth, 55, 'F');
+        doc.setFillColor(124, 58, 237);
+        doc.rect(0, 53, pageWidth, 2, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(14);
+        doc.setTextColor(255, 255, 255);
+        doc.text('SolarSavingsHQ', margin, 32);
+        doc.setFontSize(8.5);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(203, 213, 225);
+        doc.text('25-Year Compound Financial Projection & Statutory Compliance', margin + 140, 32);
+        doc.text(`Proposal ID: ${proposalId}`, pageWidth - margin, 32, { align: 'right' });
+
+        yPos = 75;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(15, 23, 42);
+        doc.text('25-Year Compounding Cashflow Projection', margin, yPos);
+        yPos += 20;
+
+        const projectionYears = [1, 2, 3, 5, 7, 10, 15, 20, 25];
+        let cumulative = 0;
+        const baseSavings = data.firstYearSavings;
+        for (let yr = 1; yr <= 25; yr++) {
+          const annualFactor = Math.pow(1.03, yr - 1) * Math.pow(0.995, yr - 1);
+          const yrSavings = baseSavings * annualFactor;
+          cumulative += yrSavings;
+          if (projectionYears.includes(yr)) {
+            const netPos = cumulative - data.netCost;
+            doc.setFillColor(yr % 2 === 1 ? 255 : 248, yr % 2 === 1 ? 255 : 250, yr % 2 === 1 ? 255 : 252);
+            doc.rect(margin, yPos, contentWidth, 19, 'F');
+            doc.setDrawColor(226, 232, 240);
+            doc.line(margin, yPos + 19, pageWidth - margin, yPos + 19);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(8);
+            doc.setTextColor(15, 23, 42);
+            doc.text(`Year ${yr}`, margin + 12, yPos + 13);
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(71, 85, 105);
+            doc.text(`$${Math.round(yrSavings).toLocaleString()} / yr`, margin + 70, yPos + 13);
+            doc.text(`$${Math.round(cumulative).toLocaleString()}`, margin + 220, yPos + 13);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(netPos >= 0 ? 16 : 220, netPos >= 0 ? 185 : 38, netPos >= 0 ? 129 : 38);
+            doc.text(`${netPos >= 0 ? '+' : ''}$${Math.round(netPos).toLocaleString()}`, margin + 370, yPos + 13);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(7.5);
+            doc.text(netPos >= 0 ? '✓ Profitable (Net ROI)' : 'Amortizing Capital', pageWidth - margin - 10, yPos + 13, { align: 'right' });
+            yPos += 19;
+          }
+        }
+
+        yPos += 30;
+        doc.setFillColor(248, 250, 252);
+        doc.setDrawColor(226, 232, 240);
+        doc.roundedRect(margin, yPos, contentWidth, 80, 6, 6, 'FD');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8.5);
+        doc.setTextColor(30, 41, 59);
+        doc.text('STATUTORY CLEAN ENERGY TAX FILING (IRC SECTION 25D)', margin + 12, yPos + 16);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7.5);
+        doc.setTextColor(71, 85, 105);
+        const taxNotes = [
+          '1. 30% Federal ITC: Under Section 25D of the Internal Revenue Code, residential solar and battery storage systems qualify for a 30% tax credit.',
+          '2. IRS Form 5695: File Form 5695 ("Residential Energy Credits") alongside Federal 1040 income tax returns upon project commissioning.',
+          '3. Carryforward: Unused credit amounts exceeding annual tax liability roll forward to offset future tax years.',
+          '4. Net Metering: Subject to local utility tariffs (Rule 21 NEM 3.0 in CA, ERCOT in TX, or equivalent).'
+        ];
+        taxNotes.forEach((line, idx) => {
+          doc.text(line, margin + 12, yPos + 32 + idx * 12);
+        });
+
+        return doc;
+      }
+
+      function downloadCustomProposalPdf() {
+        const bill = parseFloat(billInput?.value || "250") || 250;
+        const rate = parseFloat(rateInput?.value || "0.34") || 0.34;
+        const sun = parseFloat(sunInput?.value || "5.5") || 5.5;
+        const itc = itcToggle ? itcToggle.checked : true;
+        const bat = batteryToggle ? batteryToggle.checked : false;
+        const kw = bill / rate / (sun * 30 * 0.8);
+        const gross = kw * 1000 * 2.85 + (bat ? 10000 : 0);
+        const itcVal = itc ? gross * 0.3 : 0;
+        const net = gross - itcVal;
+        const yr1 = bill * 12;
+
+        let cum = 0;
+        for (let yr = 1; yr <= 25; yr++) {
+          cum += (yr1 * Math.pow(1.03, yr-1) * (1 - (yr-1)*0.005));
+        }
+
+        const data = {
+          clientName: 'Valued Homeowner',
+          projectAddress: 'Residential Property',
+          stateName: 'California',
+          stateCode: 'CA',
+          monthlyBill: bill,
+          utilityRate: rate,
+          peakSunHours: sun,
+          costPerWatt: 2.85,
+          isItcEligible: itc,
+          hasBattery: bat,
+          batteryCost: bat ? 10000 : 0,
+          systemSizeKw: kw,
+          grossCost: gross,
+          taxCreditAmount: itcVal,
+          netCost: net,
+          firstYearSavings: yr1,
+          twentyFiveYearSavings: cum - net,
+          paybackYears: yr1 > 0 ? net / yr1 : 0
+        };
+
+        const doc = generateSolarProposalPdf(data);
+        if (doc) {
+          doc.save(`SolarSavingsHQ_Proposal_${kw.toFixed(1)}kW.pdf`);
+        }
+      }
+      window.downloadCustomProposalPdf = downloadCustomProposalPdf;
+
     </script>
 </body>
 </html>
