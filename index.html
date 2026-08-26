@@ -9,7 +9,7 @@
     <link rel="canonical" href="https://solarsavingshq.com/">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     
-    <!-- Open Graph & Social Cards -->
+    <!-- Open Graph Meta -->
     <meta property="og:title" content="SolarSavingsHQ — Residential Solar, Battery &amp; Payback Estimator">
     <meta property="og:description" content="Institutional clean energy financial modeling. Calculate solar kW sizing, 30% Federal Tax Credit (IRC §25D), and battery payback in real time.">
     <meta property="og:type" content="website">
@@ -20,14 +20,14 @@
     <meta name="twitter:title" content="SolarSavingsHQ — 2026 Residential Solar &amp; Battery Estimator">
     <meta name="twitter:description" content="NREL PVWatts v8 residential solar array sizing, Section 25D tax deductions, and battery storage ROI modeling.">
 
-    <!-- Fonts & CDNs for instant, flawless rendering -->
+    <!-- Fonts & CDNs -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Schema.org Unified JSON-LD Graph -->
+    <!-- Schema.org JSON-LD -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -89,7 +89,6 @@
       body { font-family: 'Poppins', sans-serif; }
       .font-mono { font-family: 'JetBrains Mono', monospace; }
       
-      /* Harmonized 4 Archetype Button Styles */
       .btn-age-purple {
         background: rgba(168, 85, 247, 0.15);
         color: #d8b4fe;
@@ -130,7 +129,6 @@
         color: #ffffff;
       }
 
-      /* Custom Range Sliders */
       input[type=range]::-webkit-slider-thumb {
         height: 20px;
         width: 20px;
@@ -144,7 +142,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-amber-400 selection:text-slate-950 flex flex-col justify-between">
 
-    <!-- Top Navigation Header -->
+    <!-- Navigation Header -->
     <header id="main-header" class="border-b border-slate-800/80 bg-slate-900/90 backdrop-blur sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <a href="/" id="brand-logo-link" class="flex items-center space-x-3 group">
@@ -172,7 +170,6 @@
         </div>
     </header>
 
-    <!-- Main Content Container -->
     <main>
         <!-- Hero Section -->
         <section class="py-14 sm:py-16 text-center max-w-4xl mx-auto px-4">
@@ -196,8 +193,7 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                    
-                    <!-- 1. Purple Archetype: Starter Home -->
+                    <!-- Starter Home -->
                     <div id="card-archetype-small" class="relative group rounded-2xl border border-purple-500/30 bg-slate-900/80 p-6 flex flex-col justify-between hover:border-purple-500/70 transition-all duration-200 shadow-lg hover:shadow-purple-500/10">
                         <div>
                             <div class="flex items-center justify-between mb-4">
@@ -217,7 +213,7 @@
                         </button>
                     </div>
 
-                    <!-- 2. Emerald Archetype: Suburban Home -->
+                    <!-- Suburban Home -->
                     <div id="card-archetype-medium" class="relative group rounded-2xl border border-emerald-500/30 bg-slate-900/80 p-6 flex flex-col justify-between hover:border-emerald-500/70 transition-all duration-200 shadow-lg hover:shadow-emerald-500/10">
                         <div>
                             <div class="flex items-center justify-between mb-4">
@@ -237,7 +233,7 @@
                         </button>
                     </div>
 
-                    <!-- 3. Indigo Archetype: Large Family Estate -->
+                    <!-- Large Family Estate -->
                     <div id="card-archetype-large" class="relative group rounded-2xl border border-indigo-500/30 bg-slate-900/80 p-6 flex flex-col justify-between hover:border-indigo-500/70 transition-all duration-200 shadow-lg hover:shadow-indigo-500/10">
                         <div>
                             <div class="flex items-center justify-between mb-4">
@@ -257,7 +253,7 @@
                         </button>
                     </div>
 
-                    <!-- 4. Coral Archetype: High Consumption / Luxury -->
+                    <!-- Luxury / High Demand -->
                     <div id="card-archetype-luxury" class="relative group rounded-2xl border border-rose-500/30 bg-slate-900/80 p-6 flex flex-col justify-between hover:border-rose-500/70 transition-all duration-200 shadow-lg hover:shadow-rose-500/10">
                         <div>
                             <div class="flex items-center justify-between mb-4">
@@ -276,7 +272,6 @@
                             Apply Luxury (18.0 kW)
                         </button>
                     </div>
-
                 </div>
             </div>
         </section>
@@ -292,7 +287,6 @@
                         System &amp; Location Inputs
                     </h2>
                     
-                    <!-- State Selection Dropdown -->
                     <div class="mb-5">
                         <label for="state-select" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">US State / Location</label>
                         <select id="state-select" onchange="updateCalc()" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500">
@@ -315,7 +309,6 @@
                         </select>
                     </div>
 
-                    <!-- Monthly Bill Slider -->
                     <div class="mb-6">
                         <div class="flex justify-between items-center mb-2">
                             <label for="bill-slider" class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Average Monthly Electric Bill</label>
@@ -329,7 +322,6 @@
                         </div>
                     </div>
 
-                    <!-- Options & Toggles -->
                     <div class="space-y-3 pt-4 border-t border-slate-800 text-xs">
                         <label class="flex items-center gap-3 cursor-pointer">
                             <input type="checkbox" id="itc-check" checked onchange="updateCalc()" class="w-4 h-4 accent-amber-500 rounded">
@@ -342,12 +334,9 @@
                     </div>
                 </div>
 
-                <!-- Right 7-Column Calculated Results & Financial Dashboard -->
+                <!-- Right 7-Column Calculated Results Dashboard -->
                 <div class="lg:col-span-7 space-y-6">
-                    
-                    <!-- 3 KPI Metric Cards -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <!-- 25-Year Savings Card -->
                         <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
                             <div class="absolute -right-4 -bottom-4 w-20 h-20 bg-amber-500/10 rounded-full blur-xl"></div>
                             <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">25-Yr Net Savings</span>
@@ -355,14 +344,12 @@
                             <span class="text-[11px] text-emerald-400 mt-1 block">After 30% Federal Tax Credit</span>
                         </div>
 
-                        <!-- System Size Card -->
                         <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-lg">
                             <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Recommended System</span>
                             <div id="stat-kw" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">8.4 kW</div>
                             <span id="stat-panels" class="text-[11px] text-slate-400 mt-1 block">~21 Solar Panels</span>
                         </div>
 
-                        <!-- Payback Card -->
                         <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-lg">
                             <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Payback Period</span>
                             <div id="stat-payback" class="text-2xl sm:text-3xl font-extrabold text-emerald-400 tracking-tight">6.2 Years</div>
@@ -370,7 +357,6 @@
                         </div>
                     </div>
 
-                    <!-- Turnkey Financial Breakdown -->
                     <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
                         <h3 class="text-lg font-bold text-white mb-4">Investment &amp; Incentive Breakdown</h3>
                         <div class="space-y-3 text-sm">
@@ -393,7 +379,7 @@
                         </div>
                     </div>
 
-                    <!-- Live 25-Year Cumulative Savings Chart -->
+                    <!-- Live Chart -->
                     <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
                         <h3 class="text-lg font-bold text-white mb-2">25-Year Compounding Cash Flow Curve</h3>
                         <p class="text-xs text-slate-400 mb-4">Comparing rising utility bills (assuming 3.5% historical escalation) vs. solar system investment.</p>
@@ -401,13 +387,12 @@
                             <canvas id="roiChart"></canvas>
                         </div>
                     </div>
-
                 </div>
 
             </div>
         </section>
 
-        <!-- 50-State Utility Averages Reference Table -->
+        <!-- 50-State Benchmark Table -->
         <section id="state-averages" class="py-12 border-t border-slate-800/80 bg-slate-900/20">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center max-w-3xl mx-auto mb-8">
@@ -460,7 +445,7 @@
             </div>
         </section>
 
-        <!-- Comprehensive FAQ Section -->
+        <!-- FAQ Section -->
         <section id="faq" class="py-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-2xl font-bold text-white text-center mb-8">Frequently Asked Questions</h2>
             <div class="space-y-4 text-sm">
@@ -476,7 +461,7 @@
         </section>
     </main>
 
-    <!-- Standardized Compliance Footer -->
+    <!-- Footer -->
     <footer class="border-t border-slate-800 bg-slate-950 py-10 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
@@ -496,7 +481,7 @@
         </div>
     </footer>
 
-    <!-- Interactive Logic & Chart.js Engine -->
+    <!-- Interactive Logic Script -->
     <script>
         let chartInstance = null;
 
@@ -522,27 +507,23 @@
             const hasItc = document.getElementById('itc-check').checked;
             const hasBattery = document.getElementById('battery-check').checked;
 
-            // Solar sizing calculations
             const monthlyKwh = bill / rate;
             const kw = Math.max(3.0, parseFloat((monthlyKwh / (sunHours * 30 * 0.80)).toFixed(1)));
             const panels = Math.ceil((kw * 1000) / 400);
             const roofSqFt = panels * 17.5;
 
-            // Financial breakdown
             let grossCost = kw * 1000 * 2.80;
             if (hasBattery) grossCost += 11500;
 
             const itcAmount = hasItc ? (grossCost * 0.30) : 0;
             const netCost = grossCost - itcAmount;
 
-            // 25-Year compounding savings (with 3.5% annual utility escalation)
             const annualBill = bill * 12;
             const year25UtilityCost = annualBill * ((Math.pow(1.035, 25) - 1) / 0.035);
             const netSavings25 = Math.max(0, Math.round(year25UtilityCost - netCost));
 
             const paybackYears = Math.min(25, (netCost / annualBill)).toFixed(1);
 
-            // Update DOM Elements
             document.getElementById('stat-savings').innerText = '$' + netSavings25.toLocaleString();
             document.getElementById('stat-kw').innerText = kw + ' kW';
             document.getElementById('stat-panels').innerText = '~' + panels + ' High-Efficiency Panels';
@@ -553,7 +534,6 @@
             document.getElementById('res-net').innerText = '$' + Math.round(netCost).toLocaleString();
             document.getElementById('res-roof').innerText = '~' + Math.round(roofSqFt) + ' sq ft';
 
-            // Update Cash Flow Chart
             renderChart(annualBill, netCost);
         }
 
@@ -575,9 +555,9 @@
                     solarCumulativeCost.push(Math.round(netCost));
                 } else {
                     runningUtility += currentAnnual;
-                    currentAnnual *= 1.035; // 3.5% inflation
+                    currentAnnual *= 1.035;
                     utilityWithoutSolar.push(Math.round(runningUtility));
-                    solarCumulativeCost.push(Math.round(netCost)); // locked solar cost
+                    solarCumulativeCost.push(Math.round(netCost));
                 }
             }
 
@@ -628,7 +608,6 @@
             });
         }
 
-        // Initialize on load
         window.addEventListener('DOMContentLoaded', updateCalc);
     </script>
 </body>
