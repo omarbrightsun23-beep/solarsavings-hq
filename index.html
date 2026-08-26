@@ -263,10 +263,11 @@
                         <option value="tx">Texas (ERCOT • $0.15/kWh • 5.2 Peak Sun Hrs)</option>
                         <option value="co">Colorado (Xcel • $0.15/kWh • 5.0 Peak Sun Hrs)</option>
                         <option value="nc">North Carolina (Duke • $0.14/kWh • 4.8 Peak Sun Hrs)</option>
-                        <option value="nj">New Jersey (PSE&amp;G • $0.19/kWh • 4.4 Peak Sun Hrs)</option>
+                        <option value="nj">New Jersey (PSE&G • $0.19/kWh • 4.4 Peak Sun Hrs)</option>
                         <option value="ny">New York (ConEd • $0.24/kWh • 4.2 Peak Sun Hrs)</option>
                         <option value="ma">Massachusetts (SMART • $0.29/kWh • 4.1 Peak Sun Hrs)</option>
                         <option value="wa">Washington (PSE • $0.11/kWh • 3.8 Peak Sun Hrs)</option>
+                        <option value="custom">Custom Configuration</option>
                     </select>
                 </div>
 
@@ -532,45 +533,148 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 font-mono" id="stateTableBody">
-                        <tr data-state="az" class="state-benchmark-row hover:bg-purple-50 transition cursor-pointer">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans">Arizona (APS / SRP / TEP)</td>
-                            <td class="px-5 py-4 text-slate-700">$0.14/kWh</td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">6.2 hrs/day</td>
-                            <td class="px-5 py-4 text-emerald-600 font-bold">6.8 - 8.1 Yrs</td>
-                            <td class="px-5 py-4 font-sans text-slate-600">Resource Comparison Proxy (RCP)</td>
-                            <td class="px-5 py-4 text-right"><button type="button" data-apply-state="az" class="btn-load-state px-3 py-1.5 bg-purple-100 hover:bg-purple-600 text-purple-900 hover:text-white font-bold text-xs rounded-lg transition cursor-pointer">Load AZ</button></td>
+                        <tr data-state="az" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                                Arizona (APS / SRP / TEP)
+                            </td>
+                            <td class="px-5 py-4 text-slate-700 font-mono">$0.14/kWh</td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">6.2 hrs/day</td>
+                            <td class="px-5 py-4 text-emerald-600 font-bold font-mono">6.8 - 8.1 Yrs</td>
+                            <td class="px-5 py-4 font-sans text-slate-600 text-xs">Resource Comparison Proxy (RCP)</td>
+                            <td class="px-5 py-4 text-right">
+                                <button type="button" data-apply-state="az" class="btn-load-state px-3 py-1.5 bg-purple-100 hover:bg-purple-600 text-purple-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">Load AZ</button>
+                            </td>
                         </tr>
-                        <tr data-state="ca" class="state-benchmark-row hover:bg-purple-50 transition cursor-pointer bg-purple-50/40">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans">California (PG&amp;E / SCE / SDG&amp;E)</td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">$0.34/kWh</td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">5.5 hrs/day</td>
-                            <td class="px-5 py-4 text-emerald-600 font-bold">5.2 - 6.8 Yrs</td>
-                            <td class="px-5 py-4 font-sans text-slate-600">NEM 3.0 (Battery Recommended)</td>
-                            <td class="px-5 py-4 text-right"><button type="button" data-apply-state="ca" class="btn-load-state px-3 py-1.5 bg-purple-600 text-white font-bold text-xs rounded-lg transition cursor-pointer hover:bg-purple-700">Load CA</button></td>
+                        <tr data-state="nv" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+                                Nevada (NV Energy)
+                            </td>
+                            <td class="px-5 py-4 text-slate-700 font-mono">$0.16/kWh</td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">5.9 hrs/day</td>
+                            <td class="px-5 py-4 text-emerald-600 font-bold font-mono">6.4 - 7.6 Yrs</td>
+                            <td class="px-5 py-4 font-sans text-slate-600 text-xs">Tiered Net Metering (75% - 95%)</td>
+                            <td class="px-5 py-4 text-right">
+                                <button type="button" data-apply-state="nv" class="btn-load-state px-3 py-1.5 bg-indigo-100 hover:bg-indigo-600 text-indigo-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">Load NV</button>
+                            </td>
                         </tr>
-                        <tr data-state="fl" class="state-benchmark-row hover:bg-purple-50 transition cursor-pointer">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans">Florida (FPL / Duke Florida)</td>
-                            <td class="px-5 py-4 text-slate-700">$0.16/kWh</td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">5.4 hrs/day</td>
-                            <td class="px-5 py-4 text-emerald-600 font-bold">6.5 - 7.9 Yrs</td>
-                            <td class="px-5 py-4 font-sans text-slate-600">1:1 Net Metering Protected</td>
-                            <td class="px-5 py-4 text-right"><button type="button" data-apply-state="fl" class="btn-load-state px-3 py-1.5 bg-emerald-100 hover:bg-emerald-600 text-emerald-900 hover:text-white font-bold text-xs rounded-lg transition cursor-pointer">Load FL</button></td>
+                        <tr data-state="ca" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group bg-purple-50/40">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-purple-600"></span>
+                                California (PG&amp;E / SCE / SDG&amp;E)
+                            </td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">$0.34/kWh</td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">5.5 hrs/day</td>
+                            <td class="px-5 py-4 text-emerald-600 font-bold font-mono">5.2 - 6.8 Yrs</td>
+                            <td class="px-5 py-4 font-sans text-slate-600 text-xs">NEM 3.0 (Battery Storage Recommended)</td>
+                            <td class="px-5 py-4 text-right">
+                                <button type="button" data-apply-state="ca" class="btn-load-state px-3 py-1.5 bg-purple-600 text-white font-bold text-xs rounded-lg transition-all cursor-pointer hover:bg-purple-700">Load CA</button>
+                            </td>
                         </tr>
-                        <tr data-state="tx" class="state-benchmark-row hover:bg-purple-50 transition cursor-pointer">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans">Texas (ERCOT / Oncor / CenterPoint)</td>
-                            <td class="px-5 py-4 text-slate-700">$0.15/kWh</td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">5.2 hrs/day</td>
-                            <td class="px-5 py-4 text-emerald-600 font-bold">7.2 - 8.8 Yrs</td>
-                            <td class="px-5 py-4 font-sans text-slate-600">Competitive Retail Buyback Plans</td>
-                            <td class="px-5 py-4 text-right"><button type="button" data-apply-state="tx" class="btn-load-state px-3 py-1.5 bg-emerald-100 hover:bg-emerald-600 text-emerald-900 hover:text-white font-bold text-xs rounded-lg transition cursor-pointer">Load TX</button></td>
+                        <tr data-state="fl" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                Florida (FPL / Duke Florida)
+                            </td>
+                            <td class="px-5 py-4 text-slate-700 font-mono">$0.16/kWh</td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">5.4 hrs/day</td>
+                            <td class="px-5 py-4 text-emerald-600 font-bold font-mono">6.5 - 7.9 Yrs</td>
+                            <td class="px-5 py-4 font-sans text-slate-600 text-xs">1:1 Net Metering Statutorily Protected</td>
+                            <td class="px-5 py-4 text-right">
+                                <button type="button" data-apply-state="fl" class="btn-load-state px-3 py-1.5 bg-emerald-100 hover:bg-emerald-600 text-emerald-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">Load FL</button>
+                            </td>
                         </tr>
-                        <tr data-state="ny" class="state-benchmark-row hover:bg-purple-50 transition cursor-pointer">
-                            <td class="px-5 py-4 font-bold text-slate-900 font-sans">New York (ConEd / NYSERDA)</td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">$0.24/kWh</td>
-                            <td class="px-5 py-4 text-purple-700 font-bold">4.2 hrs/day</td>
-                            <td class="px-5 py-4 text-emerald-600 font-bold">5.8 - 7.2 Yrs</td>
-                            <td class="px-5 py-4 font-sans text-slate-600">NY-Sun Rebates + 25% State Credit</td>
-                            <td class="px-5 py-4 text-right"><button type="button" data-apply-state="ny" class="btn-load-state px-3 py-1.5 bg-cyan-100 hover:bg-cyan-600 text-cyan-900 hover:text-white font-bold text-xs rounded-lg transition cursor-pointer">Load NY</button></td>
+                        <tr data-state="tx" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                Texas (ERCOT / Oncor / CenterPoint)
+                            </td>
+                            <td class="px-5 py-4 text-slate-700 font-mono">$0.15/kWh</td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">5.2 hrs/day</td>
+                            <td class="px-5 py-4 text-emerald-600 font-bold font-mono">7.2 - 8.8 Yrs</td>
+                            <td class="px-5 py-4 font-sans text-slate-600 text-xs">Competitive Retail Buyback Plans</td>
+                            <td class="px-5 py-4 text-right">
+                                <button type="button" data-apply-state="tx" class="btn-load-state px-3 py-1.5 bg-emerald-100 hover:bg-emerald-600 text-emerald-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">Load TX</button>
+                            </td>
+                        </tr>
+                        <tr data-state="co" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                                Colorado (Xcel Energy)
+                            </td>
+                            <td class="px-5 py-4 text-slate-700 font-mono">$0.15/kWh</td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">5.0 hrs/day</td>
+                            <td class="px-5 py-4 text-emerald-600 font-bold font-mono">6.9 - 8.3 Yrs</td>
+                            <td class="px-5 py-4 font-sans text-slate-600 text-xs">1:1 Net Metering + Solar Rewards</td>
+                            <td class="px-5 py-4 text-right">
+                                <button type="button" data-apply-state="co" class="btn-load-state px-3 py-1.5 bg-blue-100 hover:bg-blue-600 text-blue-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">Load CO</button>
+                            </td>
+                        </tr>
+                        <tr data-state="nc" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+                                North Carolina (Duke Carolinas)
+                            </td>
+                            <td class="px-5 py-4 text-slate-700 font-mono">$0.14/kWh</td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">4.8 hrs/day</td>
+                            <td class="px-5 py-4 text-emerald-600 font-bold font-mono">7.4 - 8.9 Yrs</td>
+                            <td class="px-5 py-4 font-sans text-slate-600 text-xs">Bridge Tariff / TOU Net Metering</td>
+                            <td class="px-5 py-4 text-right">
+                                <button type="button" data-apply-state="nc" class="btn-load-state px-3 py-1.5 bg-emerald-100 hover:bg-emerald-600 text-emerald-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">Load NC</button>
+                            </td>
+                        </tr>
+                        <tr data-state="nj" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+                                New Jersey (PSE&amp;G / JCP&amp;L)
+                            </td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">$0.19/kWh</td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">4.4 hrs/day</td>
+                            <td class="px-5 py-4 text-emerald-600 font-bold font-mono">5.6 - 7.1 Yrs</td>
+                            <td class="px-5 py-4 font-sans text-slate-600 text-xs">1:1 Net Metering + SuSI SREC-II</td>
+                            <td class="px-5 py-4 text-right">
+                                <button type="button" data-apply-state="nj" class="btn-load-state px-3 py-1.5 bg-indigo-100 hover:bg-indigo-600 text-indigo-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">Load NJ</button>
+                            </td>
+                        </tr>
+                        <tr data-state="ny" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-cyan-500"></span>
+                                New York (ConEd / NYSERDA)
+                            </td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">$0.24/kWh</td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">4.2 hrs/day</td>
+                            <td class="px-5 py-4 text-emerald-600 font-bold font-mono">5.8 - 7.2 Yrs</td>
+                            <td class="px-5 py-4 font-sans text-slate-600 text-xs">NY-Sun Rebates + 25% State Credit</td>
+                            <td class="px-5 py-4 text-right">
+                                <button type="button" data-apply-state="ny" class="btn-load-state px-3 py-1.5 bg-cyan-100 hover:bg-cyan-600 text-cyan-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">Load NY</button>
+                            </td>
+                        </tr>
+                        <tr data-state="ma" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
+                                Massachusetts (Eversource / Grid)
+                            </td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">$0.29/kWh</td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">4.1 hrs/day</td>
+                            <td class="px-5 py-4 text-emerald-600 font-bold font-mono">4.9 - 6.3 Yrs</td>
+                            <td class="px-5 py-4 font-sans text-slate-600 text-xs">SMART Solar Incentive + VNM</td>
+                            <td class="px-5 py-4 text-right">
+                                <button type="button" data-apply-state="ma" class="btn-load-state px-3 py-1.5 bg-teal-100 hover:bg-teal-600 text-teal-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">Load MA</button>
+                            </td>
+                        </tr>
+                        <tr data-state="wa" class="state-benchmark-row hover:bg-purple-50/60 transition-all cursor-pointer group">
+                            <td class="px-5 py-4 font-bold text-slate-900 font-sans flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
+                                Washington (PSE / Seattle City)
+                            </td>
+                            <td class="px-5 py-4 text-slate-700 font-mono">$0.11/kWh</td>
+                            <td class="px-5 py-4 text-purple-700 font-bold font-mono">3.8 hrs/day</td>
+                            <td class="px-5 py-4 text-emerald-600 font-bold font-mono">9.5 - 12.0 Yrs</td>
+                            <td class="px-5 py-4 font-sans text-slate-600 text-xs">1:1 Net Metering (Low Base Hydro Rates)</td>
+                            <td class="px-5 py-4 text-right">
+                                <button type="button" data-apply-state="wa" class="btn-load-state px-3 py-1.5 bg-slate-100 hover:bg-slate-700 text-slate-900 hover:text-white font-bold text-xs rounded-lg transition-all cursor-pointer">Load WA</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -1103,3 +1207,4 @@
     </script>
 </body>
 </html>
+
