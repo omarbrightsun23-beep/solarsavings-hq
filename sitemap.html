@@ -1,289 +1,39 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script>
-        (function() {
-            try {
-                var nativeFetch = window.fetch;
-                if (typeof nativeFetch === 'function') {
-                    var targets = [Window.prototype, window];
-                    for (var i = 0; i < targets.length; i++) {
-                        try {
-                            var t = targets[i];
-                            if (!t) continue;
-                            var d = Object.getOwnPropertyDescriptor(t, 'fetch');
-                            if (d && d.configurable !== false) {
-                                Object.defineProperty(t, 'fetch', {
-                                    get: function() { return nativeFetch; },
-                                    set: function(v) { nativeFetch = v; },
-                                    configurable: true,
-                                    enumerable: true
-                                });
-                            }
-                        } catch (err) {}
-                    }
-                }
-            } catch (e) {}
-            window.addEventListener('error', function(event) {
-                if (event && event.message && event.message.indexOf('Cannot set property fetch') !== -1) {
-                    event.preventDefault();
-                    event.stopImmediatePropagation();
-                }
-            }, true);
-        })();
-    </script>
-    <title>HTML Sitemap &amp; Directory | SolarSavingsHQ</title>
-    <meta name="description" content="HTML Sitemap for SolarSavingsHQ. Complete index of all solar payback calculators, battery sizing tools, state benchmark models, and legal documentation.">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
-    <link rel="canonical" href="https://solarsavingshq.com/sitemap.html">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-
-    <!-- Open Graph Meta -->
-    <meta property="og:title" content="HTML Sitemap &amp; Directory | SolarSavingsHQ">
-    <meta property="og:description" content="Complete directory index of all SolarSavingsHQ calculation tools and compliance pages.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://solarsavingshq.com/sitemap.html">
-    <meta property="og:site_name" content="SolarSavingsHQ">
-
-    <!-- Google Fonts: Poppins & JetBrains Mono -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS CDN & Fallback for instant live deployment -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Poppins', 'sans-serif'],
-              mono: ['JetBrains Mono', 'monospace'],
-            }
-          }
-        }
-      }
-    </script>
-
-    <link rel="stylesheet" href="/src/index.css">
-
-    <style>
-      body {
-        font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      }
-      .bg-age-canvas {
-        background: 
-          radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.06) 0%, transparent 40%),
-          radial-gradient(circle at 88% 22%, rgba(79, 70, 229, 0.05) 0%, transparent 42%),
-          radial-gradient(circle at 50% 60%, rgba(244, 63, 94, 0.03) 0%, transparent 50%),
-          linear-gradient(180deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
-        background-attachment: fixed;
-      }
-      .age-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 1.5rem;
-        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
-      }
-    </style>
-
-    <!-- Structured Data Breadcrumbs -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "WebPage",
-          "@id": "https://solarsavingshq.com/sitemap.html",
-          "url": "https://solarsavingshq.com/sitemap.html",
-          "name": "HTML Sitemap & Directory | SolarSavingsHQ",
-          "description": "Complete navigational directory index for SolarSavingsHQ."
-        },
-        {
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://solarsavingshq.com/" },
-            { "@type": "ListItem", "position": 2, "name": "Sitemap", "item": "https://solarsavingshq.com/sitemap.html" }
-          ]
-        }
-      ]
-    }
-    </script>
-</head>
-<body class="bg-age-canvas text-slate-800 min-h-screen font-sans antialiased selection:bg-purple-600 selection:text-white flex flex-col justify-between">
-    
-    <!-- Dark Navigation Header -->
-    <header class="border-b border-slate-800 bg-[#090d16]/95 backdrop-blur-md text-white sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="/" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 rounded-xl bg-[#0e1424] border border-slate-700/80 p-1 flex items-center justify-center shadow-lg shadow-purple-500/10 group-hover:scale-105 group-hover:border-purple-500/50 transition-all shrink-0">
-                    <svg viewBox="0 0 200 200" fill="none" class="w-full h-full">
-                        <circle cx="100" cy="100" r="82" stroke="#475569" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.8" />
-                        <path d="M 58 92 C 58 46, 142 46, 142 92" stroke="#8b5cf6" stroke-width="15" stroke-linecap="round" />
-                        <path d="M 58 108 C 58 154, 142 154, 142 108" stroke="#10b981" stroke-width="15" stroke-linecap="round" />
-                        <path d="M 96 68 L 118 102 L 95 115 L 112 144" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </div>
-                <div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="font-bold text-lg text-white tracking-tight group-hover:text-purple-400 transition-colors">SolarSavings<span class="text-purple-400 font-extrabold">HQ</span></span>
-                    </div>
-                    <span class="hidden sm:inline-block text-[10px] text-purple-300 font-mono tracking-wider uppercase font-semibold">Power &amp; ROI Estimator</span>
-                </div>
-            </a>
-            <nav class="flex items-center gap-6 text-sm text-slate-300 font-medium">
-                <a href="/" class="hover:text-purple-400 hover:translate-y-[-1px] transition-all">Home</a>
-                <a href="/sitemap.html" class="text-purple-400 font-semibold hover:text-purple-300 transition-all">Sitemap</a>
-                <a href="/contact-us.html" class="hover:text-purple-400 hover:translate-y-[-1px] transition-all">Contact</a>
-            </nav>
-        </div>
-    </header>
-
-    <!-- Header Hero -->
-    <section class="relative overflow-hidden bg-gradient-to-b from-[#090d16] via-[#111827] to-[#1e1b4b] text-white border-b border-slate-700/80 py-12 px-4 sm:px-6 lg:px-8 text-center shadow-lg">
-        <div class="max-w-3xl mx-auto space-y-3 relative z-10">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30 shadow-sm">
-                <span>🗺️ Full Directory Index</span>
-            </div>
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">HTML Directory Sitemap</h1>
-            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
-                Direct navigational links to all calculation tools, regional benchmark tables, methodology guides, and legal policies.
-            </p>
-        </div>
-    </section>
-
-    <!-- Main Content -->
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 flex-1 w-full text-slate-700 text-sm leading-relaxed">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Calculators & Tools -->
-            <div class="age-card rounded-3xl p-6 space-y-4">
-                <div class="flex items-center gap-2.5 pb-2 border-b border-slate-200">
-                    <span class="w-3 h-3 rounded-full bg-purple-600"></span>
-                    <h2 class="text-base font-bold text-slate-900">Interactive Clean Energy Tools</h2>
-                </div>
-                <ul class="space-y-2 text-xs sm:text-sm">
-                    <li><a href="/#calculator" class="text-purple-600 font-semibold hover:underline flex items-center gap-1.5">⚡ Residential Solar &amp; Battery Payback Calculator</a></li>
-                    <li><a href="/#tabStandard" class="text-slate-600 hover:text-purple-600 hover:underline flex items-center gap-1.5">☀️ Standard Grid-Tied Solar Payback Mode</a></li>
-                    <li><a href="/#tabNEM" class="text-slate-600 hover:text-purple-600 hover:underline flex items-center gap-1.5">🔋 California NEM 3.0 + Battery Storage Arbitrage Mode</a></li>
-                    <li><a href="/#tabOffGrid" class="text-slate-600 hover:text-purple-600 hover:underline flex items-center gap-1.5">🏕️ Off-Grid 100% Autonomous Storage Mode</a></li>
-                    <li><a href="/#sizing" class="text-slate-600 hover:text-purple-600 hover:underline flex items-center gap-1.5">📐 Home Sizing S-Curve Archetypes (1.5k–3k sq ft)</a></li>
-                </ul>
-            </div>
-
-            <!-- Regional Benchmarks & Data -->
-            <div class="age-card rounded-3xl p-6 space-y-4">
-                <div class="flex items-center gap-2.5 pb-2 border-b border-slate-200">
-                    <span class="w-3 h-3 rounded-full bg-emerald-600"></span>
-                    <h2 class="text-base font-bold text-slate-900">Regional Data &amp; Benchmarks</h2>
-                </div>
-                <ul class="space-y-2 text-xs sm:text-sm">
-                    <li><a href="/#benchmarks" class="text-purple-600 font-semibold hover:underline flex items-center gap-1.5">📊 50-State Solar Production &amp; Tariff Benchmark Table</a></li>
-                    <li><a href="/#heatmap" class="text-slate-600 hover:text-purple-600 hover:underline flex items-center gap-1.5">🗺️ Interactive U.S. Irradiance D3 Heatmap</a></li>
-                    <li><a href="/#methodology" class="text-slate-600 hover:text-purple-600 hover:underline flex items-center gap-1.5">📐 NREL PVWatts v8 Physics &amp; Formulas Guide</a></li>
-                    <li><a href="/#faq" class="text-slate-600 hover:text-purple-600 hover:underline flex items-center gap-1.5">❓ Residential Solar &amp; ITC FAQs</a></li>
-                </ul>
-            </div>
-
-            <!-- State-Wise Solar Calculators Directory -->
-            <div class="age-card rounded-3xl p-6 space-y-4 md:col-span-2">
-                <div class="flex items-center gap-2.5 pb-2 border-b border-slate-200">
-                    <span class="w-3 h-3 rounded-full bg-indigo-600"></span>
-                    <h2 class="text-base font-bold text-slate-900">State-Wise Solar &amp; Net Metering Calculators</h2>
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 text-xs sm:text-sm">
-                    <div><a href="/?state=ca#calculator" class="text-slate-600 hover:text-purple-600 hover:underline font-medium">☀️ California (NEM 3.0)</a></div>
-                    <div><a href="/?state=tx#calculator" class="text-slate-600 hover:text-purple-600 hover:underline font-medium">☀️ Texas (ERCOT Buyback)</a></div>
-                    <div><a href="/?state=fl#calculator" class="text-slate-600 hover:text-purple-600 hover:underline font-medium">☀️ Florida (FPL / Duke)</a></div>
-                    <div><a href="/?state=az#calculator" class="text-slate-600 hover:text-purple-600 hover:underline font-medium">☀️ Arizona (APS / SRP)</a></div>
-                    <div><a href="/?state=ny#calculator" class="text-slate-600 hover:text-purple-600 hover:underline font-medium">☀️ New York (NY-Sun)</a></div>
-                    <div><a href="/?state=nj#calculator" class="text-slate-600 hover:text-purple-600 hover:underline font-medium">☀️ New Jersey (SuSI SREC)</a></div>
-                    <div><a href="/?state=ma#calculator" class="text-slate-600 hover:text-purple-600 hover:underline font-medium">☀️ Massachusetts (SMART)</a></div>
-                    <div><a href="/?state=co#calculator" class="text-slate-600 hover:text-purple-600 hover:underline font-medium">☀️ Colorado (Xcel Energy)</a></div>
-                    <div><a href="/?state=nv#calculator" class="text-slate-600 hover:text-purple-600 hover:underline font-medium">☀️ Nevada (NV Energy)</a></div>
-                    <div><a href="/?state=nc#calculator" class="text-slate-600 hover:text-purple-600 hover:underline font-medium">☀️ North Carolina (Duke)</a></div>
-                    <div><a href="/?state=wa#calculator" class="text-slate-600 hover:text-purple-600 hover:underline font-medium">☀️ Washington (PSE Hydro)</a></div>
-                    <div><a href="/#benchmarks" class="text-purple-600 hover:underline font-bold">📊 All 50 States Index →</a></div>
-                </div>
-            </div>
-
-            <!-- Compliance & Governance -->
-            <div class="age-card rounded-3xl p-6 space-y-4 md:col-span-2">
-                <div class="flex items-center gap-2.5 pb-2 border-b border-slate-200">
-                    <span class="w-3 h-3 rounded-full bg-slate-600"></span>
-                    <h2 class="text-base font-bold text-slate-900">Governance &amp; Contact</h2>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm">
-                    <div><a href="/privacy-policy.html" class="text-slate-600 hover:text-purple-600 hover:underline">🔒 Privacy Policy (GDPR &amp; CCPA)</a></div>
-                    <div><a href="/terms-of-service.html" class="text-slate-600 hover:text-purple-600 hover:underline">📜 Terms of Service</a></div>
-                    <div><a href="/disclaimer.html" class="text-slate-600 hover:text-purple-600 hover:underline">⚖️ Financial &amp; Engineering Disclaimer</a></div>
-                    <div><a href="/contact-us.html" class="text-slate-600 hover:text-purple-600 hover:underline">✉️ Contact &amp; Advisory Support</a></div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="border-t border-slate-800 bg-[#060a12] text-slate-400 pt-12 pb-8 text-xs mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="space-y-3 md:col-span-2">
-                    <a href="/" class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-xl bg-[#090d16] border border-slate-700 p-1 flex items-center justify-center shrink-0">
-                            <svg viewBox="0 0 200 200" fill="none" class="w-full h-full">
-                                <circle cx="100" cy="100" r="82" stroke="#475569" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.8" />
-                                <path d="M 58 92 C 58 46, 142 46, 142 92" stroke="#8b5cf6" stroke-width="15" stroke-linecap="round" />
-                                <path d="M 58 108 C 58 154, 142 154, 142 108" stroke="#10b981" stroke-width="15" stroke-linecap="round" />
-                                <path d="M 96 68 L 118 102 L 95 115 L 112 144" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </div>
-                        <span class="font-bold text-base text-white">SolarSavings<span class="text-purple-400">HQ</span></span>
-                    </a>
-                    <p class="text-slate-400 text-xs max-w-sm">
-                        Institutional clean energy financial modeling. Compliant with NREL PVWatts v8 and IRC Section 25D standards.
-                    </p>
-                </div>
-                <div class="space-y-2">
-                    <h4 class="font-bold text-purple-400 uppercase text-[11px] tracking-wider">Quick Navigation</h4>
-                    <ul class="space-y-1.5">
-                        <li><a href="/" class="hover:text-white hover:underline">ROI Calculator</a></li>
-                        <li><a href="/sitemap.html" class="hover:text-white hover:underline text-purple-400">Sitemap</a></li>
-                        <li><a href="/contact-us.html" class="hover:text-white hover:underline">Contact Advisory</a></li>
-                    </ul>
-                </div>
-                <div class="space-y-2">
-                    <h4 class="font-bold text-slate-300 uppercase text-[11px] tracking-wider">Legal</h4>
-                    <ul class="space-y-1.5">
-                        <li><a href="/privacy-policy.html" class="hover:text-white hover:underline">Privacy Policy</a></li>
-                        <li><a href="/terms-of-service.html" class="hover:text-white hover:underline">Terms of Service</a></li>
-                        <li><a href="/disclaimer.html" class="hover:text-white hover:underline">Financial Disclaimer</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- State-Wise Solar Links in Footer -->
-            <div class="pt-6 border-t border-slate-800/80 space-y-3">
-                <h4 class="font-bold text-white uppercase text-[11px] tracking-wider font-mono">Important State Solar Calculators</h4>
-                <div class="flex flex-wrap gap-2 text-[11px] font-mono">
-                    <a href="/?state=ca#calculator" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 hover:text-white transition-colors">California (NEM 3.0)</a>
-                    <a href="/?state=tx#calculator" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 hover:text-white transition-colors">Texas (ERCOT)</a>
-                    <a href="/?state=fl#calculator" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 hover:text-white transition-colors">Florida (1:1 Net)</a>
-                    <a href="/?state=az#calculator" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 hover:text-white transition-colors">Arizona (APS/SRP)</a>
-                    <a href="/?state=ny#calculator" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 hover:text-white transition-colors">New York (NY-Sun)</a>
-                    <a href="/?state=nj#calculator" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 hover:text-white transition-colors">New Jersey (SuSI)</a>
-                    <a href="/?state=ma#calculator" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 hover:text-white transition-colors">Massachusetts (SMART)</a>
-                    <a href="/?state=co#calculator" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 hover:text-white transition-colors">Colorado (Xcel)</a>
-                    <a href="/?state=nv#calculator" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 hover:text-white transition-colors">Nevada (NV Energy)</a>
-                    <a href="/?state=nc#calculator" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 hover:text-white transition-colors">North Carolina (Duke)</a>
-                    <a href="/?state=wa#calculator" class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 hover:border-purple-500 hover:text-white transition-colors">Washington (PSE)</a>
-                </div>
-            </div>
-
-            <div class="border-t border-slate-800 pt-6 text-center text-slate-500 text-[11px]">
-                © 2026 SolarSavingsHQ.com. All rights reserved.
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.solarsavingshq.com/</loc>
+    <lastmod>2026-08-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.00</priority>
+  </url>
+  <url>
+    <loc>https://www.solarsavingshq.com/sitemap</loc>
+    <lastmod>2026-08-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://www.solarsavingshq.com/contact-us</loc>
+    <lastmod>2026-08-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  <url>
+    <loc>https://www.solarsavingshq.com/privacy-policy</loc>
+    <lastmod>2026-08-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.50</priority>
+  </url>
+  <url>
+    <loc>https://www.solarsavingshq.com/terms-of-service</loc>
+    <lastmod>2026-08-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.50</priority>
+  </url>
+  <url>
+    <loc>https://www.solarsavingshq.com/disclaimer</loc>
+    <lastmod>2026-08-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.50</priority>
+  </url>
+</urlset>
