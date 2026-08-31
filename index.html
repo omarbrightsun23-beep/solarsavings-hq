@@ -7,15 +7,15 @@
         (function() {
             try {
                 var nativeFetch = window.fetch;
-                if (typeof nativeFetch === 'function') {
+                if (typeof nativeFetch === "function") {
                     var targets = [Window.prototype, window];
                     for (var i = 0; i < targets.length; i++) {
                         try {
                             var t = targets[i];
                             if (!t) continue;
-                            var d = Object.getOwnPropertyDescriptor(t, 'fetch');
+                            var d = Object.getOwnPropertyDescriptor(t, "fetch");
                             if (d && d.configurable !== false) {
-                                Object.defineProperty(t, 'fetch', {
+                                Object.defineProperty(t, "fetch", {
                                     get: function() { return nativeFetch; },
                                     set: function(v) { nativeFetch = v; },
                                     configurable: true,
@@ -26,28 +26,28 @@
                     }
                 }
             } catch (e) {}
-            window.addEventListener('error', function(event) {
-                if (event && event.message && event.message.indexOf('Cannot set property fetch') !== -1) {
+            window.addEventListener("error", function(event) {
+                if (event && event.message && event.message.indexOf("Cannot set property fetch") !== -1) {
                     event.preventDefault();
                     event.stopImmediatePropagation();
                 }
             }, true);
         })();
     </script>
-    <title>SolarSavingsHQ — 2026 Residential Solar, Battery & ROI Estimator</title>
-    <meta name="description" content="Calculate your solar panel system size, 30% Federal Tax Credit (IRC Section 25D), California NEM 3.0 battery ROI, and 25-year compounding utility savings under NREL PVWatts v8 standards.">
+    <title>SolarSavingsHQ — 2026 Residential Solar, Battery &amp; ROI Estimator (No Email Required)</title>
+    <meta name="description" content="Calculate your exact residential solar panel size, 30% Federal Tax Credit (IRC Section 25D), California NEM 3.0 battery ROI, and 25-year compounding bill savings in real time. 100% free and ungated.">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="https://solarsavingshq.com/">
     
     <!-- Open Graph & Social Graph Meta -->
-    <meta property="og:title" content="SolarSavingsHQ — Residential Solar, Battery & Payback Estimator">
-    <meta property="og:description" content="Institutional clean energy financial modeling. Calculate solar kW sizing, 30% Federal Tax Credit (IRC §25D), and battery payback in real time.">
+    <meta property="og:title" content="SolarSavingsHQ — Residential Solar, Battery &amp; Payback Estimator">
+    <meta property="og:description" content="Institutional clean energy financial modeling. Calculate solar kW sizing, 30% Federal Tax Credit (IRC §25D), and battery payback in real time with zero required personal info.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://solarsavingshq.com/">
     <meta property="og:site_name" content="SolarSavingsHQ">
-
-    <!-- Google AdSense Script Tag (Update ca-pub-XXXXXXXXXXXXXXXX with your live AdSense Publisher ID) -->
-    <!-- Google AdSense Tag (Add your ca-pub ID when live) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SolarSavingsHQ — 2026 Solar &amp; Battery Payback Calculator">
+    <meta name="twitter:description" content="Calculate solar array sizing, NEM 3.0 battery storage ROI, and 25-year compounding savings under NREL PVWatts v8 standards.">
 
     <!-- Google Fonts: Poppins & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -61,17 +61,17 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['Poppins', 'sans-serif'],
-              mono: ['JetBrains Mono', 'monospace'],
+              sans: ["Poppins", "sans-serif"],
+              mono: ["JetBrains Mono", "monospace"],
             },
             colors: {
               brand: {
-                purple: '#7c3aed',
-                purpleHover: '#6d28d9',
-                emerald: '#10b981',
-                indigo: '#4f46e5',
-                coral: '#f43f5e',
-                amber: '#f59e0b'
+                purple: "#7c3aed",
+                purpleHover: "#6d28d9",
+                emerald: "#10b981",
+                indigo: "#4f46e5",
+                coral: "#f43f5e",
+                amber: "#f59e0b"
               }
             }
           }
@@ -109,7 +109,25 @@
             "jobTitle": "NABCEP Certified PV Technical Sales Specialist"
           },
           "datePublished": "2026-01-10",
-          "dateModified": "2026-08-25"
+          "dateModified": "2026-08-31"
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://solarsavingshq.com/#breadcrumbs",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://solarsavingshq.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Solar & Battery Payback Calculator",
+              "item": "https://solarsavingshq.com/#calculator"
+            }
+          ]
         },
         {
           "@type": "FAQPage",
@@ -128,7 +146,7 @@
               "name": "Why is battery storage required for optimal ROI under California NEM 3.0?",
               "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "NEM 3.0 slashed daytime export compensation by ~75% down to avoided-cost rates. Adding a battery allows self-consumption during peak evening tariff windows ($0.50-$0.65/kWh between 4 PM and 9 PM)."
+                "text": "NEM 3.0 slashed daytime export compensation by ~75% down to avoided-cost rates ($0.05-$0.08/kWh). Adding a battery allows self-consumption during peak evening tariff windows ($0.50-$0.65/kWh between 4 PM and 9 PM), saving thousands annually."
               }
             },
             {
@@ -194,7 +212,6 @@
     </script>
 
     <style>
-      /* Smooth transitions and interactive tactile feedback */
       * {
         transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -324,7 +341,7 @@
         transition: color 0.15s ease;
       }
       .nav-link::after {
-        content: '';
+        content: "";
         position: absolute;
         bottom: -4px;
         left: 0;
@@ -344,7 +361,9 @@
         color: #ffffff;
         transform: translateX(2px);
       }
-      .display-num-italic { font-style: italic; font-weight: 800; letter-spacing: -0.03em; } input[type="range"] { accent-color: #7c3aed; } </style>
+      .display-num-italic { font-style: italic; font-weight: 800; letter-spacing: -0.03em; }
+      input[type="range"] { accent-color: #7c3aed; }
+    </style>
 </head>
 <body class="bg-age-canvas text-slate-800 min-h-screen font-sans antialiased selection:bg-purple-600 selection:text-white flex flex-col justify-between">
 
@@ -393,11 +412,11 @@
                         <span class="w-1.5 h-1.5 rounded-full bg-purple-600"></span> 30% Federal ITC (IRC §25D)
                     </span>
                     <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono text-emerald-700 bg-emerald-100 border border-emerald-200">
-                        NREL PVWatts v8 • Zero Logs
+                        NREL PVWatts v8 • 100% Free &amp; Ungated
                     </span>
                 </div>
                 <p class="text-xs sm:text-sm text-slate-600 max-w-2xl">
-                    Configure your monthly electric bill and location below to compute array kW sizing, tax offsets, battery backup, and 25-year compounding bill savings in real time.
+                    Configure your monthly electric bill and location below to compute array kW sizing, tax offsets, battery backup, and 25-year compounding bill savings in real time. No email or phone required.
                 </p>
             </div>
             <div class="shrink-0 w-full md:w-auto">
@@ -517,11 +536,28 @@
                     </label>
                     <label class="flex items-center justify-between p-4 bg-emerald-50 hover:bg-emerald-100/80 rounded-2xl border border-emerald-200 hover:border-emerald-300 transition-all cursor-pointer shadow-sm hover:shadow">
                         <div class="space-y-0.5">
-                            <div class="text-xs font-bold text-slate-900">Add 10kWh Battery</div>
-                            <div class="text-[11px] text-slate-600">+$10,000 backup storage</div>
+                            <div class="text-xs font-bold text-slate-900">Add Battery Storage</div>
+                            <div class="text-[11px] text-slate-600" id="batteryLabelSubtitle">Peak shaving &amp; outage backup</div>
                         </div>
                         <input type="checkbox" id="batteryToggle" class="w-5 h-5 accent-emerald-500 rounded-md cursor-pointer">
                     </label>
+                </div>
+
+                <!-- Enhanced Dynamic Battery Model Selector (Active when Battery Storage is enabled) -->
+                <div id="batterySelectorContainer" class="space-y-2 p-4 bg-emerald-50/70 border border-emerald-200 rounded-2xl hidden transition-all">
+                    <div class="flex items-center justify-between">
+                        <label for="batteryModelSelect" class="text-xs font-bold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
+                            <span>🔋 Select Battery Storage Model:</span>
+                        </label>
+                        <span class="text-[11px] text-emerald-700 font-mono font-semibold" id="batteryCostBadge">~$9,500 installed</span>
+                    </div>
+                    <select id="batteryModelSelect" class="w-full bg-white border border-emerald-300 hover:border-emerald-500 focus:border-emerald-600 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 font-semibold focus:outline-none cursor-pointer shadow-sm">
+                        <option value="powerwall3" selected>Tesla Powerwall 3 (13.5 kWh Usable • 11.5 kW Power • ~$9,500)</option>
+                        <option value="enphase5p">Enphase IQ Battery 5P (5.0 kWh Modular • 3.84 kW Power • ~$4,200)</option>
+                        <option value="franklinwh">FranklinWH aPower (13.6 kWh Usable • 5.0 kW Power • ~$8,900)</option>
+                        <option value="ecoflow">EcoFlow DELTA Pro Ultra (6.0 kWh Stackable • 7.2 kW Split-Phase • ~$6,500)</option>
+                        <option value="standard">Standard 10 kWh Storage Pack (~$10,000)</option>
+                    </select>
                 </div>
 
                 <!-- Live Formula Box -->
@@ -576,7 +612,7 @@
                     </div>
 
                     <div class="flex flex-col sm:flex-row gap-3 pt-2">
-                        <button onclick="window.print()" class="flex-1 py-3 px-4 bg-white hover:bg-slate-100 text-slate-800 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 border border-slate-200 shadow-sm cursor-pointer">
+                        <button id="exportPdfBtn" onclick="generateCustomPdfProposal()" class="flex-1 py-3 px-4 bg-white hover:bg-slate-100 text-slate-800 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 border border-slate-200 shadow-sm cursor-pointer hover:border-purple-300">
                             📄 Export Proposal PDF
                         </button>
                         <button id="copyShareBtn" class="flex-1 btn-age-purple py-3 px-4 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 cursor-pointer">
@@ -1251,7 +1287,6 @@
         </div>
     </footer>
 
-    
     <!-- Modal 1: Quote Matchmaker Modal -->
     <div id="quoteModal" class="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-200">
         <div class="bg-[#0e1626] border border-slate-700 text-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl relative" id="quoteModalCard">
@@ -1351,7 +1386,7 @@
                     </div>
                     <div class="pt-3 border-t border-slate-800 space-y-2">
                         <div class="text-purple-400 font-bold font-mono text-sm">~$9,500 - $11,500</div>
-                        <button type="button" onclick="selectBatteryOption(10000)" class="w-full py-2 btn-age-purple text-white font-bold rounded-lg text-xs cursor-pointer">Select in Sizer</button>
+                        <button type="button" onclick="selectBatteryModelFromModal('powerwall3')" class="w-full py-2 btn-age-purple text-white font-bold rounded-lg text-xs cursor-pointer">Select in Sizer</button>
                     </div>
                 </div>
                 <!-- EcoFlow DELTA Pro Ultra -->
@@ -1364,89 +1399,101 @@
                         <div class="text-slate-300 text-[11px] space-y-1 font-mono">
                             <div>• <strong>6 – 30 kWh</strong> Stackable</div>
                             <div>• <strong>7.2 kW</strong> 120V/240V Split</div>
-                            <div>• EV & Generator Ready</div>
+                            <div>• EV &amp; Generator Ready</div>
                             <div>• LiFePO4 3500+ Cycles</div>
                         </div>
                     </div>
                     <div class="pt-3 border-t border-slate-800 space-y-2">
-                        <div class="text-emerald-400 font-bold font-mono text-sm">~$7,000 - $14,000</div>
-                        <button type="button" onclick="selectBatteryOption(8000)" class="w-full py-2 btn-age-emerald text-white font-bold rounded-lg text-xs cursor-pointer">Select in Sizer</button>
+                        <div class="text-emerald-400 font-bold font-mono text-sm">~$6,500 - $13,000</div>
+                        <button type="button" onclick="selectBatteryModelFromModal('ecoflow')" class="w-full py-2 btn-age-emerald text-white font-bold rounded-lg text-xs cursor-pointer">Select in Sizer</button>
                     </div>
                 </div>
-                <!-- Anker SOLIX X1 -->
+                <!-- FranklinWH aPower -->
                 <div class="bg-slate-900/90 border border-indigo-500/40 rounded-2xl p-4 space-y-3 flex flex-col justify-between">
                     <div class="space-y-2">
                         <div class="flex justify-between items-center">
-                            <span class="font-bold text-white text-sm">Anker SOLIX X1</span>
-                            <span class="text-[9px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-mono">Modular</span>
+                            <span class="font-bold text-white text-sm">FranklinWH aPower</span>
+                            <span class="text-[9px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-mono">Resilient</span>
                         </div>
                         <div class="text-slate-300 text-[11px] space-y-1 font-mono">
-                            <div>• <strong>5 – 30 kWh</strong> Modular</div>
-                            <div>• <strong>6.0 kW</strong> Backup Power</div>
-                            <div>• Microgrid Isolation</div>
-                            <div>• 10-Yr Full Warranty</div>
+                            <div>• <strong>13.6 kWh</strong> Usable Cap.</div>
+                            <div>• <strong>5.0 kW</strong> Continuous</div>
+                            <div>• Smart Subpanel Ready</div>
+                            <div>• 12-Yr Full Warranty</div>
                         </div>
                     </div>
                     <div class="pt-3 border-t border-slate-800 space-y-2">
-                        <div class="text-indigo-400 font-bold font-mono text-sm">~$6,500 - $13,000</div>
-                        <button type="button" onclick="selectBatteryOption(9000)" class="w-full py-2 btn-age-indigo text-white font-bold rounded-lg text-xs cursor-pointer">Select in Sizer</button>
+                        <div class="text-indigo-400 font-bold font-mono text-sm">~$8,900 - $12,000</div>
+                        <button type="button" onclick="selectBatteryModelFromModal('franklinwh')" class="w-full py-2 btn-age-indigo text-white font-bold rounded-lg text-xs cursor-pointer">Select in Sizer</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- INLINE D3 SOLAR HEATMAP & CALCULATOR SCRIPTS (100% Client-Side Self-Contained) -->
+    <!-- INLINE D3 SOLAR HEATMAP & ENHANCED CALCULATOR SCRIPTS (100% Client-Side Self-Contained) -->
     <script>
-      // 1. DATASETS
+      // 1. DATASETS & BATTERY PROFILES
+      const BATTERY_PROFILES = {
+        none: { name: "No Battery", capacityKwh: 0, cost: 0, selfUseRatio: 0.45, powerKw: 0 },
+        powerwall3: { name: "Tesla Powerwall 3 (13.5 kWh)", capacityKwh: 13.5, cost: 9500, selfUseRatio: 0.85, powerKw: 11.5 },
+        enphase5p: { name: "Enphase IQ Battery 5P (5.0 kWh)", capacityKwh: 5.0, cost: 4200, selfUseRatio: 0.65, powerKw: 3.84 },
+        franklinwh: { name: "FranklinWH aPower (13.6 kWh)", capacityKwh: 13.6, cost: 8900, selfUseRatio: 0.85, powerKw: 5.0 },
+        ecoflow: { name: "EcoFlow DELTA Pro Ultra (6.0 kWh)", capacityKwh: 6.0, cost: 6500, selfUseRatio: 0.70, powerKw: 7.2 },
+        standard: { name: "Standard 10 kWh Storage Pack", capacityKwh: 10.0, cost: 10000, selfUseRatio: 0.80, powerKw: 5.0 }
+      };
+
       const STATE_SOLAR_DATA = [
-        { code: 'az', name: 'Arizona', region: 'Southwest (APS / SRP)', annualAvg: 6.2, avgTariff: 0.14, paybackYrs: '6.8 - 8.1', netMetering: 'Resource Comparison Proxy (RCP)', monthly: [4.8, 5.6, 6.5, 7.4, 7.8, 8.1, 7.5, 7.1, 6.8, 6.0, 5.1, 4.5], optimalTilt: 32 },
-        { code: 'nv', name: 'Nevada', region: 'Desert Southwest (NV Energy)', annualAvg: 5.9, avgTariff: 0.16, paybackYrs: '6.4 - 7.6', netMetering: 'Tiered Net Metering (75% - 95%)', monthly: [4.2, 5.1, 6.1, 7.1, 7.6, 8.0, 7.7, 7.2, 6.6, 5.6, 4.6, 3.9], optimalTilt: 34 },
-        { code: 'ca', name: 'California', region: 'Pacific (PG&E / SCE / SDG&E)', annualAvg: 5.5, avgTariff: 0.34, paybackYrs: '5.2 - 6.8', netMetering: 'NEM 3.0 (Solar Billing Plan)', monthly: [3.8, 4.6, 5.6, 6.6, 7.2, 7.6, 7.5, 7.0, 6.3, 5.1, 4.1, 3.5], optimalTilt: 33 },
-        { code: 'fl', name: 'Florida', region: 'Southeast (FPL / Duke FL)', annualAvg: 5.4, avgTariff: 0.16, paybackYrs: '6.5 - 7.9', netMetering: '1:1 Retail Net Metering', monthly: [4.4, 5.1, 5.9, 6.5, 6.6, 6.0, 5.9, 5.7, 5.3, 5.0, 4.6, 4.1], optimalTilt: 28 },
-        { code: 'tx', name: 'Texas', region: 'ERCOT / Oncor / CenterPoint', annualAvg: 5.2, avgTariff: 0.15, paybackYrs: '7.2 - 8.8', netMetering: 'Deregulated Retail Buyback', monthly: [3.8, 4.5, 5.2, 5.8, 6.2, 6.8, 6.7, 6.5, 5.8, 4.9, 4.0, 3.5], optimalTilt: 30 },
-        { code: 'co', name: 'Colorado', region: 'Mountain (Xcel Energy)', annualAvg: 5.0, avgTariff: 0.15, paybackYrs: '6.9 - 8.3', netMetering: '1:1 Net Metering + Rebates', monthly: [3.6, 4.4, 5.2, 5.8, 6.2, 6.9, 6.6, 6.1, 5.6, 4.7, 3.8, 3.3], optimalTilt: 38 },
-        { code: 'nc', name: 'North Carolina', region: 'Mid-Atlantic (Duke Carolinas)', annualAvg: 4.8, avgTariff: 0.14, paybackYrs: '7.4 - 8.9', netMetering: 'Bridge Tariff / TOU', monthly: [3.5, 4.2, 5.0, 5.9, 6.2, 6.3, 6.0, 5.6, 5.0, 4.4, 3.8, 3.2], optimalTilt: 35 },
-        { code: 'nj', name: 'New Jersey', region: 'Northeast (PSE&G / JCP&L)', annualAvg: 4.4, avgTariff: 0.19, paybackYrs: '5.6 - 7.1', netMetering: '1:1 Net Metering + SuSI', monthly: [2.8, 3.6, 4.5, 5.3, 5.8, 6.1, 5.9, 5.4, 4.7, 3.8, 2.9, 2.5], optimalTilt: 37 },
-        { code: 'ny', name: 'New York', region: 'Northeast (ConEd / NYSERDA)', annualAvg: 4.2, avgTariff: 0.24, paybackYrs: '5.8 - 7.2', netMetering: 'NY-Sun + 25% State Tax Credit', monthly: [2.5, 3.4, 4.3, 5.1, 5.6, 5.9, 5.8, 5.3, 4.5, 3.5, 2.6, 2.2], optimalTilt: 39 },
-        { code: 'ma', name: 'Massachusetts', region: 'New England (Eversource / Grid)', annualAvg: 4.1, avgTariff: 0.29, paybackYrs: '4.9 - 6.3', netMetering: 'SMART Program + VNM', monthly: [2.4, 3.3, 4.2, 5.0, 5.5, 5.8, 5.7, 5.2, 4.4, 3.4, 2.5, 2.1], optimalTilt: 40 },
-        { code: 'wa', name: 'Washington', region: 'Pacific Northwest (PSE / Seattle)', annualAvg: 3.8, avgTariff: 0.11, paybackYrs: '9.5 - 12.0', netMetering: '1:1 Net Metering (Low Hydro Rates)', monthly: [1.6, 2.5, 3.7, 4.8, 5.7, 6.1, 6.6, 5.9, 4.5, 2.8, 1.7, 1.3], optimalTilt: 42 }
+        { code: "az", name: "Arizona", region: "Southwest (APS / SRP)", annualAvg: 6.2, avgTariff: 0.14, paybackYrs: "6.8 - 8.1", netMetering: "Resource Comparison Proxy (RCP)", monthly: [4.8, 5.6, 6.5, 7.4, 7.8, 8.1, 7.5, 7.1, 6.8, 6.0, 5.1, 4.5], optimalTilt: 32 },
+        { code: "nv", name: "Nevada", region: "Desert Southwest (NV Energy)", annualAvg: 5.9, avgTariff: 0.16, paybackYrs: "6.4 - 7.6", netMetering: "Tiered Net Metering (75% - 95%)", monthly: [4.2, 5.1, 6.1, 7.1, 7.6, 8.0, 7.7, 7.2, 6.6, 5.6, 4.6, 3.9], optimalTilt: 34 },
+        { code: "ca", name: "California", region: "Pacific (PG&E / SCE / SDG&E)", annualAvg: 5.5, avgTariff: 0.34, paybackYrs: "5.2 - 6.8", netMetering: "NEM 3.0 (Solar Billing Plan)", monthly: [3.8, 4.6, 5.6, 6.6, 7.2, 7.6, 7.5, 7.0, 6.3, 5.1, 4.1, 3.5], optimalTilt: 33 },
+        { code: "fl", name: "Florida", region: "Southeast (FPL / Duke FL)", annualAvg: 5.4, avgTariff: 0.16, paybackYrs: "6.5 - 7.9", netMetering: "1:1 Retail Net Metering", monthly: [4.4, 5.1, 5.9, 6.5, 6.6, 6.0, 5.9, 5.7, 5.3, 5.0, 4.6, 4.1], optimalTilt: 28 },
+        { code: "tx", name: "Texas", region: "ERCOT / Oncor / CenterPoint", annualAvg: 5.2, avgTariff: 0.15, paybackYrs: "7.2 - 8.8", netMetering: "Deregulated Retail Buyback", monthly: [3.8, 4.5, 5.2, 5.8, 6.2, 6.8, 6.7, 6.5, 5.8, 4.9, 4.0, 3.5], optimalTilt: 30 },
+        { code: "co", name: "Colorado", region: "Mountain (Xcel Energy)", annualAvg: 5.0, avgTariff: 0.15, paybackYrs: "6.9 - 8.3", netMetering: "1:1 Net Metering + Rebates", monthly: [3.6, 4.4, 5.2, 5.8, 6.2, 6.9, 6.6, 6.1, 5.6, 4.7, 3.8, 3.3], optimalTilt: 38 },
+        { code: "nc", name: "North Carolina", region: "Mid-Atlantic (Duke Carolinas)", annualAvg: 4.8, avgTariff: 0.14, paybackYrs: "7.4 - 8.9", netMetering: "Bridge Tariff / TOU", monthly: [3.5, 4.2, 5.0, 5.9, 6.2, 6.3, 6.0, 5.6, 5.0, 4.4, 3.8, 3.2], optimalTilt: 35 },
+        { code: "nj", name: "New Jersey", region: "Northeast (PSE&G / JCP&L)", annualAvg: 4.4, avgTariff: 0.19, paybackYrs: "5.6 - 7.1", netMetering: "1:1 Net Metering + SuSI", monthly: [2.8, 3.6, 4.5, 5.3, 5.8, 6.1, 5.9, 5.4, 4.7, 3.8, 2.9, 2.5], optimalTilt: 37 },
+        { code: "ny", name: "New York", region: "Northeast (ConEd / NYSERDA)", annualAvg: 4.2, avgTariff: 0.24, paybackYrs: "5.8 - 7.2", netMetering: "NY-Sun + 25% State Tax Credit", monthly: [2.5, 3.4, 4.3, 5.1, 5.6, 5.9, 5.8, 5.3, 4.5, 3.5, 2.6, 2.2], optimalTilt: 39 },
+        { code: "ma", name: "Massachusetts", region: "New England (Eversource / Grid)", annualAvg: 4.1, avgTariff: 0.29, paybackYrs: "4.9 - 6.3", netMetering: "SMART Program + VNM", monthly: [2.4, 3.3, 4.2, 5.0, 5.5, 5.8, 5.7, 5.2, 4.4, 3.4, 2.5, 2.1], optimalTilt: 40 },
+        { code: "wa", name: "Washington", region: "Pacific Northwest (PSE / Seattle)", annualAvg: 3.8, avgTariff: 0.11, paybackYrs: "9.5 - 12.0", netMetering: "1:1 Net Metering (Low Hydro Rates)", monthly: [1.6, 2.5, 3.7, 4.8, 5.7, 6.1, 6.6, 5.9, 4.5, 2.8, 1.7, 1.3], optimalTilt: 42 }
       ];
-      const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
       // 2. DOM ELEMENTS
-      const stateSelect = document.getElementById('stateSelect');
-      const billInput = document.getElementById('billInput');
-      const billSlider = document.getElementById('billSlider');
-      const rateInput = document.getElementById('rateInput');
-      const rateSlider = document.getElementById('rateSlider');
-      const sunInput = document.getElementById('sunInput');
-      const sunSlider = document.getElementById('sunSlider');
-      const itcToggle = document.getElementById('itcToggle');
-      const batteryToggle = document.getElementById('batteryToggle');
-      const resetBtn = document.getElementById('resetBtn');
-      const copyShareBtn = document.getElementById('copyShareBtn');
-      const tabStandard = document.getElementById('tabStandard');
-      const tabNEM = document.getElementById('tabNEM');
-      const tabOffGrid = document.getElementById('tabOffGrid');
+      const stateSelect = document.getElementById("stateSelect");
+      const billInput = document.getElementById("billInput");
+      const billSlider = document.getElementById("billSlider");
+      const rateInput = document.getElementById("rateInput");
+      const rateSlider = document.getElementById("rateSlider");
+      const sunInput = document.getElementById("sunInput");
+      const sunSlider = document.getElementById("sunSlider");
+      const itcToggle = document.getElementById("itcToggle");
+      const batteryToggle = document.getElementById("batteryToggle");
+      const batterySelectorContainer = document.getElementById("batterySelectorContainer");
+      const batteryModelSelect = document.getElementById("batteryModelSelect");
+      const batteryCostBadge = document.getElementById("batteryCostBadge");
+      const resetBtn = document.getElementById("resetBtn");
+      const copyShareBtn = document.getElementById("copyShareBtn");
+      const tabStandard = document.getElementById("tabStandard");
+      const tabNEM = document.getElementById("tabNEM");
+      const tabOffGrid = document.getElementById("tabOffGrid");
 
-      const paybackYears = document.getElementById('paybackYears');
-      const paybackYearDate = document.getElementById('paybackYearDate');
-      const badgeVerdict = document.getElementById('badgeVerdict');
-      const systemSize = document.getElementById('systemSize');
-      const netCost = document.getElementById('netCost');
-      const taxCreditSavings = document.getElementById('taxCreditSavings');
-      const twentyFiveYearSavings = document.getElementById('twentyFiveYearSavings');
-      const formulaKwh = document.getElementById('formulaKwh');
-      const formulaSun = document.getElementById('formulaSun');
-      const formulaKw = document.getElementById('formulaKw');
-      const monetizationContainer = document.getElementById('monetizationContainer');
+      const paybackYears = document.getElementById("paybackYears");
+      const paybackYearDate = document.getElementById("paybackYearDate");
+      const badgeVerdict = document.getElementById("badgeVerdict");
+      const systemSize = document.getElementById("systemSize");
+      const netCost = document.getElementById("netCost");
+      const taxCreditSavings = document.getElementById("taxCreditSavings");
+      const twentyFiveYearSavings = document.getElementById("twentyFiveYearSavings");
+      const formulaKwh = document.getElementById("formulaKwh");
+      const formulaSun = document.getElementById("formulaSun");
+      const formulaKw = document.getElementById("formulaKw");
+      const monetizationContainer = document.getElementById("monetizationContainer");
 
       // 3. D3 SOLAR IRRADIANCE HEATMAP INITIALIZATION
       function initD3Heatmap() {
-        const container = document.getElementById('irradianceHeatmapContainer');
+        const container = document.getElementById("irradianceHeatmapContainer");
         if (!container || !window.d3) return;
-        container.innerHTML = '';
+        container.innerHTML = "";
 
         const containerWidth = container.clientWidth || 750;
         const margin = { top: 30, right: 30, bottom: 20, left: 110 };
@@ -1462,67 +1509,67 @@
         const y = d3.scaleBand().domain(STATE_SOLAR_DATA.map(d => d.code)).range([0, height]).padding(0.1);
 
         const svg = d3.select(container)
-          .append('svg')
-          .attr('width', width + margin.left + margin.right)
-          .attr('height', height + margin.top + margin.bottom)
-          .append('g')
-          .attr('transform', `translate(${margin.left},${margin.top})`);
+          .append("svg")
+          .attr("width", width + margin.left + margin.right)
+          .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         // Axis
-        svg.append('g')
+        svg.append("g")
           .call(d3.axisTop(x).tickSize(0))
-          .call(g => g.select('.domain').remove())
-          .selectAll('text')
-          .attr('class', 'text-[10px] font-mono font-bold fill-slate-700');
+          .call(g => g.select(".domain").remove())
+          .selectAll("text")
+          .attr("class", "text-[10px] font-mono font-bold fill-slate-700");
 
         // Rows
         STATE_SOLAR_DATA.forEach(state => {
           const stateY = y(state.code) || 0;
-          const rowG = svg.append('g')
-            .attr('class', 'cursor-pointer')
-            .attr('transform', `translate(0, ${stateY})`)
-            .on('click', () => { applyStatePreset(state.code); });
+          const rowG = svg.append("g")
+            .attr("class", "cursor-pointer")
+            .attr("transform", "translate(0, " + stateY + ")")
+            .on("click", () => { applyStatePreset(state.code); });
 
           // State Label
-          rowG.append('text')
-            .attr('x', -10)
-            .attr('y', y.bandwidth() / 2 + 4)
-            .attr('text-anchor', 'end')
-            .attr('class', 'text-[11px] font-mono font-semibold fill-slate-800')
-            .text(`${state.name} (${state.code.toUpperCase()})`);
+          rowG.append("text")
+            .attr("x", -10)
+            .attr("y", y.bandwidth() / 2 + 4)
+            .attr("text-anchor", "end")
+            .attr("class", "text-[11px] font-mono font-semibold fill-slate-800")
+            .text(state.name + " (" + state.code.toUpperCase() + ")");
 
           // Cells
           state.monthly.forEach((val, idx) => {
             const cellX = x(MONTHS[idx]) || 0;
-            rowG.append('rect')
-              .attr('x', cellX)
-              .attr('y', 0)
-              .attr('width', x.bandwidth())
-              .attr('height', y.bandwidth())
-              .attr('rx', 4)
-              .attr('fill', colorScale(val))
-              .attr('stroke', '#ffffff')
-              .attr('stroke-width', 1)
-              .append('title')
-              .text(`${state.name} (${MONTHS[idx]}): ${val} kWh/m²/day`);
+            rowG.append("rect")
+              .attr("x", cellX)
+              .attr("y", 0)
+              .attr("width", x.bandwidth())
+              .attr("height", y.bandwidth())
+              .attr("rx", 4)
+              .attr("fill", colorScale(val))
+              .attr("stroke", "#ffffff")
+              .attr("stroke-width", 1)
+              .append("title")
+              .text(state.name + " (" + MONTHS[idx] + "): " + val + " kWh/m²/day");
 
             if (x.bandwidth() > 22) {
-              rowG.append('text')
-                .attr('x', cellX + x.bandwidth() / 2)
-                .attr('y', y.bandwidth() / 2 + 3.5)
-                .attr('text-anchor', 'middle')
-                .attr('class', 'text-[9px] font-mono font-bold fill-slate-900 pointer-events-none')
+              rowG.append("text")
+                .attr("x", cellX + x.bandwidth() / 2)
+                .attr("y", y.bandwidth() / 2 + 3.5)
+                .attr("text-anchor", "middle")
+                .attr("class", "text-[9px] font-mono font-bold fill-slate-900 pointer-events-none")
                 .text(val.toFixed(1));
             }
           });
         });
 
-        updateSpotlightCard('ca');
+        updateSpotlightCard("ca");
       }
 
       function updateSpotlightCard(code) {
         const state = STATE_SOLAR_DATA.find(s => s.code === code) || STATE_SOLAR_DATA[2];
-        const card = document.getElementById('heatmapSpotlightCard');
+        const card = document.getElementById("heatmapSpotlightCard");
         if (!card) return;
         card.innerHTML = `
           <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-200">
@@ -1568,9 +1615,9 @@
 
       function applyStatePresetAndScroll(code) {
         applyStatePreset(code);
-        const calcSection = document.getElementById('calculator');
+        const calcSection = document.getElementById("calculator");
         if (calcSection) {
-          calcSection.scrollIntoView({ behavior: 'smooth' });
+          calcSection.scrollIntoView({ behavior: "smooth" });
         }
       }
       window.applyStatePreset = applyStatePreset;
@@ -1579,33 +1626,58 @@
       // 4. BIND INPUTS & SLIDERS
       function bindSync(input, slider) {
         if (!input || !slider) return;
-        slider.addEventListener('input', (e) => { input.value = e.target.value; calculate(); });
-        input.addEventListener('input', (e) => { slider.value = e.target.value; calculate(); });
+        slider.addEventListener("input", (e) => { input.value = e.target.value; calculate(); });
+        input.addEventListener("input", (e) => { slider.value = e.target.value; calculate(); });
       }
       bindSync(billInput, billSlider);
       bindSync(rateInput, rateSlider);
       bindSync(sunInput, sunSlider);
 
       if (stateSelect) {
-        stateSelect.addEventListener('change', (e) => { applyStatePreset(e.target.value); });
+        stateSelect.addEventListener("change", (e) => { applyStatePreset(e.target.value); });
       }
 
-      if (itcToggle) itcToggle.addEventListener('change', calculate);
-      if (batteryToggle) batteryToggle.addEventListener('change', calculate);
+      if (itcToggle) itcToggle.addEventListener("change", calculate);
+      
+      if (batteryToggle) {
+        batteryToggle.addEventListener("change", () => {
+          if (batteryToggle.checked) {
+            if (batterySelectorContainer) batterySelectorContainer.classList.remove("hidden");
+          } else {
+            if (batterySelectorContainer) batterySelectorContainer.classList.add("hidden");
+          }
+          calculate();
+        });
+      }
+
+      if (batteryModelSelect) {
+        batteryModelSelect.addEventListener("change", () => {
+          const selectedKey = batteryModelSelect.value;
+          const profile = BATTERY_PROFILES[selectedKey] || BATTERY_PROFILES.powerwall3;
+          if (batteryCostBadge) {
+            batteryCostBadge.textContent = "~$" + profile.cost.toLocaleString() + " installed";
+          }
+          calculate();
+        });
+      }
 
       if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
+        resetBtn.addEventListener("click", () => {
           if (billInput && billSlider) { billInput.value = "250"; billSlider.value = "250"; }
           if (rateInput && rateSlider) { rateInput.value = "0.34"; rateSlider.value = "0.34"; }
           if (sunInput && sunSlider) { sunInput.value = "5.5"; sunSlider.value = "5.5"; }
           if (itcToggle) itcToggle.checked = true;
-          if (batteryToggle) batteryToggle.checked = false;
-          applyStatePreset('ca');
+          if (batteryToggle) {
+            batteryToggle.checked = false;
+            if (batterySelectorContainer) batterySelectorContainer.classList.add("hidden");
+          }
+          if (batteryModelSelect) batteryModelSelect.value = "powerwall3";
+          applyStatePreset("ca");
         });
       }
 
       if (copyShareBtn) {
-        copyShareBtn.addEventListener('click', () => {
+        copyShareBtn.addEventListener("click", () => {
           navigator.clipboard.writeText(window.location.href);
           copyShareBtn.innerText = "Link Copied!";
           setTimeout(() => { copyShareBtn.innerText = "🔗 Share Quote"; }, 2000);
@@ -1616,95 +1688,86 @@
       function setActiveTab(tabName) {
         if (!tabStandard || !tabNEM || !tabOffGrid) return;
         
-        // Reset all tabs to inactive styling
         tabStandard.className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer transition-all duration-150";
         tabNEM.className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer transition-all duration-150";
         tabOffGrid.className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer transition-all duration-150";
 
-        // Set active tab styling and apply configuration
-        if (tabName === 'standard') {
+        if (tabName === "standard") {
           tabStandard.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold btn-age-purple text-white shadow-sm cursor-pointer transition-all duration-150";
-          if (batteryToggle) batteryToggle.checked = false;
-          applyStatePreset(stateSelect?.value || 'ca');
-        } else if (tabName === 'nem') {
+          if (batteryToggle) {
+            batteryToggle.checked = false;
+            if (batterySelectorContainer) batterySelectorContainer.classList.add("hidden");
+          }
+          applyStatePreset(stateSelect ? stateSelect.value : "ca");
+        } else if (tabName === "nem") {
           tabNEM.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold btn-age-emerald text-white shadow-sm cursor-pointer transition-all duration-150";
-          if (batteryToggle) batteryToggle.checked = true;
-          applyStatePreset(stateSelect?.value || 'ca');
-        } else if (tabName === 'offgrid') {
+          if (batteryToggle) {
+            batteryToggle.checked = true;
+            if (batterySelectorContainer) batterySelectorContainer.classList.remove("hidden");
+          }
+          if (batteryModelSelect) batteryModelSelect.value = "powerwall3";
+          applyStatePreset(stateSelect ? stateSelect.value : "ca");
+        } else if (tabName === "offgrid") {
           tabOffGrid.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold btn-age-indigo text-white shadow-sm cursor-pointer transition-all duration-150";
-          if (batteryToggle) batteryToggle.checked = true;
+          if (batteryToggle) {
+            batteryToggle.checked = true;
+            if (batterySelectorContainer) batterySelectorContainer.classList.remove("hidden");
+          }
+          if (batteryModelSelect) batteryModelSelect.value = "ecoflow";
           if (rateInput && rateSlider) { rateInput.value = "0.22"; rateSlider.value = "0.22"; }
           if (sunInput && sunSlider) { sunInput.value = "4.8"; sunSlider.value = "4.8"; }
           calculate();
         }
       }
 
-      if (tabStandard) tabStandard.addEventListener('click', () => setActiveTab('standard'));
-      if (tabNEM) tabNEM.addEventListener('click', () => setActiveTab('nem'));
-      if (tabOffGrid) tabOffGrid.addEventListener('click', () => setActiveTab('offgrid'));
-
-      // Keep tab color in sync if battery checkbox is clicked manually
-      if (batteryToggle) {
-        batteryToggle.addEventListener('change', () => {
-          if (!batteryToggle.checked) {
-            if (tabStandard && tabNEM && tabOffGrid) {
-              tabStandard.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold btn-age-purple text-white shadow-sm cursor-pointer transition-all duration-150";
-              tabNEM.className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer transition-all duration-150";
-              tabOffGrid.className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer transition-all duration-150";
-            }
-          } else {
-            if (tabStandard && tabNEM && tabOffGrid) {
-              tabStandard.className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer transition-all duration-150";
-              tabNEM.className = "px-3.5 py-1.5 rounded-xl text-xs font-bold btn-age-emerald text-white shadow-sm cursor-pointer transition-all duration-150";
-              tabOffGrid.className = "px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer transition-all duration-150";
-            }
-          }
-        });
-      }
+      if (tabStandard) tabStandard.addEventListener("click", () => setActiveTab("standard"));
+      if (tabNEM) tabNEM.addEventListener("click", () => setActiveTab("nem"));
+      if (tabOffGrid) tabOffGrid.addEventListener("click", () => setActiveTab("offgrid"));
 
       // Sizing Presets
-      document.querySelectorAll('.btn-apply-size').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const bill = e.currentTarget.getAttribute('data-size-bill');
+      document.querySelectorAll(".btn-apply-size").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          const bill = e.currentTarget.getAttribute("data-size-bill");
           if (bill && billInput && billSlider) {
             billInput.value = bill;
             billSlider.value = bill;
             calculate();
-            document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
+            const calcEl = document.getElementById("calculator");
+            if (calcEl) calcEl.scrollIntoView({ behavior: "smooth" });
           }
         });
       });
 
       // State Table Load Buttons
-      document.querySelectorAll('.btn-load-state').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const code = e.currentTarget.getAttribute('data-apply-state');
+      document.querySelectorAll(".btn-load-state").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          const code = e.currentTarget.getAttribute("data-apply-state");
           if (code) applyStatePreset(code);
         });
       });
 
       // 5. CHART.JS INITIALIZATION
       let chartInstance = null;
-      const chartElem = document.getElementById('solarChart');
+      const chartElem = document.getElementById("solarChart");
       if (chartElem && window.Chart) {
         chartInstance = new Chart(chartElem, {
-          type: 'line',
+          type: "line",
           data: {
-            labels: ['Yr 1', 'Yr 5', 'Yr 10', 'Yr 15', 'Yr 20', 'Yr 25'],
+            labels: ["Yr 1", "Yr 5", "Yr 10", "Yr 15", "Yr 20", "Yr 25"],
             datasets: [
               {
-                label: 'Grid Utility Cost (3% Inflation)',
+                label: "Grid Utility Cost (3% Inflation)",
                 data: [3000, 16000, 35000, 58000, 85000, 118000],
-                borderColor: '#f43f5e',
-                backgroundColor: 'rgba(244, 63, 94, 0.06)',
+                borderColor: "#f43f5e",
+                backgroundColor: "rgba(244, 63, 94, 0.06)",
                 fill: true,
                 tension: 0.35
               },
               {
-                label: 'Compounding Solar Net Savings',
+                label: "Compounding Solar Net Savings",
                 data: [-12000, -2000, 15000, 34000, 55000, 80000],
-                borderColor: '#7c3aed',
-                backgroundColor: 'rgba(124, 58, 237, 0.10)',
+                borderColor: "#7c3aed",
+                backgroundColor: "rgba(124, 58, 237, 0.10)",
                 fill: true,
                 tension: 0.35
               }
@@ -1713,68 +1776,91 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { position: 'top', labels: { color: '#475569', font: { size: 10, weight: 'bold' } } } },
+            plugins: { legend: { position: "top", labels: { color: "#475569", font: { size: 10, weight: "bold" } } } },
             scales: {
-              y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b', callback: (v) => '$' + (Number(v)/1000) + 'k' } },
-              x: { grid: { display: false }, ticks: { color: '#64748b' } }
+              y: { grid: { color: "#f1f5f9" }, ticks: { color: "#64748b", callback: (v) => "$" + (Number(v)/1000) + "k" } },
+              x: { grid: { display: false }, ticks: { color: "#64748b" } }
             }
           }
         });
       }
 
-      // 6. MAIN CALCULATION FUNCTION
+      // 6. ENHANCED MAIN CALCULATION FUNCTION (NEM 3.0 & TOU REAL AVOIDED COST)
       function calculate() {
-        const bill = parseFloat(billInput?.value || "250") || 250;
-        const rate = parseFloat(rateInput?.value || "0.34") || 0.34;
-        const sunHours = parseFloat(sunInput?.value || "5.5") || 5.5;
+        const bill = parseFloat(billInput ? billInput.value : "250") || 250;
+        const rate = parseFloat(rateInput ? rateInput.value : "0.34") || 0.34;
+        const sunHours = parseFloat(sunInput ? sunInput.value : "5.5") || 5.5;
         const itcEnabled = itcToggle ? itcToggle.checked : true;
         const hasBattery = batteryToggle ? batteryToggle.checked : false;
+        const selectedState = stateSelect ? stateSelect.value : "ca";
+        
+        // Active Battery Profile
+        const batteryKey = hasBattery ? (batteryModelSelect ? batteryModelSelect.value : "powerwall3") : "none";
+        const battery = BATTERY_PROFILES[batteryKey] || BATTERY_PROFILES.none;
         const costPerWatt = 2.85;
 
-        // Physics Calculation (NREL PVWatts)
-        const monthlyKwh = bill / rate;
-        const kwNeeded = monthlyKwh / (sunHours * 30 * 0.80);
-        const panelCount = Math.ceil((kwNeeded * 1000) / 400);
+        // Physics Calculation (NREL PVWatts v8)
+        const annualUsageKwh = (bill / rate) * 12;
+        const kwNeeded = Math.max(1.5, Math.min(30, (bill / rate) / (sunHours * 30 * 0.80)));
+        const panelCount = Math.ceil((kwNeeded * 1000) / 400); // 400W premium modules
+        const annualSolarGenKwh = kwNeeded * sunHours * 365 * 0.80;
 
         const grossSolarCost = kwNeeded * 1000 * costPerWatt;
-        const batteryCost = hasBattery ? 10000 : 0;
-        const totalGrossCost = grossSolarCost + batteryCost;
-        const itcAmount = itcEnabled ? totalGrossCost * 0.30 : 0;
+        const grossBatteryCost = hasBattery ? battery.cost : 0;
+        const totalGrossCost = grossSolarCost + grossBatteryCost;
+        const itcAmount = itcEnabled ? (totalGrossCost * 0.30) : 0;
         const netOutCost = totalGrossCost - itcAmount;
 
-        const annualSavingsYr1 = bill * 12;
-        const payback = annualSavingsYr1 > 0 ? (netOutCost / annualSavingsYr1) : 0;
+        // Avoided Cost & Self-Consumption Logic (California NEM 3.0 vs. 1:1 States)
+        const exportCompensationRate = (selectedState === "ca") ? 0.065 : (rate * 0.75);
+        const selfUseRatio = hasBattery ? battery.selfUseRatio : 0.45;
+        const selfConsumedKwh = annualSolarGenKwh * selfUseRatio;
+        const exportedKwh = Math.max(0, annualSolarGenKwh - selfConsumedKwh);
+
+        const annualSavingsYr1 = (selfConsumedKwh * rate) + (exportedKwh * exportCompensationRate);
+        const payback = annualSavingsYr1 > 0 ? (netOutCost / annualSavingsYr1) : 25;
         const currentYear = new Date().getFullYear();
         const breakevenYear = Math.ceil(currentYear + payback);
 
-        // 25-Yr Projection
+        // 25-Yr Projection (3.0% Utility Inflation vs 0.5% PV Degradation)
         let cumUtility = 0;
         let cumSolar = -netOutCost;
         const chartUtility = [];
         const chartSolar = [];
-        const milestoneYears = [1, 5, 10, 15, 20, 25];
+        const milestoneYears = Array.of(1, 5, 10, 15, 20, 25);
+
+        let yrRate = rate;
+        let yrGen = annualSolarGenKwh;
 
         for (let yr = 1; yr <= 25; yr++) {
-          const inflatedBill = annualSavingsYr1 * Math.pow(1.03, yr - 1);
-          const degradedProduction = 1 - (yr - 1) * 0.005;
-          cumUtility += inflatedBill;
-          cumSolar += (inflatedBill * degradedProduction);
-          if (milestoneYears.includes(yr)) {
+          const inflatedUtilityBill = (annualUsageKwh * yrRate);
+          cumUtility += inflatedUtilityBill;
+
+          const yrSelfUse = yrGen * selfUseRatio;
+          const yrExport = Math.max(0, yrGen - yrSelfUse);
+          const yrSolarSavings = (yrSelfUse * yrRate) + (yrExport * (selectedState === "ca" ? 0.065 : yrRate * 0.75));
+          
+          cumSolar += yrSolarSavings;
+
+          if (milestoneYears.indexOf(yr) !== -1) {
             chartUtility.push(Math.round(cumUtility));
             chartSolar.push(Math.round(cumSolar));
           }
+
+          yrRate *= 1.03; // 3% inflation
+          yrGen *= 0.995; // 0.5% degradation
         }
 
         // Update DOM
         if (paybackYears) paybackYears.textContent = payback.toFixed(1);
         if (paybackYearDate) paybackYearDate.textContent = breakevenYear.toString();
-        if (systemSize) systemSize.textContent = `${kwNeeded.toFixed(1)} kW (~${panelCount} Panels)`;
-        if (netCost) netCost.textContent = '$' + Math.round(netOutCost).toLocaleString();
-        if (taxCreditSavings) taxCreditSavings.textContent = '-$' + Math.round(itcAmount).toLocaleString();
-        if (twentyFiveYearSavings) twentyFiveYearSavings.textContent = '$' + Math.round(cumSolar).toLocaleString();
-        if (formulaKwh) formulaKwh.textContent = Math.round(monthlyKwh).toString();
+        if (systemSize) systemSize.textContent = kwNeeded.toFixed(1) + " kW (~" + panelCount + " Panels)";
+        if (netCost) netCost.textContent = "$" + Math.round(netOutCost).toLocaleString();
+        if (taxCreditSavings) taxCreditSavings.textContent = "-$" + Math.round(itcAmount).toLocaleString();
+        if (twentyFiveYearSavings) twentyFiveYearSavings.textContent = "$" + Math.round(cumSolar).toLocaleString();
+        if (formulaKwh) formulaKwh.textContent = Math.round(bill / rate).toString();
         if (formulaSun) formulaSun.textContent = sunHours.toFixed(1);
-        if (formulaKw) formulaKw.textContent = kwNeeded.toFixed(2) + ' kW';
+        if (formulaKw) formulaKw.textContent = kwNeeded.toFixed(2) + " kW";
 
         if (badgeVerdict) {
           if (payback < 6) {
@@ -1789,67 +1875,193 @@
           }
         }
 
-        if (chartInstance) {
+        if (chartInstance && chartInstance.data && chartInstance.data.datasets && chartInstance.data.datasets.length >= 2) {
           chartInstance.data.datasets[0].data = chartUtility;
           chartInstance.data.datasets[1].data = chartSolar;
           chartInstance.update();
         }
 
+        // Sync Bidirectional URL Params
+        try {
+          const params = new URLSearchParams();
+          params.set("bill", bill.toString());
+          params.set("rate", rate.toString());
+          params.set("sun", sunHours.toString());
+          params.set("state", selectedState);
+          if (hasBattery) params.set("battery", batteryKey);
+          if (!itcEnabled) params.set("itc", "0");
+          window.history.replaceState({}, "", window.location.pathname + "?" + params.toString());
+        } catch (e) {}
+
         renderMonetization(bill, hasBattery);
       }
 
-      
       // Modal Open/Close Controls
       function openQuoteModal() {
-        const modal = document.getElementById('quoteModal');
-        const card = document.getElementById('quoteModalCard');
+        const modal = document.getElementById("quoteModal");
         if (!modal) return;
-        document.getElementById('modalSystemSize').textContent = document.getElementById('systemSize')?.textContent || '5.6 kW';
-        document.getElementById('modalNetCost').textContent = document.getElementById('netCost')?.textContent || '$11,113';
-        document.getElementById('modalTaxCredit').textContent = document.getElementById('taxCreditSavings')?.textContent || '-$4,763';
-        document.getElementById('modal25YrSavings').textContent = document.getElementById('twentyFiveYearSavings')?.textContent || '$90,869';
-        document.getElementById('quoteForm')?.classList.remove('hidden');
-        document.getElementById('quoteSuccess')?.classList.add('hidden');
-        modal.classList.remove('hidden');
-        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        const modalSystemSize = document.getElementById("modalSystemSize");
+        const modalNetCost = document.getElementById("modalNetCost");
+        const modalTaxCredit = document.getElementById("modalTaxCredit");
+        const modal25YrSavings = document.getElementById("modal25YrSavings");
+        
+        if (modalSystemSize) modalSystemSize.textContent = systemSize ? systemSize.textContent : "5.6 kW";
+        if (modalNetCost) modalNetCost.textContent = netCost ? netCost.textContent : "$11,113";
+        if (modalTaxCredit) modalTaxCredit.textContent = taxCreditSavings ? taxCreditSavings.textContent : "-$4,763";
+        if (modal25YrSavings) modal25YrSavings.textContent = twentyFiveYearSavings ? twentyFiveYearSavings.textContent : "$90,869";
+        
+        const qForm = document.getElementById("quoteForm");
+        const qSuccess = document.getElementById("quoteSuccess");
+        if (qForm) qForm.classList.remove("hidden");
+        if (qSuccess) qSuccess.classList.add("hidden");
+        
+        modal.classList.remove("hidden");
+        setTimeout(() => modal.classList.remove("opacity-0"), 10);
       }
       function closeQuoteModal() {
-        const modal = document.getElementById('quoteModal');
+        const modal = document.getElementById("quoteModal");
         if (!modal) return;
-        modal.classList.add('opacity-0');
-        setTimeout(() => modal.classList.add('hidden'), 200);
+        modal.classList.add("opacity-0");
+        setTimeout(() => modal.classList.add("hidden"), 200);
       }
       function openBatteryModal() {
-        const modal = document.getElementById('batteryModal');
+        const modal = document.getElementById("batteryModal");
         if (!modal) return;
-        modal.classList.remove('hidden');
-        setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        modal.classList.remove("hidden");
+        setTimeout(() => modal.classList.remove("opacity-0"), 10);
       }
       function closeBatteryModal() {
-        const modal = document.getElementById('batteryModal');
+        const modal = document.getElementById("batteryModal");
         if (!modal) return;
-        modal.classList.add('opacity-0');
-        setTimeout(() => modal.classList.add('hidden'), 200);
+        modal.classList.add("opacity-0");
+        setTimeout(() => modal.classList.add("hidden"), 200);
       }
-      function selectBatteryOption(cost) {
-        if (batteryToggle) {
-          batteryToggle.checked = true;
-          calculate();
-        }
+      function selectBatteryModelFromModal(batteryKey) {
+        if (batteryToggle) batteryToggle.checked = true;
+        if (batterySelectorContainer) batterySelectorContainer.classList.remove("hidden");
+        if (batteryModelSelect) batteryModelSelect.value = batteryKey;
+        const profile = BATTERY_PROFILES[batteryKey] || BATTERY_PROFILES.powerwall3;
+        if (batteryCostBadge) batteryCostBadge.textContent = "~$" + profile.cost.toLocaleString() + " installed";
+        calculate();
         closeBatteryModal();
-        document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
+        const calcEl = document.getElementById("calculator");
+        if (calcEl) calcEl.scrollIntoView({ behavior: "smooth" });
       }
 
-      document.getElementById('closeQuoteModal')?.addEventListener('click', closeQuoteModal);
-      document.getElementById('closeQuoteSuccess')?.addEventListener('click', closeQuoteModal);
-      document.getElementById('closeBatteryModal')?.addEventListener('click', closeBatteryModal);
-      document.getElementById('quoteForm')?.addEventListener('submit', (e) => {
+      window.openQuoteModal = openQuoteModal;
+      window.closeQuoteModal = closeQuoteModal;
+      window.openBatteryModal = openBatteryModal;
+      window.closeBatteryModal = closeBatteryModal;
+      window.selectBatteryModelFromModal = selectBatteryModelFromModal;
+
+      document.getElementById("closeQuoteModal")?.addEventListener("click", closeQuoteModal);
+      document.getElementById("closeQuoteSuccess")?.addEventListener("click", closeQuoteModal);
+      document.getElementById("closeBatteryModal")?.addEventListener("click", closeBatteryModal);
+      document.getElementById("quoteForm")?.addEventListener("submit", (e) => {
         e.preventDefault();
-        document.getElementById('quoteForm').classList.add('hidden');
-        document.getElementById('quoteSuccess').classList.remove('hidden');
+        const qForm = document.getElementById("quoteForm");
+        const qSuccess = document.getElementById("quoteSuccess");
+        if (qForm) qForm.classList.add("hidden");
+        if (qSuccess) qSuccess.classList.remove("hidden");
       });
 
-      // Update renderMonetization to call modals instead of alerts
+      // Client-Side PDF Proposal Generator (jsPDF with Fallback)
+      function generateCustomPdfProposal() {
+        try {
+          if (!window.jspdf || !window.jspdf.jsPDF) {
+            window.print();
+            return;
+          }
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+
+          const billVal = billInput ? billInput.value : "250";
+          const sysVal = systemSize ? systemSize.textContent : "5.6 kW (~14 Panels)";
+          const netVal = netCost ? netCost.textContent : "$11,113";
+          const itcVal = taxCreditSavings ? taxCreditSavings.textContent : "-$4,763";
+          const savVal = twentyFiveYearSavings ? twentyFiveYearSavings.textContent : "$90,869";
+          const payVal = paybackYears ? paybackYears.textContent : "3.7";
+          const stateCode = (stateSelect ? stateSelect.value : "ca").toUpperCase();
+
+          // Header
+          doc.setFillColor(124, 58, 237); // Brand Purple
+          doc.rect(0, 0, 210, 28, "F");
+          doc.setTextColor(255, 255, 255);
+          doc.setFontSize(18);
+          doc.setFont("helvetica", "bold");
+          doc.text("SolarSavingsHQ — Clean Energy Proposal", 14, 18);
+
+          // Subtitle
+          doc.setTextColor(51, 65, 85);
+          doc.setFontSize(11);
+          doc.setFont("helvetica", "normal");
+          doc.text("Official Sizing & 30% Federal Tax Credit Schedule (IRC Section 25D) • Region: " + stateCode, 14, 38);
+          doc.text("Generated: " + new Date().toLocaleDateString() + " • Basis: NREL PVWatts v8 Standards", 14, 44);
+
+          // Divider Line
+          doc.setDrawColor(226, 232, 240);
+          doc.setLineWidth(0.5);
+          doc.line(14, 48, 196, 48);
+
+          // Financial Summary Table
+          doc.setFontSize(14);
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(15, 23, 42);
+          doc.text("1. System Configuration & Net Investment", 14, 58);
+
+          doc.setFontSize(10);
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(71, 85, 105);
+
+          const startY = 66;
+          const rowH = 9;
+          const rows = [
+            ["Current Monthly Electric Bill:", "$" + billVal + " / month"],
+            ["Recommended Photovoltaic Array:", sysVal],
+            ["Estimated Payback Timeline:", payVal + " Years"],
+            ["30% Federal ITC Tax Credit (IRC §25D):", itcVal],
+            ["Net Out-of-Pocket System Cost:", netVal],
+            ["Projected 25-Year Net Compounding Savings:", savVal]
+          ];
+
+          rows.forEach((r, i) => {
+            doc.setFillColor(i % 2 === 0 ? 248 : 255, i % 2 === 0 ? 250 : 255, i % 2 === 0 ? 252 : 255);
+            doc.rect(14, startY + (i * rowH), 182, rowH, "F");
+            doc.text(r[0], 18, startY + (i * rowH) + 6);
+            doc.setFont("helvetica", "bold");
+            doc.text(r[1], 192, startY + (i * rowH) + 6, { align: "right" });
+            doc.setFont("helvetica", "normal");
+          });
+
+          // Section 2: Technical Compliance Notes
+          doc.setFontSize(14);
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(15, 23, 42);
+          doc.text("2. Technical & Tax Compliance Guidelines", 14, 132);
+
+          doc.setFontSize(9.5);
+          doc.setFont("helvetica", "normal");
+          doc.setTextColor(71, 85, 105);
+          doc.text("• Federal Section 25D Credit: Claimable on IRS Form 5695 for panels, inverters, racking, labor, and battery storage.", 14, 142);
+          doc.text("• Inverter Conversion & Performance Ratio: 80% NREL PVWatts derate accounts for ambient temperature and soiling.", 14, 149);
+          doc.text("• Degradation Standard: Sizing accommodates standard 0.5%/year Tier-1 monocrystalline linear power warranties.", 14, 156);
+          doc.text("• Battery Arbitrage: Stores daytime solar to mitigate utility peak Time-of-Use (TOU) rates (4 PM - 9 PM).", 14, 163);
+
+          // Footer
+          doc.setDrawColor(226, 232, 240);
+          doc.line(14, 270, 196, 270);
+          doc.setFontSize(8.5);
+          doc.setTextColor(148, 163, 184);
+          doc.text("SolarSavingsHQ.com — Independent Clean Energy Intelligence • Not a contract or formal sales offer.", 14, 278);
+
+          doc.save("SolarSavingsHQ_Proposal_" + stateCode + "_" + billVal + "mo.pdf");
+        } catch (err) {
+          window.print();
+        }
+      }
+      window.generateCustomPdfProposal = generateCustomPdfProposal;
+
+      // Update renderMonetization to call modals
       function renderMonetization(bill, hasBattery) {
         if (!monetizationContainer) return;
         if (bill > 150 && !hasBattery) {
@@ -1878,7 +2090,7 @@
                 </p>
               </div>
               <button onclick="openBatteryModal()" class="btn-age-emerald px-6 py-3.5 text-white font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer shadow-md whitespace-nowrap">
-                Compare EcoFlow & Anker Units →
+                Compare EcoFlow, Tesla & Anker Units →
               </button>
             </div>
           `;
@@ -1903,12 +2115,41 @@
         }
       }
 
-      // Initial Call
+      // Initial Call & URL Param Parser
       function handleInitState() {
         initD3Heatmap();
         try {
           const urlParams = new URLSearchParams(window.location.search);
-          const stateParam = urlParams.get('state');
+          const stateParam = urlParams.get("state");
+          const billParam = urlParams.get("bill");
+          const rateParam = urlParams.get("rate");
+          const sunParam = urlParams.get("sun");
+          const batteryParam = urlParams.get("battery");
+          const itcParam = urlParams.get("itc");
+
+          if (billParam && billInput && billSlider) {
+            billInput.value = billParam;
+            billSlider.value = billParam;
+          }
+          if (rateParam && rateInput && rateSlider) {
+            rateInput.value = rateParam;
+            rateSlider.value = rateParam;
+          }
+          if (sunParam && sunInput && sunSlider) {
+            sunInput.value = sunParam;
+            sunSlider.value = sunParam;
+          }
+          if (itcParam === "0" && itcToggle) {
+            itcToggle.checked = false;
+          }
+          if (batteryParam && batteryToggle) {
+            batteryToggle.checked = true;
+            if (batterySelectorContainer) batterySelectorContainer.classList.remove("hidden");
+            if (batteryModelSelect && BATTERY_PROFILES[batteryParam]) {
+              batteryModelSelect.value = batteryParam;
+            }
+          }
+
           if (stateParam) {
             applyStatePreset(stateParam.toLowerCase());
           } else {
@@ -1919,8 +2160,8 @@
         }
       }
 
-      window.addEventListener('DOMContentLoaded', handleInitState);
-      if (document.readyState !== 'loading') {
+      window.addEventListener("DOMContentLoaded", handleInitState);
+      if (document.readyState !== "loading") {
         handleInitState();
       }
     </script>
