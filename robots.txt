@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.solarsavingshq.com/sitemap.xml
+# Canonical XML Sitemap
+Sitemap: https://solarsavingshq.com/sitemap.xml
