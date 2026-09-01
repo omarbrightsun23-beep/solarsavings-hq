@@ -962,7 +962,7 @@
                         <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-100 text-amber-900">Federal Tax Credit</span>
                         <h3 class="font-bold text-slate-900 text-base">How does the 30% Federal Solar Tax Credit work under Section 25D?</h3>
                         <p class="text-slate-700 text-xs leading-relaxed">
-                            Under Section 25D of the U.S. Internal Revenue Code, homeowners claim a direct 30% dollar-for-dollar deduction against federal income taxes. It covers solar panels, microinverters, string inverters, racking, electrical wiring, labor, and battery storage (3kWh+). Any unused tax credit rolls forward into subsequent tax years.
+                            Under Section 25D of the U.S. Internal Revenue Code (Residential Clean Energy Credit), homeowners claim a direct 30% dollar-for-dollar deduction against federal income taxes. It covers solar panels, microinverters, string inverters, racking, electrical wiring, labor, and battery storage (3kWh+). Any unused tax credit rolls forward into subsequent tax years.
                         </p>
                     </div>
                     <div class="text-[11px] font-mono text-amber-700 font-semibold pt-2 border-t border-amber-100">
@@ -1534,7 +1534,10 @@
           const rowG = svg.append("g")
             .attr("class", "cursor-pointer")
             .attr("transform", "translate(0, " + stateY + ")")
-            .on("click", () => { applyStatePreset(state.code); });
+            .on("click", () => {
+              applyStatePreset(state.code);
+              scrollToPresetInput();
+            });
 
           // State Label
           rowG.append("text")
@@ -1584,7 +1587,7 @@
               <span class="text-sm font-bold text-slate-900 font-sans">${state.name} (${state.code.toUpperCase()})</span>
               <span class="text-[11px] text-slate-500 font-mono">${state.region}</span>
             </div>
-            <button onclick="applyStatePreset('${state.code}')" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl transition cursor-pointer">
+            <button onclick="applyStatePreset('${state.code}'); scrollToPresetInput();" class="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl transition cursor-pointer">
               Apply to Sizer →
             </button>
           </div>
@@ -1609,6 +1612,20 @@
         `;
       }
 
+      function scrollToPresetInput() {
+        const targetEl = document.getElementById("stateSelect") || document.getElementById("calculator");
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          if (targetEl.id === "stateSelect") {
+            targetEl.focus();
+            targetEl.classList.add("ring-2", "ring-amber-500", "border-amber-500");
+            setTimeout(() => {
+              targetEl.classList.remove("ring-2", "ring-amber-500", "border-amber-500");
+            }, 1800);
+          }
+        }
+      }
+
       function applyStatePreset(code) {
         const state = STATE_SOLAR_DATA.find(s => s.code === code);
         if (!state) return;
@@ -1621,13 +1638,11 @@
 
       function applyStatePresetAndScroll(code) {
         applyStatePreset(code);
-        const calcSection = document.getElementById("calculator");
-        if (calcSection) {
-          calcSection.scrollIntoView({ behavior: "smooth" });
-        }
+        scrollToPresetInput();
       }
       window.applyStatePreset = applyStatePreset;
       window.applyStatePresetAndScroll = applyStatePresetAndScroll;
+      window.scrollToPresetInput = scrollToPresetInput;
 
       // 4. BIND INPUTS & SLIDERS
       function bindSync(input, slider) {
@@ -1744,11 +1759,27 @@
         });
       });
 
-      // State Table Load Buttons
+      // State Table Load Buttons (Smoothly calibrates & scrolls to Location / Utility Preset input field)
       document.querySelectorAll(".btn-load-state").forEach(btn => {
         btn.addEventListener("click", (e) => {
+          e.stopPropagation();
           const code = e.currentTarget.getAttribute("data-apply-state");
-          if (code) applyStatePreset(code);
+          if (code) {
+            applyStatePreset(code);
+            scrollToPresetInput();
+          }
+        });
+      });
+
+      // State Table Rows Click
+      document.querySelectorAll(".state-benchmark-row").forEach(row => {
+        row.addEventListener("click", (e) => {
+          if (e.target.closest("button")) return;
+          const code = e.currentTarget.getAttribute("data-state");
+          if (code) {
+            applyStatePreset(code);
+            scrollToPresetInput();
+          }
         });
       });
 
@@ -1950,8 +1981,7 @@
         if (batteryCostBadge) batteryCostBadge.textContent = "~$" + profile.cost.toLocaleString() + " installed";
         calculate();
         closeBatteryModal();
-        const calcEl = document.getElementById("calculator");
-        if (calcEl) calcEl.scrollIntoView({ behavior: "smooth" });
+        scrollToPresetInput();
       }
 
       window.openQuoteModal = openQuoteModal;
@@ -2173,15 +2203,3 @@
     </script>
 </body>
 </html>
-"""
-
-with open("/working_dir/c_e37237c266879204/solarsavingshq_reconciled_master.html", "w", encoding="utf-8") as f_out:
-    f_out.write(full_html)
-
-print(f"Wrote {len(full_html)} bytes to /working_dir/c_e37237c266879204/solarsavingshq_reconciled_master.html")
-EOF
-python3 /working_dir/c_e37237c266879204/create_complete_reconciled_index.py
-}
-}
-
-http://googleusercontent.com/action_card_content/ed4684cb-bb3c-4ed9-a23a-2edc2e969efc
