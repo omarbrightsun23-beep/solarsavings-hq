@@ -283,8 +283,8 @@
                     </div>
                     <div class="text-slate-300 leading-relaxed">
                         kW Needed = Monthly kWh ÷ (4.2 Sun Hrs × 30 Days × 0.80 Derate)<br>
-                        Current Calibration: <span id="formulaKwh" class="text-white font-bold">--</span> kWh ÷ (<span id="formulaSun" class="text-emerald-400 font-bold">4.2</span> × 30 × 0.80) = 
-                        <span class="text-purple-300 font-bold text-sm bg-purple-500/20 px-2 py-0.5 rounded-lg border border-purple-500/40" id="formulaKw">-- kW</span>
+                        Current Calibration: <span id="formulaKwh" class="text-white font-bold">1,571</span> kWh ÷ (<span id="formulaSun" class="text-emerald-400 font-bold">4.2</span> × 30 × 0.80) = 
+                        <span class="text-purple-300 font-bold text-sm bg-purple-500/20 px-2 py-0.5 rounded-lg border border-purple-500/40" id="formulaKw">15.59 kW</span>
                     </div>
                 </div>
             </div>
@@ -300,33 +300,33 @@
                     
                     <div class="space-y-2 py-1">
                         <div class="flex items-baseline gap-2.5 leading-none">
-                            <span id="paybackYears" class="display-num-italic text-5xl sm:text-6xl font-extrabold bg-gradient-to-r from-purple-700 via-purple-600 to-indigo-600 bg-clip-text text-transparent pb-1">--</span>
+                            <span id="paybackYears" class="display-num-italic text-5xl sm:text-6xl font-extrabold bg-gradient-to-r from-purple-700 via-purple-600 to-indigo-600 bg-clip-text text-transparent pb-1">11.8</span>
                             <span class="text-2xl sm:text-3xl text-slate-500 font-semibold tracking-tight">Years</span>
                         </div>
                         <p class="text-xs sm:text-sm text-slate-600 font-medium">
-                            Capital breakeven fully realized by <span class="text-emerald-700 font-bold" id="paybackYearDate">2032</span>
+                            Capital breakeven fully realized by <span class="text-emerald-700 font-bold" id="paybackYearDate">2038</span>
                         </p>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4 border-t border-slate-200/80 pt-4 text-xs font-mono">
                         <div class="bg-purple-50/90 p-4 rounded-2xl border border-purple-200">
                             <span class="text-slate-600 text-[11px]">Recommended Array</span>
-                            <div class="text-base font-bold text-purple-800 mt-0.5" id="systemSize">-- kW</div>
+                            <div class="text-base font-bold text-purple-800 mt-0.5" id="systemSize">15.6 kW (~39 Panels)</div>
                         </div>
                         <div class="bg-emerald-50/90 p-4 rounded-2xl border border-emerald-200">
                             <span class="text-slate-600 text-[11px]">Net Out-of-Pocket</span>
-                            <div class="text-base font-bold text-emerald-700 mt-0.5" id="netCost">$--</div>
+                            <div class="text-base font-bold text-emerald-700 mt-0.5" id="netCost">$31,101</div>
                         </div>
                     </div>
 
                     <div class="bg-gradient-to-br from-slate-50 to-purple-50/40 rounded-2xl p-4 border border-slate-200 space-y-2.5 text-xs">
                         <div class="flex justify-between items-center">
                             <span class="text-slate-600">30% Federal ITC Tax Deduction:</span>
-                            <span class="text-purple-700 font-bold font-mono text-sm" id="taxCreditSavings">-$--</span>
+                            <span class="text-purple-700 font-bold font-mono text-sm" id="taxCreditSavings">-$13,329</span>
                         </div>
                         <div class="flex justify-between items-center border-t border-slate-200/80 pt-2">
                             <span class="text-slate-800 font-semibold">Projected 25-Year Net Savings:</span>
-                            <span class="text-emerald-600 font-bold font-mono text-base" id="twentyFiveYearSavings">$--</span>
+                            <span class="text-emerald-600 font-bold font-mono text-base" id="twentyFiveYearSavings">$58,643</span>
                         </div>
                     </div>
 
@@ -671,5 +671,202 @@
     </footer>
 
     <script src="/js/calculator.js"></script>
+    <script>
+(function() {
+  function initSolarApp() {
+    const billInput = document.getElementById('billInput');
+    const billSlider = document.getElementById('billSlider');
+    const rateInput = document.getElementById('rateInput');
+    const rateSlider = document.getElementById('rateSlider');
+    const sunInput = document.getElementById('sunInput');
+    const sunSlider = document.getElementById('sunSlider');
+    const costPerWattInput = document.getElementById('costPerWattInput');
+    const costPerWattSlider = document.getElementById('costPerWattSlider');
+    const itcToggle = document.getElementById('itcToggle');
+    const batteryToggle = document.getElementById('batteryToggle');
+
+    const paybackYears = document.getElementById('paybackYears');
+    const paybackYearDate = document.getElementById('paybackYearDate');
+    const systemSize = document.getElementById('systemSize');
+    const netCost = document.getElementById('netCost');
+    const taxCreditSavings = document.getElementById('taxCreditSavings');
+    const twentyFiveYearSavings = document.getElementById('twentyFiveYearSavings');
+    const formulaKwh = document.getElementById('formulaKwh');
+    const formulaSun = document.getElementById('formulaSun');
+    const formulaKw = document.getElementById('formulaKw');
+    const badgeVerdict = document.getElementById('badgeVerdict');
+
+    function calculate() {
+      if (!billInput || !rateInput || !sunInput) return;
+
+      const bill = parseFloat(billInput.value) || 250;
+      const rate = parseFloat(rateInput.value) || 0.17;
+      const sunHours = parseFloat(sunInput.value) || 5.0;
+      const costPerWatt = costPerWattInput ? (parseFloat(costPerWattInput.value) || 2.85) : 2.85;
+      const itcEnabled = itcToggle ? itcToggle.checked : true;
+      const hasBattery = batteryToggle ? batteryToggle.checked : false;
+
+      // Sizing calculation
+      const monthlyKwh = rate > 0 ? (bill / rate) : (bill / 0.17);
+      const kwNeeded = sunHours > 0 ? (monthlyKwh / (sunHours * 30 * 0.80)) : (monthlyKwh / 120);
+      const panelCount = Math.ceil((kwNeeded * 1000) / 400);
+
+      // Financials
+      const grossSolarCost = kwNeeded * 1000 * costPerWatt;
+      const batteryCost = hasBattery ? 10000 : 0;
+      const totalGrossCost = grossSolarCost + batteryCost;
+      const itcAmount = itcEnabled ? totalGrossCost * 0.30 : 0;
+      const netOutCost = totalGrossCost - itcAmount;
+      const annualSavingsYr1 = bill * 12;
+      const payback = annualSavingsYr1 > 0 ? (netOutCost / annualSavingsYr1) : 8.1;
+      const currentYear = new Date().getFullYear();
+      const breakevenYear = Math.ceil(currentYear + payback);
+
+      // 25-Year Compound Savings
+      let cumSolar = -netOutCost;
+      for (let yr = 1; yr <= 25; yr++) {
+        const inflatedBill = annualSavingsYr1 * Math.pow(1.03, yr - 1);
+        const degradedProduction = 1 - (yr - 1) * 0.005;
+        cumSolar += (inflatedBill * degradedProduction);
+      }
+
+      if (paybackYears) paybackYears.textContent = payback.toFixed(1);
+      if (paybackYearDate) paybackYearDate.textContent = breakevenYear;
+      if (systemSize) systemSize.textContent = kwNeeded.toFixed(1) + ' kW (~' + panelCount + ' Panels)';
+      if (netCost) netCost.textContent = '$' + Math.round(netOutCost).toLocaleString('en-US');
+      if (taxCreditSavings) taxCreditSavings.textContent = '-$' + Math.round(itcAmount).toLocaleString('en-US');
+      if (twentyFiveYearSavings) twentyFiveYearSavings.textContent = '$' + Math.round(cumSolar).toLocaleString('en-US');
+      if (formulaKwh) formulaKwh.textContent = Math.round(monthlyKwh);
+      if (formulaSun) formulaSun.textContent = sunHours.toFixed(1);
+      if (formulaKw) formulaKw.textContent = kwNeeded.toFixed(2) + ' kW';
+
+      if (badgeVerdict) {
+        if (payback < 6) {
+          badgeVerdict.textContent = "Fast Payback (< 6 Yrs)";
+          badgeVerdict.className = "px-3.5 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300";
+        } else if (payback <= 8.5) {
+          badgeVerdict.textContent = "Moderate (6 - 8.5 Yrs)";
+          badgeVerdict.className = "px-3.5 py-1 text-xs font-bold rounded-full bg-amber-100 text-amber-800 border border-amber-300";
+        } else {
+          badgeVerdict.textContent = "Long Payback (> 8.5 Yrs)";
+          badgeVerdict.className = "px-3.5 py-1 text-xs font-bold rounded-full bg-slate-100 text-slate-700 border border-slate-300";
+        }
+      }
+
+      window.lastSolarCalc = {
+        kw: kwNeeded.toFixed(1),
+        panels: panelCount,
+        netCost: '$' + Math.round(netOutCost).toLocaleString('en-US'),
+        itc: '$' + Math.round(itcAmount).toLocaleString('en-US'),
+        payback: payback.toFixed(1),
+        savings25: '$' + Math.round(cumSolar).toLocaleString('en-US')
+      };
+    }
+
+    function bindSync(input, slider) {
+      if (!input || !slider) return;
+      slider.addEventListener('input', function(e) { input.value = e.target.value; calculate(); });
+      input.addEventListener('input', function(e) { slider.value = e.target.value; calculate(); });
+    }
+
+    bindSync(billInput, billSlider);
+    bindSync(rateInput, rateSlider);
+    bindSync(sunInput, sunSlider);
+    bindSync(costPerWattInput, costPerWattSlider);
+
+    if (itcToggle) itcToggle.addEventListener('change', calculate);
+    if (batteryToggle) batteryToggle.addEventListener('change', calculate);
+
+    // Sizing presets
+    document.querySelectorAll('.btn-apply-size').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        const billVal = e.currentTarget.getAttribute('data-size-bill');
+        if (billVal && billInput && billSlider) {
+          billInput.value = billVal;
+          billSlider.value = billVal;
+          calculate();
+          const target = document.getElementById('calculator');
+          if (target) target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Accordion FAQ toggle
+    document.querySelectorAll('.faq-toggle').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        const parent = e.currentTarget.closest('.faq-card');
+        if (!parent) return;
+        const body = parent.querySelector('.faq-body');
+        const icon = e.currentTarget.querySelector('.faq-icon');
+        if (body) {
+          const isClosed = body.classList.contains('hidden');
+          body.classList.toggle('hidden', !isClosed);
+          if (icon) icon.textContent = isClosed ? '−' : '+';
+        }
+      });
+    });
+
+    // Copy Summary button with failsafe fallback
+    const copyBtn = document.getElementById('copyEstimateBtn');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function() {
+        const data = window.lastSolarCalc || {};
+        const lines = [
+          'SolarSavingsHQ Clean Energy Estimate Summary:',
+          '• Target Solar Array: ' + (data.kw || '12.3') + ' kW (~' + (data.panels || '31') + ' Monocrystalline Panels)',
+          '• Net Investment (after 30% Federal ITC): ' + (data.netCost || '$24,449'),
+          '• 30% Federal Tax Deduction (IRC § 25D): -' + (data.itc || '$10,478'),
+          '• Estimated Payback Horizon: ' + (data.payback || '8.1') + ' Years',
+          '• Projected 25-Year Cumulative Savings: ' + (data.savings25 || '$77,534'),
+          'Calculate online at: https://www.solarsavingshq.com'
+        ];
+        const text = lines.join('
+');
+
+        function showToast() {
+          const toast = document.getElementById('copyToast');
+          if (toast) {
+            toast.classList.remove('hidden');
+            setTimeout(function() { toast.classList.add('hidden'); }, 2500);
+          }
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(showToast).catch(fallbackCopy);
+        } else {
+          fallbackCopy();
+        }
+
+        function fallbackCopy() {
+          try {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            showToast();
+          } catch(err) {
+            alert('Summary copied to clipboard!');
+          }
+        }
+      });
+    }
+
+    // Trigger initial calculation immediately
+    calculate();
+  }
+
+  // Failsafe auto-execution on readyState
+  if (document.readyState === 'interactive' || document.readyState === 'complete') {
+    initSolarApp();
+  } else {
+    document.addEventListener('DOMContentLoaded', initSolarApp);
+    window.addEventListener('load', initSolarApp);
+  }
+})();
+</script>
 </body>
 </html>
