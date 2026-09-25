@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 60" fill="none">
+  <g transform="translate(0, 0) scale(0.6)">
+    <path d="M50 14 L86 34 L86 70 L50 90 L14 70 L14 34 Z" stroke="#1E293B" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M50 16 L84 35 L50 54 L16 35 Z" fill="#F59E0B"/>
+    <path d="M16 36 L50 55 L50 88 L16 69 Z" fill="#1E293B"/>
+    <line x1="33" y1="45" x2="33" y2="78" stroke="#475569" stroke-width="1.5" stroke-dasharray="3 2"/>
+    <line x1="16" y1="52" x2="50" y2="71" stroke="#475569" stroke-width="1.5" stroke-dasharray="3 2"/>
+    <path d="M50 55 L84 36 L84 69 L50 88 Z" fill="#10B981"/>
+    <line x1="67" y1="45" x2="67" y2="78" stroke="#34D399" stroke-width="1.5" opacity="0.8"/>
+    <line x1="50" y1="71" x2="84" y2="52" stroke="#34D399" stroke-width="1.5" opacity="0.8"/>
+    <path d="M50 14 L86 34 L86 70 L50 90 L14 70 L14 34 Z" stroke="#0F172A" stroke-width="2.5" stroke-linejoin="round" fill="none"/>
+    <polygon points="47,24 57,44 48,47 58,74 47,74 41,52 51,48" fill="#FFFFFF"/>
+  </g>
+  <text x="68" y="38" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="24" font-weight="800" letter-spacing="-0.5">SolarSavings</text>
+  <g transform="translate(222, 17)">
+    <rect width="46" height="28" rx="7" fill="#0F172A" stroke="#F59E0B" stroke-width="1.8"/>
+    <text x="23" y="19" fill="#F59E0B" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="900" text-anchor="middle" letter-spacing="0.5">HQ</text>
+  </g>
+</svg>
