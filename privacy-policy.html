@@ -1,69 +1,118 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy | SolarSavingsHQ</title>
-    <meta name="description" content="Privacy Policy for SolarSavingsHQ. Disclosing client-side data protection, cookies, GDPR, CCPA, and Google AdSense compliance.">
-    <link rel="canonical" href="https://www.solarsavingshq.com/privacy-policy">
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>Privacy Policy | SolarSavingsHQ</title>
+  <link rel="canonical" href="https://www.solarsavingshq.com/privacy-policy">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased">
-    <header class="border-b border-slate-800 bg-[#090d16]/95 backdrop-blur-md sticky top-0 z-50">
+<body class="bg-age-canvas min-h-screen text-slate-800 flex flex-col justify-between">
+    <header class="border-b border-slate-800 bg-[#090d16]/95 backdrop-blur-md text-white sticky top-0 z-50 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="/" class="flex items-center gap-2">
-                <span class="font-bold text-lg text-white">SolarSavings<span class="text-purple-400">HQ</span></span>
+            <a href="/" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-[#0e1424] border border-slate-700/80 p-1 flex items-center justify-center shadow-lg shadow-purple-500/10 group-hover:scale-105 group-hover:border-purple-500/50 transition-all shrink-0">
+                    <svg viewBox="0 0 200 200" fill="none" class="w-full h-full">
+                        <circle cx="100" cy="100" r="82" stroke="#475569" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.8" />
+                        <path d="M 58 92 C 58 46, 142 46, 142 92" stroke="#8b5cf6" stroke-width="15" stroke-linecap="round" />
+                        <path d="M 58 108 C 58 154, 142 154, 142 108" stroke="#10b981" stroke-width="15" stroke-linecap="round" />
+                        <path d="M 96 68 L 118 102 L 95 115 L 112 144" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="font-bold text-lg text-white tracking-tight group-hover:text-purple-300 transition-colors">SolarSavings<span class="text-purple-400 font-extrabold">HQ</span></span>
+                    </div>
+                    <span class="hidden sm:inline-block text-[10px] text-indigo-300 font-mono tracking-wider uppercase font-semibold">Power &amp; ROI Estimator</span>
+                </div>
             </a>
-            <nav class="flex items-center gap-6 text-sm text-slate-300 font-medium">
-                <a href="/" class="hover:text-purple-400">Home</a>
-                <a href="/sitemap.html" class="hover:text-purple-400">Sitemap</a>
-                <a href="/contact-us.html" class="hover:text-purple-400">Contact</a>
+            
+            <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-slate-300">
+                <a href="/#calculator" class="text-purple-400 font-semibold hover:text-purple-300 transition-colors">Calculator</a>
+                <a href="/#sizing" class="hover:text-purple-400 transition-colors">Home Sizing</a>
+                <a href="/#benchmarks" class="hover:text-purple-400 transition-colors">State Benchmarks</a>
+                <a href="/#faq" class="hover:text-purple-400 transition-colors">FAQ</a>
+                <a href="/sitemap" class="hover:text-purple-400 transition-colors">All 50 States</a>
             </nav>
+            <div class="flex items-center gap-3">
+                <a href="#quotes" class="btn-age-purple px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl cursor-pointer">
+                    Get 3 Free Quotes
+                </a>
+            </div>
         </div>
     </header>
-
-    <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8 text-slate-300 text-sm leading-relaxed">
-        <div class="space-y-2">
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-white">Privacy Policy</h1>
-            <p class="text-xs text-slate-500 font-mono">Last Updated: August 27, 2026</p>
+  <main class="max-w-4xl mx-auto px-4 py-12 space-y-6 flex-1 w-full">
+    <article class="age-card p-8 space-y-4">
+      <h1 class="text-2xl font-bold text-slate-900">Privacy Policy (GDPR / CCPA)</h1>
+      <div class="text-sm text-slate-600 leading-relaxed space-y-4"><p>SolarSavingsHQ operates under zero-log client-side computing principles. All electric bill math executes locally in your browser. We never sell personal data.</p></div>
+    </article>
+  </main>
+    <footer class="border-t border-slate-800 bg-[#060a12] text-slate-400 pt-16 pb-12 text-xs mt-16 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+                <div class="lg:col-span-2 space-y-4">
+                    <a href="/" class="flex items-center gap-3 group">
+                        <div class="w-10 h-10 rounded-xl bg-[#090d16] border border-slate-700 p-1 flex items-center justify-center shrink-0">
+                            <svg viewBox="0 0 200 200" fill="none" class="w-full h-full">
+                                <circle cx="100" cy="100" r="82" stroke="#475569" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.8" />
+                                <path d="M 58 92 C 58 46, 142 46, 142 92" stroke="#8b5cf6" stroke-width="15" stroke-linecap="round" />
+                                <path d="M 58 108 C 58 154, 142 154, 142 108" stroke="#10b981" stroke-width="15" stroke-linecap="round" />
+                                <path d="M 96 68 L 118 102 L 95 115 L 112 144" stroke="#FFFFFF" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        <div>
+                            <span class="font-bold text-lg text-white tracking-tight">SolarSavings<span class="text-purple-400">HQ</span></span>
+                            <span class="block text-[10px] text-indigo-300 font-mono tracking-wider uppercase font-semibold">Power &amp; ROI Estimator</span>
+                        </div>
+                    </a>
+                    <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
+                        SolarSavingsHQ delivers institutional clean energy financial modeling. Powered by 100% client-side physics compliant with NREL PVWatts v8 and IRC Section 25D federal clean energy standards.
+                    </p>
+                    <div class="flex flex-wrap gap-2 pt-1 font-mono text-[11px]">
+                        <span class="px-2.5 py-1 rounded-lg bg-[#111927] border border-slate-800 text-slate-300">NABCEP PVA-120491</span>
+                        <span class="px-2.5 py-1 rounded-lg bg-[#111927] border border-slate-800 text-slate-300">PE #84019 Audited</span>
+                        <span class="px-2.5 py-1 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-300">2026 Standards</span>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-purple-400">Solar Calculators</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/" class="hover:text-white hover:underline transition-colors">Residential ROI Engine</a></li>
+                        <li><a href="/california" class="hover:text-white hover:underline transition-colors">California NEM 3.0 Sizer</a></li>
+                        <li><a href="/texas" class="hover:text-white hover:underline transition-colors">Texas Solar Buyback Sizer</a></li>
+                        <li><a href="/florida" class="hover:text-white hover:underline transition-colors">Florida Net Metering Sizer</a></li>
+                    </ul>
+                </div>
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-400">Top State Guides</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/nevada" class="hover:text-white hover:underline transition-colors">Nevada (NV Energy)</a></li>
+                        <li><a href="/arizona" class="hover:text-white hover:underline transition-colors">Arizona (APS / SRP)</a></li>
+                        <li><a href="/new-jersey" class="hover:text-white hover:underline transition-colors">New Jersey (SuSI SREC-II)</a></li>
+                        <li><a href="/new-york" class="hover:text-white hover:underline transition-colors">New York (NY-Sun VDER)</a></li>
+                        <li><a href="/sitemap" class="hover:text-white hover:underline transition-colors font-bold text-purple-400">View All 50 States →</a></li>
+                    </ul>
+                </div>
+                <div class="space-y-3">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Compliance &amp; Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/privacy-policy" class="hover:text-white hover:underline transition-colors">Privacy Policy</a></li>
+                        <li><a href="/terms-of-service" class="hover:text-white hover:underline transition-colors">Terms of Service</a></li>
+                        <li><a href="/disclaimer" class="hover:text-white hover:underline transition-colors">Financial Disclaimer</a></li>
+                        <li><a href="/contact-us" class="hover:text-white hover:underline transition-colors">Contact Us &amp; Support</a></li>
+                        <li><a href="/sitemap.xml" target="_blank" class="hover:text-purple-400 hover:underline transition-colors font-mono">XML Sitemap</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-800/80 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-slate-500 text-[11px]">
+                <div>&copy; 2026 SolarSavingsHQ.com. All rights reserved. Clean energy unit economics engineered for institutional accuracy.</div>
+                <div class="flex items-center gap-4">
+                    <span class="text-slate-600 font-mono">Build: v2026.9-pSEO-50</span>
+                    <a href="#calculator" class="text-purple-400 hover:text-purple-300 flex items-center gap-1 hover:underline">Back to Top ↑</a>
+                </div>
+            </div>
         </div>
-
-        <div class="bg-[#111827] border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl">
-            <section class="space-y-2">
-                <h2 class="text-base font-bold text-white">1. Client-Side Calculation & Zero Data Persistence</h2>
-                <p class="text-xs text-slate-400">
-                    At SolarSavingsHQ, user privacy is paramount. Our solar sizing and financial payback calculators execute <strong>100% client-side in your local browser</strong>. We do not store, log, or transmit your electricity bills, monthly kWh usage, or property specifications to remote servers.
-                </p>
-            </section>
-
-            <section class="space-y-2">
-                <h2 class="text-base font-bold text-white">2. Cookies & Google AdSense DART Cookies</h2>
-                <p class="text-xs text-slate-400">
-                    Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites. Google's use of advertising cookies enables it and its partners to serve ads based on your visit to SolarSavingsHQ and/or other sites on the Internet.
-                </p>
-                <p class="text-xs text-slate-400">
-                    Users may opt out of personalized advertising by visiting <a href="https://adssettings.google.com/" target="_blank" rel="noopener noreferrer" class="text-purple-400 underline">Google Ads Settings</a> or by visiting <a href="https://optout.networkadvertising.org/" target="_blank" rel="noopener noreferrer" class="text-purple-400 underline">www.aboutads.info</a>.
-                </p>
-            </section>
-
-            <section class="space-y-2">
-                <h2 class="text-base font-bold text-white">3. CCPA / CPRA & GDPR Compliance</h2>
-                <p class="text-xs text-slate-400">
-                    Under the California Consumer Privacy Act (CCPA) and General Data Protection Regulation (GDPR), users have the right to request disclosure of collected data, request deletion of personal information, and opt out of any data sharing. If you make a request, we have 30 days to respond.
-                </p>
-            </section>
-
-            <section class="space-y-2">
-                <h2 class="text-base font-bold text-white">4. Contact Information</h2>
-                <p class="text-xs text-slate-400">
-                    For privacy inquiries or data rights requests, contact our Data Protection Officer at: <a href="mailto:privacy@solarsavingshq.com" class="text-purple-400 font-mono underline">privacy@solarsavingshq.com</a>.
-                </p>
-            </section>
-        </div>
-    </main>
-
-    <footer class="border-t border-slate-800 bg-[#060a12] py-8 text-xs text-slate-500 text-center">
-        © 2026 SolarSavingsHQ.com. All rights reserved.
     </footer>
 </body>
 </html>
